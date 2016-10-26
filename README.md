@@ -17,7 +17,7 @@ means of a D3 data visualization tool, and will be accessible through a web page
 
 ## Data description
 
-### Official bulletins
+#### Official bulletins
 [Official website of Swiss parliament - Official bulletins](https://www.parlament.ch/en/ratsbetrieb/suche-amtliches-bulletin)
 
 Type of Procedure:
@@ -54,7 +54,7 @@ Official bulletins contains:
   - List of speakers (+ canton and political party)
 - Full speeches of all speakers
 
-### Session briefings
+#### Session briefings
 [Official website of Swiss parliament - Session briefings](https://www.parlament.ch/en/ratsbetrieb/sessions/overview-briefings)
 
 Must be evaluated if relevant
@@ -67,23 +67,23 @@ our project.
 
 ## Feasibility and Risks
 
-### Parliamentary Terms
+#### Parliamentary Terms
 Complicated and precise terminology, specific to the political area.
 [Lexicon of Parliamentary Terms](https://www.parlament.ch/en/über-das-parlament/parlamentswörterbuch)
 
-### Three official languages
+#### Three official languages
 Speakers debate in their own language, mainly in German and French. Textual analysis must take care not to lose information
 by translating them into English.
 
-### Licences
+#### Licences
 [Open Data / Web services statement of Parliament web site](https://www.parlament.ch/en/services/open-data-webservices)
 The provided information is free to be used by the user, under reasonable condition (no alterations, source indicated, 
 date of download indicated)
 
-### Data collecting
+#### Data collecting
 As far as we know, there is no API provided by the web site, so we will have to scrap and soup them.
 
-### Theme classification
+#### Theme classification
 Official bulletins don't contain clear *theme* attribute. The names of debated object do not always state clearly what they cover.
 We will use NLP tools on speeches in order to extract thematic.
 
