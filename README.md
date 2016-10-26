@@ -1,3 +1,5 @@
+![Logo](logo/logo_parliament_viz.png)
+
 # ch-parliament
 (ADA CS-401 EPFL)
 
