@@ -1,6 +1,6 @@
 ![Logo](logo/logo_parliament_viz.png)
 
-# ch-parliament
+# parliament-viz.ch
 (ADA CS-401 EPFL)
 
 ## Abstract
