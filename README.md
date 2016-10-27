@@ -22,39 +22,40 @@ means of a D3 data visualization tool, and will be accessible through a web page
 #### Official bulletins
 [Official website of Swiss parliament - Official bulletins](https://www.parlament.ch/en/ratsbetrieb/suche-amtliches-bulletin)
 
-Type of Procedure:
-- Question hour
-- Canton Initiative
-- Parliament Initiative
-- Interpellation
-- Motion
-- Federal Council Object
-- Parliament Object
-- Postulate
-- Petition
-- Question 
-- Urgent Question
 
-Each procedure can go though different debate (**first look** and **each one to be precised !**):
-- Advice (Rat)
-  - First Advice
-  - Second Advice
-- Differences (Differenzen)
-  - Main debate
-- Continuation (Fortsetzung)
-  - Delayed debate
-- Vote (Abstimmung)
+Type of Procedure:        |
+---------------------------
+Question hour             |
+Canton Initiative         |
+Parliament Initiative     |
+Interpellation            |
+Motion                    |
+Federal Council Object    |
+Parliament Object         |
+Postulate                 |
+Petition                  |
+Question                  |
+Urgent Question           |
 
-Official bulletins contains:
-- Subject
-- Date
-- Kind of parliamentary chamber
-  - Council of States (46 deputies: cantons-equitable)
-  - National Council (200 deputies: proportional to canton population)
-  - United Federal Assembly (both unified)
-- Course of Debate
-  - List of speakers (+ canton and political party)
-- Full speeches of all speakers
+(**first look** and **each one to be precised !**)
+
+Each procedure can go though different debate:                  | details
+----------------------------------------------------------------| ----------------------------------------------------------
+Advice (Rat)                | First Advice
+-                           | Second Advice
+Differences (Differenzen)   | Main debate
+Continuation (Fortsetzung)  | Delayed debate
+Vote (Abstimmung)           |
+
+Official bulletins contains:                      | details
+--------------------------------------------------|--------------------------------
+Subject                                           |
+Date                                              |
+Kind of parliamentary chamber                     | Council of States (46 deputies: cantons-equitable) 
+                                                  | National Council (200 deputies: proportional to canton population)
+                                                  | United Federal Assembly (both unified)
+Course of Debate                                  | List of speakers (+ canton and political party)                               
+Full speeches of all speakers                     |
 
 #### Session briefings
 [Official website of Swiss parliament - Session briefings](https://www.parlament.ch/en/ratsbetrieb/sessions/overview-briefings)
@@ -95,10 +96,17 @@ We will use NLP tools on speeches in order to extract thematic.
 
 The final product will take the form of an online web site presenting different interactive visualization of this data. This web site will be hosted on github. It's interface will use D3 tool to provide interactive visualization.
 
-Visitors will be able to see the evolution of frequencies of specific themes in chronologic order, or at the opposite to look at their  importance in one session. Visitors will be able to focus on one speaker or one political party to see their predilection subject and their evolution in time.
+Visitors will be able to see the evolution of frequencies of specific themes in chronologic order, or at the opposite to look at their  importance in one session. Visitors will be able to focus on one speaker or one political party to see their predilection subjects and their evolution in time.
 
 ## Timeplan
 
-
+  - **November 6th, 2016**: Start of the project
+  - **November 13th, 2016**: Data scraping and parsing of a first usable dataset
+  - **November 27th, 2016**: Content extraction of the official bulletins (speaker, theme, ...)
+  - **December 11th, 2016**: First interactive data visualization (local hosted)
+  - **Mid-December, 2016**: Checkpoint
+  - **January 1st, 2017**: Growing of the database
+  - **January 15th, 2017**: Web site design for user-friendly visualization
+  - **January 31th, 2017**: Final deadline
 
 
