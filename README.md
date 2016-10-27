@@ -51,7 +51,7 @@ Official bulletins contains:                      |     *details*
 --------------------------------------------------|--------------------------------
 Subject                                           |
 Date                                              |
-Kind of parliamentary chamber                     | *Council of States (46 deputies: cantons-equitable) *
+Kind of parliamentary chamber                     | *Council of States (46 deputies: cantons-equitable)*
                                                   | *National Council (200 deputies: proportional to canton population)*
                                                   | *United Federal Assembly (both unified)*
 Course of Debate                                  | *List of speakers (+ canton and political party)*                       
