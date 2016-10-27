@@ -19,7 +19,7 @@ means of a D3 data visualization tool, and will be accessible through a web page
 
 ## Data description
 
-#### Official bulletins
+### Official bulletins
 [Official website of Swiss parliament - Official bulletins](https://www.parlament.ch/en/ratsbetrieb/suche-amtliches-bulletin)
 
 
@@ -39,25 +39,25 @@ Urgent Question           |
 
 (**first look** and **each one to be precised !**)
 
-Each procedure can go though different debate:                  | details
+Each procedure can go though different debate:                  |     *details*
 ----------------------------------------------------------------| ----------------------------------------------------------
-Advice (Rat)                | First Advice
--                           | Second Advice
-Differences (Differenzen)   | Main debate
-Continuation (Fortsetzung)  | Delayed debate
+Advice (Rat)                | *First Advice*
+                            | *Second Advice*
+Differences (Differenzen)   | *Main debate*
+Continuation (Fortsetzung)  | *Delayed debate*
 Vote (Abstimmung)           |
 
-Official bulletins contains:                      | details
+Official bulletins contains:                      |     *details*
 --------------------------------------------------|--------------------------------
 Subject                                           |
 Date                                              |
-Kind of parliamentary chamber                     | Council of States (46 deputies: cantons-equitable) 
-                                                  | National Council (200 deputies: proportional to canton population)
-                                                  | United Federal Assembly (both unified)
-Course of Debate                                  | List of speakers (+ canton and political party)                               
+Kind of parliamentary chamber                     | *Council of States (46 deputies: cantons-equitable) *
+                                                  | *National Council (200 deputies: proportional to canton population)*
+                                                  | *United Federal Assembly (both unified)*
+Course of Debate                                  | *List of speakers (+ canton and political party)*                       
 Full speeches of all speakers                     |
 
-#### Session briefings
+### Session briefings
 [Official website of Swiss parliament - Session briefings](https://www.parlament.ch/en/ratsbetrieb/sessions/overview-briefings)
 
 Must be evaluated if relevant
