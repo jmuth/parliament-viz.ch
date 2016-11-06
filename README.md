@@ -3,6 +3,20 @@
 # parliament-viz.ch
 (ADA CS-401 EPFL)
 
+## Teams
+
+This project will be conducted by two teams. For the moment, two github repositories exist (One for each team). But we will merge them together.
+
+Team for the visualization (Github repository: this one):
+- Joachim Muth
+- Jonas Racine
+- Gael Lederrey
+
+Team for the Machine Learning/Predictions (Github repository: [ada-parliament-ML](https://github.com/thom056/ada-parliament-ML)):
+- Paul Rolland
+- Thomas Sanchez
+- Martin Barry
+
 ## Abstract
 
 > The Freedom of Information Act came into force on 1 July 2006. It is intended to promote transparency with 
