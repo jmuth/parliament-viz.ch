@@ -10,15 +10,16 @@
 > official documents produced after 1 July 2006.
 >- [Swiss Parliament Website](https://www.parlament.ch/en/services/freedom-of-information-act)
 
-The motivation of this project comes from the gulf existing between political world and citizens. Even if all information
-is freely accessible on the official website, they represent a substantial number of papers and are hard to understand. Grabbing 
+The motivation for this project comes from the gulf existing between the political world and citizens. Even though all the information
+is freely accessible on the official website of the Swiss Parliament, it amounts to a substantial number of papers and is hard to understand. Grabbing 
 all the official 
-bulletins produced during national assembly, we will provide a clear and understandable summary of what are the main subjects 
-discussed during each session, who are the speakers and with which party does he work. This summary will be presented by the 
-means of a D3 data visualization tool, and will be accessible through a web page.
+bulletins produced during national assemblies, we will provide a clear and understandable summary of what main subjects are being
+discussed during each session, who are the speakers and which party are they affiliated with. This summary will be presented as a D3 data visualization tool, and will be accessible through a web page.
 
 ## Data description
-The whole data schema is accessible thought [metadata web page](https://ws.parlament.ch/odata.svc/$metadata).
+The whole data schema is accessible through [metadata web page](https://ws.parlament.ch/odata.svc/$metadata).
+
+*This is a first look at the data, and will become far more precise as we work through it.*
 
 ### Official bulletins
 
@@ -41,7 +42,6 @@ Petition                  |
 Question                  |
 Urgent Question           |
 
-(**first look** and **each one to be precised !**)
 
 Each procedure can go though different debate:                  |     *details*
 ----------------------------------------------------------------| ----------------------------------------------------------
@@ -64,9 +64,7 @@ Full speeches of all speakers                     |
 ### Session briefings
 [Official website of Swiss parliament - Session briefings](https://www.parlament.ch/en/ratsbetrieb/sessions/overview-briefings)
 
-Must be evaluated if relevant
-
-Offer a summary of all objects debated during parliamentary sessions in PDF. Could be a good start point to create a frame of
+The briefings are PDF summaries of all objects debated during parliamentary sessions. Could be a good starting point to create a frame of
 our project.
 
 
@@ -84,20 +82,20 @@ by translating them into English.
 
 #### Licences
 [Open Data / Web services statement of Parliament website](https://www.parlament.ch/en/services/open-data-webservices)
-The provided information is free to be used by the user, under reasonable condition (no alterations, source indicated, 
-date of download indicated)
+The provided information can be freely used, under reasonable conditions (no alterations, source indicated, 
+date of download indicated).
 
 #### Data collecting
-Data are available via API [here](https://ws.parlament.ch/odata.svc/$metadata)
+The data is available via API [here](https://ws.parlament.ch/odata.svc/$metadata)
 
 #### Theme classification
 Official bulletins don't contain clear *topic* attribute. The names of debated object do not always state clearly what they cover.
-We will use NLP tools on speeches in order to extract thematic.
+We will use NLP tools on speeches in order to extract their theme.
 
 #### Visualization
-The objective of the visualization is to show the importance of the different topic discussed in the parliament. To accomplish that, it must merge different points of view: frequency of the topic, time evolution, importance compared to other subjects, diversity of speakers participating in the topic.
+The objective of the visualization is to show the importance of the different topics discussed in the parliament. To accomplish that, it must merge different points of view: frequency of the topic, evolution over time, importance compared to other subjects, diversity of speakers participating in the topic.
 
-A big part of the project will be spent on how visualizing all these parameters. 
+A big part of the project will be spent on how to visualize all these parameters. 
 
 Source of inspiration : [legex timeline](http://www.legex.org/timeline/index.html#legislation=all&chamber=all&party=all&committee=all&majority=all&gender=all&state=all&outcomes=all&topics=all&view=total&zoomed=false&graphbar=false&relative=false)
 
@@ -105,10 +103,10 @@ Source of inspiration : [legex timeline](http://www.legex.org/timeline/index.htm
 The website will be deployed on [GitHub Pages](https://pages.github.com) and accessible through EPFL domain name.
 
 #### Automation task
-The task of grabbing, parsing, sorting and adding the data to our database (i.e. to our website since we will use D3) will be completely automatized to allow future automatic update each time a parliamentary session opens.
+The task of grabbing, parsing, sorting and adding the data to our database (i.e. to our website since we will use D3) will be completely automated to allow future automatic updates each time a parliamentary session opens.
 
 #### Data-Driven Documents
-The D3 javaScript library will allow us to design clean and interactive visualization. [D3 website](https://d3js.org)
+The D3 javaScript library will allow us to design a clean and interactive visualization. [D3 website](https://d3js.org)
 
 
 
@@ -116,9 +114,9 @@ The D3 javaScript library will allow us to design clean and interactive visualiz
 
 ## Deliverables 
 
-The final product will take the form of an online website presenting different interactive visualization of this data. This website will be hosted on github. It's interface will use D3 tool to provide interactive visualization.
+The final product will take the form of an online website presenting different interactive visualization of Swiss Parliament data. This website will be hosted on github. These interactive visualizations will be built with the d3.js library
 
-Visitors will be able to see the evolution of frequencies of specific themes in chronologic order, or at the opposite to look at their  importance in one session. Visitors will be able to focus on one speaker or one political party to see their predilection subjects and their evolution in time.
+Visitors will be able to see the evolution of frequencies of specific themes in chronologic order. They will also be able to focus on the importance of one theme within each session. Visitors will be able to focus on one speaker or one political party to see their preferred subjects and their evolution in time.
 
 ## Timeplan
 
