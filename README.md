@@ -3,19 +3,11 @@
 # parliament-viz.ch
 (ADA CS-401 EPFL)
 
-## Teams
+## Similar Project
 
-This project will be conducted by two teams. For the moment, two github repositories exist (One for each team). But we will merge them together.
+A project about predictions on the same data exists [here](https://github.com/thom056/ada-parliament-ML). 
 
-Team for the visualization (Github repository: this one):
-- Joachim Muth
-- Jonas Racine
-- Gael Lederrey
-
-Team for the Machine Learning/Predictions (Github repository: [ada-parliament-ML](https://github.com/thom056/ada-parliament-ML)):
-- Paul Rolland
-- Thomas Sanchez
-- Martin Barry
+It is possible that, in the future, the two teams will work together. 
 
 ## Abstract
 
