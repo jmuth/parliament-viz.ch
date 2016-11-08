@@ -66,28 +66,8 @@ def person():
     Remove useless field
     :return: (pandas.data_frame) Person
     """
-    limit_api = 1000
-    data_frames = []
-    i = 0
-    time_out = 0
-    while True:
-        url_persons = "https://ws.parlament.ch/odata.svc/Person?&$filter=Language%20eq%20'FR'%20and%20ID%20ge%20" \
-                      + str(i) \
-                      + "%20and%20ID%20lt%20" + str(i + limit_api)
 
-        df_person = get_and_parse(url_persons)
-
-        # stop when we reach the end of the data
-        # or after 10 iteration to avoid swiss police to knock at our door
-        if df_person.shape == (0, 0) or time_out > 10:
-            break
-
-        data_frames.append(df_person)
-        i += limit_api
-        time_out += 1
-
-    df_person = pd.concat(data_frames)
-
+    df_person = get_big_table('Person')
     # Drop useless columns (for council)
     # df_person = df_person.drop('BirthPlace_Canton', axis=1)
     # df_person = df_person.drop('BirthPlace_City', axis=1)
@@ -96,3 +76,46 @@ def person():
     df_person.to_csv('data/person.csv')
 
     return df_person
+
+
+def member_council():
+    table_name = 'MemberCouncil'
+    df_member_council = get_big_table(table_name)
+    df_member_council.to_csv('data/' + table_name.lower() + '.csv')
+    
+    return df_member_council
+
+
+def get_big_table(table_name):
+    # url
+    base = "https://ws.parlament.ch/odata.svc/"
+    table_name += "?"
+    language = "$filter=Language%20eq%20'FR'"
+    id_from = "ID%20ge%20"
+    id_to = "%20and%20ID%20lt%20"
+
+    # loop parameters
+    limit_api = 1000
+    data_frames = []
+    i = 0
+    time_out = 0
+    while True:
+        url = base + table_name + language + '%20and%20' + id_from + str(i) + id_to + str(i + limit_api)
+
+        df = get_and_parse(url)
+
+        # stop when we reach the end of the data
+        if df.shape == (0, 0):
+            break
+
+        # stop after 10 iteration to avoid swiss police to knock at our door
+        if time_out > 10:
+            print("Loader timed out after ", time_out, " iterations. Data frame IDs are greater than ", i)
+            break
+
+        data_frames.append(df)
+        i += limit_api
+        time_out += 1
+
+    df = pd.concat(data_frames)
+    return df
