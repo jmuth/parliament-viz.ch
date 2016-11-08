@@ -14,7 +14,12 @@ import xml.etree.ElementTree as ET
 
 
 # Function to parse the data
-def parsing_data(base_url):
+def get_and_parse(base_url):
+    """
+    Send GET request to parlament.ch and parse the return XML file to a pandas.data_frame
+    :param base_url: (str) GET url request
+    :return: (pandas.data_frame) parsed XML
+    """
     print(base_url)
     with urllib.request.urlopen(base_url) as url:
         s = url.read()
@@ -36,19 +41,31 @@ def parsing_data(base_url):
     return data
 
 
-def parties():
+def party():
+    """
+    Load the Party table from parlament.ch
+    Remove useless column
+    :return: (pandas.data_frame) Party
+    """
     # Url to get all the party
     url_party = "https://ws.parlament.ch/odata.svc/Party?$filter=Language%20eq%20'FR'"
-    df_party = parsing_data(url_party)
+    df_party = get_and_parse(url_party)
+
     # Drop the Language Column
     df_party = df_party.drop('Language', axis=1)
 
-    df_party.to_csv('data/parties.csv')
+    # Write file
+    df_party.to_csv('data/party.csv')
 
     return df_party
 
 
-def persons():
+def person():
+    """
+    Load the Person table from parlament.ch
+    Remove useless field
+    :return: (pandas.data_frame) Person
+    """
     limit_api = 1000
     data_frames = []
     i = 0
@@ -58,16 +75,24 @@ def persons():
                       + str(i) \
                       + "%20and%20ID%20lt%20" + str(i + limit_api)
 
-        df_persons = parsing_data(url_persons)
+        df_person = get_and_parse(url_persons)
 
         # stop when we reach the end of the data
         # or after 10 iteration to avoid swiss police to knock at our door
-        if df_persons.shape == (0, 0) or time_out > 10:
+        if df_person.shape == (0, 0) or time_out > 10:
             break
 
-        data_frames.append(df_persons)
+        data_frames.append(df_person)
         i += limit_api
         time_out += 1
 
-    return pd.concat(data_frames)
+    df_person = pd.concat(data_frames)
 
+    # Drop useless columns (for council)
+    # df_person = df_person.drop('BirthPlace_Canton', axis=1)
+    # df_person = df_person.drop('BirthPlace_City', axis=1)
+
+    # write file
+    df_person.to_csv('data/person.csv')
+
+    return df_person
