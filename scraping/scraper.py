@@ -20,7 +20,10 @@ class Scraper:
                        'person': 'Person',
                        'member_council': 'MemberCouncil',
                        'council': 'Council'}
-        self.base_url = "https://ws.parlament.ch/odata.svc/"
+        self.url_base = "https://ws.parlament.ch/odata.svc/"
+        self.url_count = "$count"
+        self.url_lang_filter = "$filter=Language%20eq%20'FR'"
+        self.folder = "data"
 
     # Function to parse the data
     def get_and_parse(self, url):
@@ -36,7 +39,7 @@ class Scraper:
 
         dict_ = {}
         base = "{http://www.w3.org/2005/Atom}"
-        #base = self.base_url
+        # base = self.base_url
         for child in root.iter(base + 'entry'):
             for children in child.iter(base + 'content'):
                 for properties in children:
@@ -49,6 +52,17 @@ class Scraper:
                             dict_[s[1]] = [subject.text]
         data = pd.DataFrame(dict_)
         return data
+    
+
+    def get(self, table_name):
+        table_size = self.count(table_name)
+        if table_size > 900:
+            return self.get_big_table(table_name)
+        else:
+            return self.get_small_table(table_name)
+
+    def write_file(self, table, table_name):
+        table.to_csv(self.folder + '/' + table_name + '.csv')
 
     def party(self):
         """
@@ -57,14 +71,14 @@ class Scraper:
         :return: (pandas.data_frame) Party
         """
         # Url to get all the party
-        url_party = "https://ws.parlament.ch/odata.svc/Party?$filter=Language%20eq%20'FR'"
-        df_party = self.get_and_parse(url_party)
+        table_name = self.tables['party']
+        # url_party = "https://ws.parlament.ch/odata.svc/Party?$filter=Language%20eq%20'FR'"
+        df_party = self.get(table_name)
 
         # Drop the Language Column
         df_party = df_party.drop('Language', axis=1)
 
-        # Write file
-        df_party.to_csv('data/party.csv')
+        self.write_file(df_party, table_name)
 
         return df_party
 
@@ -96,6 +110,14 @@ class Scraper:
         url = "https://ws.parlament.ch/odata.svc/Council?$top=1000&$filter=Language eq 'FR'"
         return self.get_and_parse(url)
 
+    def count(self, table_name):
+        url = self.url_base + table_name + "/$count?$filter=Language%20eq%20'FR'"
+        with urllib.request.urlopen(url) as response:
+            n = response.read()
+        # get the number from the bytes
+        n = int(str(n).split("'")[1])
+        return n
+
     def get_big_table(self, table_name):
         """
         Loop URL request on table by step of 1000 id's and load data until reaches the end
@@ -104,9 +126,8 @@ class Scraper:
         :return: (pandas.data_frame) table
         """
         # url
-        base = "https://ws.parlament.ch/odata.svc/"
-        table_name += "?"
-        language = "$filter=Language%20eq%20'FR'"
+        base = self.url_base
+        language = self.url_lang_filter
         id_from = "ID%20ge%20"
         id_to = "%20and%20ID%20lt%20"
 
@@ -116,7 +137,7 @@ class Scraper:
         i = 0
         time_out = 0
         while True:
-            url = base + table_name + language + '%20and%20' + id_from + str(i) + id_to + str(i + limit_api)
+            url = base + table_name + '?' + language + '%20and%20' + id_from + str(i) + id_to + str(i + limit_api)
 
             df = self.get_and_parse(url)
 
@@ -136,10 +157,6 @@ class Scraper:
         df = pd.concat(data_frames)
         return df
 
-    def count(self, table_name):
-        url = self.base_url + table_name + "/$count?$filter=Language%20eq%20'FR'"
-        with urllib.request.urlopen(url) as response:
-            n = response.read()
-        # get the number from the bytes
-        n = int(str(n).split("'")[1])
-        return n
+    def get_small_table(self, table_name):
+        url = self.url_base + table_name + '?' + self.url_lang_filter
+        return self.get_and_parse(url)
