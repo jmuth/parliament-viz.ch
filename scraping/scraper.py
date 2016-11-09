@@ -4,12 +4,13 @@ import pandas as pd
 import urllib
 import xml.etree.ElementTree as ET
 
+
 # Copyright © 2016 Joachim Muth <joachim.henri.muth@gmail.com>
 #
 # Distributed under terms of the MIT license.
 
 
-class Loader:
+class Scraper:
     """
     Class containing all the method to properly download data from parlament.ch
     """
@@ -22,19 +23,20 @@ class Loader:
         self.base_url = "https://ws.parlament.ch/odata.svc/"
 
     # Function to parse the data
-    def get_and_parse(base_url):
+    def get_and_parse(self, url):
         """
         Send GET request to parlament.ch and parse the return XML file to a pandas.data_frame
-        :param base_url: (str) GET url request
+        :param url: (str) GET url request
         :return: (pandas.data_frame) parsed XML
         """
-        print(base_url)
-        with urllib.request.urlopen(base_url) as url:
+        print("GET:", url)
+        with urllib.request.urlopen(url) as url:
             s = url.read()
         root = ET.fromstring(s)
 
         dict_ = {}
         base = "{http://www.w3.org/2005/Atom}"
+        #base = self.base_url
         for child in root.iter(base + 'entry'):
             for children in child.iter(base + 'content'):
                 for properties in children:
@@ -48,8 +50,7 @@ class Loader:
         data = pd.DataFrame(dict_)
         return data
 
-
-    def party():
+    def party(self):
         """
         Load the Party table from parlament.ch
         Remove useless column
@@ -57,7 +58,7 @@ class Loader:
         """
         # Url to get all the party
         url_party = "https://ws.parlament.ch/odata.svc/Party?$filter=Language%20eq%20'FR'"
-        df_party = get_and_parse(url_party)
+        df_party = self.get_and_parse(url_party)
 
         # Drop the Language Column
         df_party = df_party.drop('Language', axis=1)
@@ -67,15 +68,14 @@ class Loader:
 
         return df_party
 
-
-    def person():
+    def person(self):
         """
         Load the Person table from parlament.ch
         Remove useless field
         :return: (pandas.data_frame) Person
         """
 
-        df_person = get_big_table('Person')
+        df_person = self.get_big_table('Person')
         # Drop useless columns (for council)
         # df_person = df_person.drop('BirthPlace_Canton', axis=1)
         # df_person = df_person.drop('BirthPlace_City', axis=1)
@@ -85,21 +85,18 @@ class Loader:
 
         return df_person
 
-
-    def member_council():
+    def member_council(self):
         table_name = 'MemberCouncil'
-        df_member_council = get_big_table(table_name)
+        df_member_council = self.get_big_table(table_name)
         df_member_council.to_csv('data/' + table_name.lower() + '.csv')
 
         return df_member_council
 
-
-    def council():
+    def council(self):
         url = "https://ws.parlament.ch/odata.svc/Council?$top=1000&$filter=Language eq 'FR'"
-        return get_and_parse(url)
+        return self.get_and_parse(url)
 
-
-    def get_big_table(table_name):
+    def get_big_table(self, table_name):
         """
         Loop URL request on table by step of 1000 id's and load data until reaches the end
         Time Out after 10 iterations
@@ -121,7 +118,7 @@ class Loader:
         while True:
             url = base + table_name + language + '%20and%20' + id_from + str(i) + id_to + str(i + limit_api)
 
-            df = get_and_parse(url)
+            df = self.get_and_parse(url)
 
             # stop when we reach the end of the data
             if df.shape == (0, 0):
@@ -139,8 +136,8 @@ class Loader:
         df = pd.concat(data_frames)
         return df
 
-    def count(table_name):
-        url = "https://ws.parlament.ch/odata.svc/" + table_name + "/$count?$filter=Language%20eq%20'FR'"
+    def count(self, table_name):
+        url = self.base_url + table_name + "/$count?$filter=Language%20eq%20'FR'"
         with urllib.request.urlopen(url) as response:
             n = response.read()
         # get the number from the bytes
