@@ -92,4 +92,4 @@ ENV/
 .idea/
 
 # Remove data
-scraping/data/*.csv
+scraping/data/*.*
