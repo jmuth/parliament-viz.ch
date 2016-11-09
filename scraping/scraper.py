@@ -126,7 +126,7 @@ class Scraper:
             i += 1
 
         # concat all downloaded tables
-        df = pd.concat(data_frames)
+        df = pd.concat(data_frames, ignore_index=True)
 
         # check if we really download the whole table
         self._inner_check_size(df, table_name)
