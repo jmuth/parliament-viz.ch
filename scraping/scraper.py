@@ -17,7 +17,7 @@ class Scraper:
     scraper.get(table_name): get the table, write it in csv file, return a pandas.data_frame
     """
 
-    def __init__(self, limit=100000, language='FR'):
+    def __init__(self, time_out=10, language='FR'):
         self.tables = {'party': 'Party',
                        'person': 'Person',
                        'member_council': 'MemberCouncil',
@@ -26,7 +26,7 @@ class Scraper:
         self.url_count = "$count"
         self.url_lang_filter = "$filter=Language%20eq%20'" + language + "'"
         self.folder = "data"
-        self.limit = limit
+        self.time_out = time_out
 
     def get(self, table_name):
         """
@@ -83,8 +83,6 @@ class Scraper:
         data = pd.DataFrame(dict_)
         return data
 
-
-
     def __inner_write_file(self, table, table_name):
         """ Write table in csv file inside self.folder / table_name"""
         table.to_csv(self.folder + '/' + table_name + '.csv')
@@ -99,16 +97,17 @@ class Scraper:
         # url
         base = self.url_base
         language = self.url_lang_filter
-        id_from = "ID%20ge%20"
-        id_to = "%20and%20ID%20lt%20"
 
         # loop parameters
         limit_api = 1000
         data_frames = []
         i = 0
-        time_out = 0
+        top = 1000
+        skip = 0
         while True:
-            url = base + table_name + '?' + language + '%20and%20' + id_from + str(i) + id_to + str(i + limit_api)
+            url = base + table_name + '?' + "$top=" + str(top) +\
+                  '&' + language + \
+                  '&' + "$skip=" + str(skip)
 
             df = self._inner_get_and_parse(url)
 
@@ -117,15 +116,21 @@ class Scraper:
                 break
 
             # stop after 10 iteration to avoid swiss police to knock at our door
-            if time_out > 10:
-                print("Loader timed out after ", time_out, " iterations. Data frame IDs are greater than ", i)
+            if i > self.time_out:
+                print("Loader timed out after ", i, " iterations. Data frame IDs are greater than ", top)
                 break
 
             data_frames.append(df)
-            i += limit_api
-            time_out += 1
+            top += limit_api
+            skip += limit_api
+            i += 1
 
+        # concat all downloaded tables
         df = pd.concat(data_frames)
+
+        # check if we really download the whole table
+        self._inner_check_size(df, table_name)
+
         return df
 
     def _inner_get_small_table(self, table_name):
@@ -135,4 +140,13 @@ class Scraper:
         :return:
         """
         url = self.url_base + table_name + '?' + self.url_lang_filter
-        return self._inner_get_and_parse(url)
+        df = self._inner_get_and_parse(url)
+        self._inner_check_size(df, table_name)
+        return df
+
+    def _inner_check_size(self, df, table_name):
+        expected_size = self.count(table_name)
+        if df.shape[0] != expected_size:
+            print("[ERROR] in scraping table", table_name, "expected size of", expected_size, "but is", df.shape[0])
+        else:
+            print("[OK] table " + table_name + " correctly scraped, df.shape = ", df.shape[0], "as expected")
