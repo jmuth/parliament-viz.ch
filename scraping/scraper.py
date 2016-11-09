@@ -3,7 +3,8 @@
 import pandas as pd
 import urllib
 import xml.etree.ElementTree as ET
-
+import io
+import itertools as IT
 
 # Copyright © 2016 Joachim Muth <joachim.henri.muth@gmail.com>
 #
@@ -27,6 +28,7 @@ class Scraper:
         self.url_lang_filter = "$filter=Language%20eq%20'" + language + "'"
         self.folder = "data"
         self.time_out = time_out
+        self.limit_api = 1000
 
     def get(self, table_name):
         """
@@ -35,8 +37,10 @@ class Scraper:
         :return (pandas.data_frame): table
         """
         table_size = self.count(table_name)
-        if table_size > 900:
-            df = self._inner_get_big_table(table_name)
+        if table_size > 10000:
+            df = self._inner_get_big_table_ids(table_name)
+        elif table_size > 900:
+            df = self._inner_get_big_table_skip(table_name)
         else:
             df = self._inner_get_small_table(table_name)
 
@@ -65,7 +69,8 @@ class Scraper:
         print("GET:", url)
         with urllib.request.urlopen(url) as url:
             s = url.read()
-        root = ET.fromstring(s)
+        #root = ET.fromstring(s)
+        root = self.error_handling_xmlfromstring(s)
 
         dict_ = {}
         base = "{http://www.w3.org/2005/Atom}"
@@ -83,14 +88,26 @@ class Scraper:
         data = pd.DataFrame(dict_)
         return data
 
+    def error_handling_xmlfromstring(self, content):
+        """ Print XML if error while parsing (mainly due to server API timeout)"""
+        try:
+            tree = ET.fromstring(content)
+        except ET.ParseError as err:
+            lineno, column = err.position
+            line = next(IT.islice(io.BytesIO(content), lineno))
+            caret = '{:=>{}}'.format('^', column)
+            err.msg = '{}\n{}\n{}'.format(err, line, caret)
+            raise
+        return tree
+
     def __inner_write_file(self, table, table_name):
         """ Write table in csv file inside self.folder / table_name"""
         table.to_csv(self.folder + '/' + table_name + '.csv')
 
-    def _inner_get_big_table(self, table_name):
+    def _inner_get_big_table_skip(self, table_name):
         """
-        Loop URL request on table by step of 1000 id's and load data until reaches the end
-        Time Out after 10 iterations
+        Loop URL request on table by step of 1000 and load data until reaches the end
+        Time Out after self.time_out iterations
         :param table_name: Name of the wished table
         :return: (pandas.data_frame) table
         """
@@ -99,7 +116,7 @@ class Scraper:
         language = self.url_lang_filter
 
         # loop parameters
-        limit_api = 1000
+        limit_api = self.limit_api
         data_frames = []
         i = 0
         top = 1000
@@ -121,7 +138,7 @@ class Scraper:
                 break
 
             data_frames.append(df)
-            top += limit_api
+            # top += limit_api
             skip += limit_api
             i += 1
 
@@ -132,6 +149,54 @@ class Scraper:
         self._inner_check_size(df, table_name)
 
         return df
+
+    def _inner_get_big_table_ids(self, table_name):
+        """
+        "skip" odata attribute leads to time out the parlament.ch server. Here we use id's to get directly intervals of
+        items.
+        Less safe than "skip version, because could stop if a big ID interval is not used (normally not the case)
+        Loop URL request on table by step of 1000 id's and load data until reaches the end
+        Time Out after 10 iterations
+        :param table_name: Name of the wished table
+        :return: (pandas.data_frame) table
+        """
+        # url
+        base = self.url_base
+        language = self.url_lang_filter
+        id_from = "ID%20ge%20"
+        id_to = "%20and%20ID%20lt%20"
+
+        # loop parameters
+        limit_api = self.limit_api
+        data_frames = []
+        id_ = 0
+        i = 0
+        while True:
+            url = base + table_name + '?' + language + '%20and%20' + id_from + str(id_) + id_to + str(id_ + limit_api)
+
+            df = self._inner_get_and_parse(url)
+
+            # stop when we reach the end of the data
+            if df.shape == (0, 0):
+                break
+
+            # stop after 10 iteration to avoid swiss police to knock at our door
+            if i > self.time_out:
+                print("Loader timed out after ", i, " iterations. Data frame IDs are greater than ", id_)
+                break
+
+            data_frames.append(df)
+            id_ += limit_api
+            i += 1
+
+        # concat all downloaded tables
+        df = pd.concat(data_frames, ignore_index=True)
+
+        # check if we really download the whole table
+        self._inner_check_size(df, table_name)
+
+        return df
+
 
     def _inner_get_small_table(self, table_name):
         """
