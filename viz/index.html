@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    .links line {
+        stroke: #999;
+        stroke-opacity: 0.6;
+    }
+
+    .nodes circle {
+        stroke: #fff;
+        stroke-width: 1px;
+        r : 8px;
+    }
+
+</style>
+<svg width="960" height="600"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+    var svg = d3.select("svg"),
+            width = +svg.attr("width"),
+            height = +svg.attr("height");
+
+    var simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function(d) { return d.id; }))
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+    d3.json("data/active.json", function(error, graph) {
+        if (error) throw error;
+
+        var tooltip = d3.select("body")
+                .append("div")
+                .style("position", "absolute")
+                .style("z-index", "10")
+                .style("visibility", "hidden");
+
+        var link = svg.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(graph.links)
+                .enter().append("line")
+                .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+        var node = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("circle")
+                .data(graph.nodes)
+                .enter().append("circle")
+                .attr("r", 5)
+                .attr("fill", function(d) { return colors_parties(d.PartyAbbreviation); })
+                .call(d3.drag()
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended))
+                        .on("mouseover", emphasis)
+                        .on("mouseout", back_to_normal);
+
+        //node.append("title")
+        //        .text(function(d) { return d.FirstName + " " + d.LastName + ", " + d.PartyAbbreviation; });
+
+        simulation
+                .nodes(graph.nodes)
+                .on("tick", ticked);
+
+        simulation.force("link")
+                .links(graph.links);
+
+        function ticked() {
+            link
+                    .attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+            node
+                    .attr("cx", function(d) { return d.x; })
+                    .attr("cy", function(d) { return d.y; });
+        }
+
+        function emphasis(d) {
+            d3.select(this).style("r", 25);
+            tooltip.html(
+                    "<div><b>Name: </b>" + d.FirstName + " " + d.LastName + "</div>" +
+                    "<div><b>Party: </b>" + d.PartyName + "(" + d.PartyAbbreviation + ")</div>" +
+                    "<div><b>Council: </b>" + d.CouncilName + "</div>" +
+                    "<div><b>Birthday: </b>" + d.DateOfBirth + "</div>"
+            )
+            return tooltip.style("visibility", "visible");
+        }
+
+        function back_to_normal(d) {
+            d3.select(this).style("r", 8);
+            return tooltip.style("visibility", "hidden");
+        }
+
+    });
+
+    function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    function colors_parties(abbrev) {
+         if (abbrev == 'PLD') {
+            return '#3131BD'
+        } else if (abbrev == 'UDC') {
+             return '#088A4B'
+         } else if (abbrev == 'PSS') {
+             return '#FA1360'
+         } else if (abbrev == 'PDC') {
+             return '#FE9A2E'
+         } else if (abbrev == 'PLR') {
+             return '#0174DF'
+         } else if (abbrev == 'PES') {
+             return '#01DF01'
+         } else if (abbrev == 'pvl') {
+             return '#9AFE2E'
+         } else if (abbrev == 'PBD') {
+             return '#FFFF00'
+         } else if (abbrev == 'PEV') {
+             return '#FFD735'
+         } else if (abbrev == 'Lega') {
+             return '#0B3861'
+         } else if (abbrev == 'csp-ow') {
+             return '#E2563B'
+         } else if (abbrev == '-') {
+             return '#CCCCCC'
+         } else if (abbrev == 'MCG') {
+             return '#FECC01'
+         } else if (abbrev == 'BastA') {
+             return '#DFDE00'
+         }  else if (abbrev == 'PdT') {
+             return '#FF0000'
+         }
+    }
+
+</script>
