@@ -12,7 +12,9 @@ import xml.etree.ElementTree as ET
 
 class Scraper:
     """
-    Class containing all the method to properly download data from parlament.ch
+    Scraper for parlament.ch
+
+    scraper.get(table_name): get the table, write it in csv file, return a pandas.data_frame
     """
 
     def __init__(self):
@@ -52,65 +54,32 @@ class Scraper:
                             dict_[s[1]] = [subject.text]
         data = pd.DataFrame(dict_)
         return data
-    
 
     def get(self, table_name):
+        """
+        Load the table_name from parlament.ch
+        Write a csv file in self.folder / table_name
+        :return (pandas.data_frame): table
+        """
         table_size = self.count(table_name)
         if table_size > 900:
-            return self.get_big_table(table_name)
+            df = self.get_big_table(table_name)
         else:
-            return self.get_small_table(table_name)
+            df = self.get_small_table(table_name)
+
+        self.write_file(df, table_name)
+        return df
 
     def write_file(self, table, table_name):
+        """ Write table in csv file inside self.folder / table_name"""
         table.to_csv(self.folder + '/' + table_name + '.csv')
 
-    def party(self):
-        """
-        Load the Party table from parlament.ch
-        Remove useless column
-        :return: (pandas.data_frame) Party
-        """
-        # Url to get all the party
-        table_name = self.tables['party']
-        # url_party = "https://ws.parlament.ch/odata.svc/Party?$filter=Language%20eq%20'FR'"
-        df_party = self.get(table_name)
-
-        # Drop the Language Column
-        df_party = df_party.drop('Language', axis=1)
-
-        self.write_file(df_party, table_name)
-
-        return df_party
-
-    def person(self):
-        """
-        Load the Person table from parlament.ch
-        Remove useless field
-        :return: (pandas.data_frame) Person
-        """
-
-        df_person = self.get_big_table('Person')
-        # Drop useless columns (for council)
-        # df_person = df_person.drop('BirthPlace_Canton', axis=1)
-        # df_person = df_person.drop('BirthPlace_City', axis=1)
-
-        # write file
-        df_person.to_csv('data/person.csv')
-
-        return df_person
-
-    def member_council(self):
-        table_name = 'MemberCouncil'
-        df_member_council = self.get_big_table(table_name)
-        df_member_council.to_csv('data/' + table_name.lower() + '.csv')
-
-        return df_member_council
-
-    def council(self):
-        url = "https://ws.parlament.ch/odata.svc/Council?$top=1000&$filter=Language eq 'FR'"
-        return self.get_and_parse(url)
-
     def count(self, table_name):
+        """
+        Count request for parlament.ch server
+        :param table_name:
+        :return: number of entries in table_name
+        """
         url = self.url_base + table_name + "/$count?$filter=Language%20eq%20'FR'"
         with urllib.request.urlopen(url) as response:
             n = response.read()
@@ -158,5 +127,10 @@ class Scraper:
         return df
 
     def get_small_table(self, table_name):
+        """
+        Simple get request with language filer
+        :param table_name:
+        :return:
+        """
         url = self.url_base + table_name + '?' + self.url_lang_filter
         return self.get_and_parse(url)
