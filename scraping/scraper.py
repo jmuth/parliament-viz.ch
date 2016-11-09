@@ -67,7 +67,7 @@ class Scraper:
         with urllib.request.urlopen(url) as url:
             s = url.read()
         #root = ET.fromstring(s)
-        root = self.myfromstring(s)
+        root = self.error_handling_xmlfromstring(s)
 
         dict_ = {}
         base = "{http://www.w3.org/2005/Atom}"
@@ -85,8 +85,8 @@ class Scraper:
         data = pd.DataFrame(dict_)
         return data
 
-    def myfromstring(self, content):
-        """ Try to catch the problem !"""
+    def error_handling_xmlfromstring(self, content):
+        """ Print XML if error while parsing (mainly due to server API timeout)"""
         try:
             tree = ET.fromstring(content)
         except ET.ParseError as err:
