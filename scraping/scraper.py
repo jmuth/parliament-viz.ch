@@ -105,7 +105,7 @@ class Scraper:
         top = 1000
         skip = 0
         while True:
-            url = base + table_name + '?' + "$top=" + str(top) +\
+            url = base + table_name + '?' + "$top=" + str(top) + \
                   '&' + language + \
                   '&' + "$skip=" + str(skip)
 
