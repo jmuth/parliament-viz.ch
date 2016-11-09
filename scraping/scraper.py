@@ -3,7 +3,8 @@
 import pandas as pd
 import urllib
 import xml.etree.ElementTree as ET
-
+import io
+import itertools as IT
 
 # Copyright © 2016 Joachim Muth <joachim.henri.muth@gmail.com>
 #
@@ -65,7 +66,8 @@ class Scraper:
         print("GET:", url)
         with urllib.request.urlopen(url) as url:
             s = url.read()
-        root = ET.fromstring(s)
+        #root = ET.fromstring(s)
+        root = self.myfromstring(s)
 
         dict_ = {}
         base = "{http://www.w3.org/2005/Atom}"
@@ -82,6 +84,18 @@ class Scraper:
                             dict_[s[1]] = [subject.text]
         data = pd.DataFrame(dict_)
         return data
+
+    def myfromstring(self, content):
+        """ Try to catch the problem !"""
+        try:
+            tree = ET.fromstring(content)
+        except ET.ParseError as err:
+            lineno, column = err.position
+            line = next(IT.islice(io.BytesIO(content), lineno))
+            caret = '{:=>{}}'.format('^', column)
+            err.msg = '{}\n{}\n{}'.format(err, line, caret)
+            raise
+        return tree
 
     def __inner_write_file(self, table, table_name):
         """ Write table in csv file inside self.folder / table_name"""
@@ -121,7 +135,7 @@ class Scraper:
                 break
 
             data_frames.append(df)
-            top += limit_api
+            # top += limit_api
             skip += limit_api
             i += 1
 
