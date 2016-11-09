@@ -17,18 +17,46 @@ class Scraper:
     scraper.get(table_name): get the table, write it in csv file, return a pandas.data_frame
     """
 
-    def __init__(self):
+    def __init__(self, limit=100000, language='FR'):
         self.tables = {'party': 'Party',
                        'person': 'Person',
                        'member_council': 'MemberCouncil',
                        'council': 'Council'}
         self.url_base = "https://ws.parlament.ch/odata.svc/"
         self.url_count = "$count"
-        self.url_lang_filter = "$filter=Language%20eq%20'FR'"
+        self.url_lang_filter = "$filter=Language%20eq%20'" + language + "'"
         self.folder = "data"
+        self.limit = limit
 
-    # Function to parse the data
-    def get_and_parse(self, url):
+    def get(self, table_name):
+        """
+        Load the table_name from parlament.ch
+        Write a csv file in self.folder / table_name
+        :return (pandas.data_frame): table
+        """
+        table_size = self.count(table_name)
+        if table_size > 900:
+            df = self._inner_get_big_table(table_name)
+        else:
+            df = self._inner_get_small_table(table_name)
+
+        self.__inner_write_file(df, table_name)
+        return df
+
+    def count(self, table_name):
+        """
+        Count request for parlament.ch server
+        :param table_name:
+        :return: number of entries in table_name
+        """
+        url = self.url_base + table_name + "/$count?$filter=Language%20eq%20'FR'"
+        with urllib.request.urlopen(url) as response:
+            n = response.read()
+        # get the number from the bytes
+        n = int(str(n).split("'")[1])
+        return n
+
+    def _inner_get_and_parse(self, url):
         """
         Send GET request to parlament.ch and parse the return XML file to a pandas.data_frame
         :param url: (str) GET url request
@@ -55,39 +83,13 @@ class Scraper:
         data = pd.DataFrame(dict_)
         return data
 
-    def get(self, table_name):
-        """
-        Load the table_name from parlament.ch
-        Write a csv file in self.folder / table_name
-        :return (pandas.data_frame): table
-        """
-        table_size = self.count(table_name)
-        if table_size > 900:
-            df = self.get_big_table(table_name)
-        else:
-            df = self.get_small_table(table_name)
 
-        self.write_file(df, table_name)
-        return df
 
-    def write_file(self, table, table_name):
+    def __inner_write_file(self, table, table_name):
         """ Write table in csv file inside self.folder / table_name"""
         table.to_csv(self.folder + '/' + table_name + '.csv')
 
-    def count(self, table_name):
-        """
-        Count request for parlament.ch server
-        :param table_name:
-        :return: number of entries in table_name
-        """
-        url = self.url_base + table_name + "/$count?$filter=Language%20eq%20'FR'"
-        with urllib.request.urlopen(url) as response:
-            n = response.read()
-        # get the number from the bytes
-        n = int(str(n).split("'")[1])
-        return n
-
-    def get_big_table(self, table_name):
+    def _inner_get_big_table(self, table_name):
         """
         Loop URL request on table by step of 1000 id's and load data until reaches the end
         Time Out after 10 iterations
@@ -108,7 +110,7 @@ class Scraper:
         while True:
             url = base + table_name + '?' + language + '%20and%20' + id_from + str(i) + id_to + str(i + limit_api)
 
-            df = self.get_and_parse(url)
+            df = self._inner_get_and_parse(url)
 
             # stop when we reach the end of the data
             if df.shape == (0, 0):
@@ -126,11 +128,11 @@ class Scraper:
         df = pd.concat(data_frames)
         return df
 
-    def get_small_table(self, table_name):
+    def _inner_get_small_table(self, table_name):
         """
         Simple get request with language filer
         :param table_name:
         :return:
         """
         url = self.url_base + table_name + '?' + self.url_lang_filter
-        return self.get_and_parse(url)
+        return self._inner_get_and_parse(url)
