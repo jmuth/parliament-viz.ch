@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    .node circle {
+        stroke-width: 2px;
+    }
+
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+    var tooltip = d3.select("body")
+            .append("div")
+            .style("position", "absolute")
+            .style("z-index", "10")
+            .style("visibility", "hidden");
+
+    // Size for the canvas
+    var width= 960,
+        height = 600;
+
+    // Foci
+    var foci = [{x: 150, y: 150}, {x: 500, y: 400}, {x: 700, y: 100}];
+
+    var padding = 1;
+
+    // Read the JSON
+    d3.json("data/active.json", function(error, graph) {
+        do_stuff(graph.nodes);
+    });
+
+    function do_stuff(nodes) {
+
+        for(var i=0; i<nodes.length; i++) {
+            nodes[i].radius = 8;
+        }
+
+        // Create the Canvas
+        var svg = d3.select("body").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+        // Forces
+        var force = d3.layout.force()
+                .nodes(nodes)
+                .links([])
+                .gravity(0)
+                .charge(0)
+                .size([width, height])
+                .on("tick", tick)
+                .start();
+
+        //var drag = force.drag()
+        //        .on("dragstart", dragstart);
+
+        // Create the circles
+        var circle = svg.selectAll("circle")
+                .data(nodes)
+                .enter().append("circle")
+                .attr("r", function(d) { return d.radius;})
+                .style("fill", function(d) { return colors_parties(d.PartyAbbreviation); })
+                .call(force.drag)
+                .on("mouseover", emphasis)
+                .on("mouseout", back_to_normal);
+
+        function tick(e) {
+
+            circle
+                    .each(gravity(.1 * 0.5*e.alpha))
+                    .each(collide(0.5))
+                    .attr("cx", function(d) { return d.x; })
+                    .attr("cy", function(d) { return d.y; });
+        }
+
+        // Resolve collisions between nodes.
+        function collide(alpha) {
+            var quadtree = d3.geom.quadtree(nodes);
+            return function (d) {
+                var r = d.radius + padding,
+                        nx1 = d.x - r,
+                        nx2 = d.x + r,
+                        ny1 = d.y - r,
+                        ny2 = d.y + r;
+                quadtree.visit(function (quad, x1, y1, x2, y2) {
+                    if (quad.point && (quad.point !== d)) {
+                        var x = d.x - quad.point.x,
+                                y = d.y - quad.point.y,
+                                l = Math.sqrt(x * x + y * y),
+                                r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
+                        if (l < r) {
+                            l = (l - r) / l * alpha;
+                            d.x -= x *= l;
+                            d.y -= y *= l;
+                            quad.point.x += x;
+                            quad.point.y += y;
+                        }
+                    }
+                    return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+                });
+            };
+        }
+    }
+
+    function colors_parties(abbrev) {
+        if (abbrev == 'PLD') {
+            return '#3131BD'
+        } else if (abbrev == 'UDC') {
+            return '#088A4B'
+        } else if (abbrev == 'PSS') {
+            return '#FA1360'
+        } else if (abbrev == 'PDC') {
+            return '#FE9A2E'
+        } else if (abbrev == 'PLR') {
+            return '#0174DF'
+        } else if (abbrev == 'PES') {
+            return '#01DF01'
+        } else if (abbrev == 'pvl') {
+            return '#9AFE2E'
+        } else if (abbrev == 'PBD') {
+            return '#FFFF00'
+        } else if (abbrev == 'PEV') {
+            return '#FFD735'
+        } else if (abbrev == 'Lega') {
+            return '#0B3861'
+        } else if (abbrev == 'csp-ow') {
+            return '#E2563B'
+        } else if (abbrev == '-') {
+            return '#CCCCCC'
+        } else if (abbrev == 'MCG') {
+            return '#FECC01'
+        } else if (abbrev == 'BastA') {
+            return '#DFDE00'
+        }  else if (abbrev == 'PdT') {
+            return '#FF0000'
+        }
+    }
+
+    function get_foci(node) {
+        if (node.CouncilAbbreviation == "CN") {
+            return 0;
+        } else if (node.CouncilAbbreviation == "CE") {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+
+    // Move nodes toward cluster focus.
+    function gravity(alpha) {
+        return function(d) {
+            d.y += (foci[get_foci(d)].y - d.y) * alpha;
+            d.x += (foci[get_foci(d)].x - d.x) * alpha;
+        };
+    }
+
+    function emphasis(d) {
+        d3.select(this).style("r", 10);
+        tooltip.html(
+                "<div><b>Name: </b>" + d.FirstName + " " + d.LastName + "</div>" +
+                "<div><b>Party: </b>" + d.PartyName + " (" + d.PartyAbbreviation + ")</div>" +
+                "<div><b>Council: </b>" + d.CouncilName + "</div>" +
+                "<div><b>Birthday: </b>" + d.DateOfBirth + "</div>"
+        )
+        return tooltip.style("visibility", "visible");
+    }
+
+    function back_to_normal(d) {
+        d3.select(this).style("r", 8);
+        return tooltip.style("visibility", "hidden");
+    }
+
+</script>
+</body>
