@@ -1,17 +1,20 @@
 // Get the clustering
 var rad = document.Clustering.buttons;
 var prev = null;
-var clustering = "none";
+var cluster = "none";
+var changed = false;
 for(var i = 0; i < rad.length; i++) {
     rad[i].onclick = function() {
         (prev)? console.log(prev.value):null;
         if(this !== prev) {
             prev = this;
-            clustering = this.value;
-            console.log(clustering);
+            cluster = this.value;
         }
+        changed = true;
     };
 }
+
+var pi = Math.PI;
 
 // Define some variables
 var radius = 7,
@@ -24,23 +27,24 @@ var width = 960,
 // Foci
 var foci = {
     "council": {
-        "CN": {x: 0.2 * width, y: 0.6 * height},    // Foci CN
-        "CE": {x: 0.6 * width, y: 0.2 * height},    // Foci CE
-        "CF": {x: 0.8 * width, y: 0.6 * height}     // Foci CF
+        "CN": {"x": 0.2 * width, "y": 0.6 * height},        // Foci CN
+        "CE": {"x": 0.6 * width, "y": 0.2 * height},        // Foci CE
+        "CF": {"x": 0.8 * width, "y": 0.6 * height}         // Foci CF
     },
-    "none": {},                                     // No Foci
-    "parties": {},                                  // Foci are created later
+    "none": {},                                             // No Foci
+    "party": {},                                            // Foci are created later
     "gender": {
-        "m": {x: 0.3*width, y: 0.5*height},         // Foci Male
-        "f": {x: 0.7*width, y: 0.5*height}          // Foci Female
+        "m": {"x": 0.3*width, "y": 0.5*height},             // Foci Male
+        "f": {"x": 0.7*width, "y": 0.5*height}              // Foci Female
     },
-    "language": {}                                  // Foci are created later
+    "language": {}                                          // Foci are created later
 };
 
-var nbr_by_council = {};
-var nbr_by_party = {};
-var nbr_by_gender = {};
-var nbr_by_language = {};
+var nbr = {};
+nbr["council"] = {};
+nbr["party"] = {};
+nbr["gender"] = {};
+nbr["language"] = {};
 
 var svg = d3.select("div#viz")
         .append("div")
@@ -74,33 +78,33 @@ d3.json("data/active.json", function(error, graph) {
         nodes[i]["radius"] = radius;
 
         // Get nbr by council
-        if(!(nodes[i]["CouncilAbbreviation"] in nbr_by_council)) {
-            nbr_by_council[nodes[i]["CouncilAbbreviation"]] = 1;
+        if(!(nodes[i]["CouncilAbbreviation"] in nbr["council"])) {
+            nbr["council"][nodes[i]["CouncilAbbreviation"]] = 1;
         } else {
-            nbr_by_council[nodes[i]["CouncilAbbreviation"]] += 1;
+            nbr["council"][nodes[i]["CouncilAbbreviation"]] += 1;
         }
 
         // Get nbr by party
-        if(!(nodes[i]["PartyAbbreviation"] in nbr_by_party)) {
-            nbr_by_party[nodes[i]["PartyAbbreviation"]] = 1;
+        if(!(nodes[i]["PartyAbbreviation"] in nbr["party"])) {
+            nbr["party"][nodes[i]["PartyAbbreviation"]] = 1;
             list_parties.push(nodes[i]["PartyAbbreviation"]);
         } else {
-            nbr_by_party[nodes[i]["PartyAbbreviation"]] += 1;
+            nbr["party"][nodes[i]["PartyAbbreviation"]] += 1;
         }
 
         // Get nbr by gender
-        if(!(nodes[i]["GenderAsString"] in nbr_by_council)) {
-            nbr_by_gender[nodes[i]["GenderAsString"]] = 1;
+        if(!(nodes[i]["GenderAsString"] in nbr["gender"])) {
+            nbr["gender"][nodes[i]["GenderAsString"]] = 1;
         } else {
-            nbr_by_gender[nodes[i]["GenderAsString"]] += 1;
+            nbr["gender"][nodes[i]["GenderAsString"]] += 1;
         }
 
-        // Get nbr by gender
-        if(!(nodes[i]["NativeLanguage"] in nbr_by_language)) {
-            nbr_by_language[nodes[i]["NativeLanguage"]] = 1;
+        // Get nbr by language
+        if(!(nodes[i]["NativeLanguage"] in nbr["language"])) {
+            nbr["language"][nodes[i]["NativeLanguage"]] = 1;
             list_languages.push(nodes[i]["NativeLanguage"]);
         } else {
-            nbr_by_language[nodes[i]["NativeLanguage"]] += 1;
+            nbr["language"][nodes[i]["NativeLanguage"]] += 1;
         }
     }
 
@@ -108,7 +112,7 @@ d3.json("data/active.json", function(error, graph) {
     shuffle(list_parties);
 
     for(var i=0; i<list_parties.length; i++) {
-        foci["parties"][list_parties[i]] = {"x": (i+1)/(list_parties.length+1)*width, "y": (Math.pow(-1, i)*0.25 + 0.5)*height};
+        foci["party"][list_parties[i]] = {"x": (i+1)/(list_parties.length+1)*width, "y": (Math.pow(-1, i)*0.25 + 0.5)*height};
     }
 
     // Create Foci for languages
@@ -118,11 +122,28 @@ d3.json("data/active.json", function(error, graph) {
         foci["language"][list_languages[i]] = {"x": (i+1)/(list_languages.length+1)*width, "y": (Math.pow(-1, i)*0.25 + 0.5)*height};
     }
 
+    // Create array of foci
+    var array_foci = {};
+    for(var key1 in foci) {
+        if(key1 != "none") {
+            array_foci[key1] = []
+            for (var key in foci[key1]) {
+                var json = {}
+                json["cx"] = foci[key1][key]["x"];
+                json["cy"] = foci[key1][key]["y"];
+                json["key"] = key;
+
+                array_foci[key1].push(json);
+            }
+        }
+    }
+
     var node = svg.append("g")
             .attr("class", "nodes")
             .selectAll("circle")
             .data(nodes)
             .enter().append("circle")
+            .attr("class", "dataNodes")
             .attr("r", radius)
             .attr("fill", function(d) { return colors_parties(d.PartyAbbreviation);})
             .call(d3.drag()
@@ -147,6 +168,8 @@ d3.json("data/active.json", function(error, graph) {
          .attr("x2", function(d) { return d.target.x; })
          .attr("y2", function(d) { return d.target.y; });*/
 
+        //update_foci(changed);
+
         node
             .each(gravity())
             .attr("cx", function(d) { return d.x; })
@@ -154,7 +177,7 @@ d3.json("data/active.json", function(error, graph) {
     }
 
     function emphasis(d) {
-        d3.selectAll("circle").style("r", radius);
+        d3.selectAll(".dataNodes").style("r", radius);
         d3.select(this).style("r", 1.5*radius);
         document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
         document.getElementById("councilorParty").innerHTML = d.PartyName;
@@ -187,6 +210,65 @@ d3.json("data/active.json", function(error, graph) {
 
         // Change stroke back to white
         node.style("stroke", null);
+    }
+
+    function update_foci() {
+        if (changed) {
+            d3.selectAll(".surroundings").remove();
+            if (cluster != "none") {
+                var surroundings = svg.append("g")
+                    .selectAll("circle")
+                    .data(array_foci[cluster])
+                    .enter().append("circle")
+                    .attr("class", "surroundings")
+                    .attr("cx", function (d) {
+                        return d.cx
+                    })
+                    .attr("cy", function (d) {
+                        return d.cy
+                    })
+                    .attr("r", function (d) {
+                        return radius_foci(radius, nbr[cluster][d.key]);
+                    })
+                    .attr("fill", "transparent")
+                    .attr("stroke-width", 3)
+                    .attr("stroke", "black");
+
+                for(var key in nbr[cluster]) {
+                    var rad = radius_foci(radius, nbr[cluster][key])
+
+                    var arc = d3.arc()
+                            .innerRadius(20)
+                            .outerRadius(20+10)
+                            .startAngle(45 * (Math.PI/180)) //convert from degs to radians
+                            .endAngle(3) //just radians
+                        ;
+
+                    svg.append("g")
+                        .selectAll("path")
+                        .append("path")
+                        .attr("class", "arcFoci")
+                        .attr("id", "arcFoci_"+key)
+                        .attr("d", arc)
+                        .attr("transform", function(d) {
+                            return "translate(" + array_foci[cluster][key].cx + ", " + array_foci[cluster][key].cy + ")";
+                        })
+                        .attr("stroke", "red")
+                        .attr("stroke-width", 18);
+                }
+
+                /*svg.append("g")
+                    .data(array_foci[cluster])
+                    .enter().append("text")
+                    .attr("class", "textFoci")
+                    .append("textPath")
+                    .attr("xlink:href",function(d){return "#arcFoci_"+d.key;})
+                    .text("LOOOOOOOOOOOOL");*/
+
+                changed = false;
+
+            }
+        }
     }
 
 });
@@ -232,22 +314,22 @@ function gravity() {
             foci_x,
             foci_y;
 
-        if(clustering == "council") {
-            foci_x = foci[clustering][d.CouncilAbbreviation].x;
-            foci_y = foci[clustering][d.CouncilAbbreviation].y;
-        } else if (clustering == "none") {
+        if(cluster == "council") {
+            foci_x = foci[cluster][d.CouncilAbbreviation].x;
+            foci_y = foci[cluster][d.CouncilAbbreviation].y;
+        } else if (cluster == "none") {
             // Find a way such that the points goes to a random location
             foci_x = d.x;
             foci_y = d.y;
-        } else if (clustering == "parties") {
-            foci_x = foci[clustering][d.PartyAbbreviation].x;
-            foci_y = foci[clustering][d.PartyAbbreviation].y;
-        } else if (clustering == "gender") {
-            foci_x = foci[clustering][d.GenderAsString].x;
-            foci_y = foci[clustering][d.GenderAsString].y;
-        } else if (clustering == "language") {
-            foci_x = foci[clustering][d.NativeLanguage].x;
-            foci_y = foci[clustering][d.NativeLanguage].y;
+        } else if (cluster == "party") {
+            foci_x = foci[cluster][d.PartyAbbreviation].x;
+            foci_y = foci[cluster][d.PartyAbbreviation].y;
+        } else if (cluster == "gender") {
+            foci_x = foci[cluster][d.GenderAsString].x;
+            foci_y = foci[cluster][d.GenderAsString].y;
+        } else if (cluster == "language") {
+            foci_x = foci[cluster][d.NativeLanguage].x;
+            foci_y = foci[cluster][d.NativeLanguage].y;
         }
         alpha = 0.05;
         d.y += (foci_y - d.y) * alpha;
@@ -275,4 +357,32 @@ function shuffle(a) {
         var j = Math.floor(Math.random() * i);
         [a[i - 1], a[j]] = [a[j], a[i - 1]];
     }
+}
+
+function radius_foci(radius, n) {
+    var ratio = 0;
+
+    if (n==1) {
+        ratio = 3;
+    } else if (n<=7) {
+        ratio = 6;
+    } else if (n<=19) {
+        ratio = 9;
+    } else if (n<=37) {
+        ratio = 12;
+    } else if (n<=61) {
+        ratio = 15;
+    } else if (n<=91) {
+        ratio = 18;
+    } else if (n<=127) {
+        ratio = 21;
+    } else if (n<=169) {
+        ratio = 23;
+    } else if (n<=217) {
+        ratio = 26;
+    } else {
+        ratio = 29;
+    }
+
+    return radius*ratio;
 }
