@@ -20,6 +20,13 @@ def clean_html(text_html):
     clean_text = clean_text.replace('\n', ' ').replace('\r', '')
     return clean_text
 
+def array_corpus(df):
+    def _inner_clean_html(df):
+        return clean_html(df['Text'])
+
+    return df.apply(_inner_clean_html, axis=1)
+
+
 
 def create_corpus(df):
     """
