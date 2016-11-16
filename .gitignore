@@ -94,3 +94,4 @@ ENV/
 # Remove data
 scraping/data/*.*
 nlp/data/*.*
+nlp/models/*.*
