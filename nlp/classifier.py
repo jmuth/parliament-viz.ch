@@ -7,7 +7,9 @@
 
 import gensim
 import time
+
 from cleaner import Cleaner
+from nlp_helpers import check_folder
 
 
 def timing(f):
@@ -28,6 +30,7 @@ class Classifier:
         self.n_topic = None
         self.n_passes = None
         self.cleaner = Cleaner()
+        self.folder_name = "models"
 
     def define_dictionary(self, texts):
         """
@@ -68,12 +71,16 @@ class Classifier:
 
     def save(self, suffix=None):
         """ Save with preformed filename t (topics) and p (passes). Optional suffix for extra info """
+
         filename = "t" + str(self.n_topic) + "_p" + str(self.n_passes)
         if suffix is not None:
             filename += "_" + suffix
 
-        self.lda_model.save("models/" + filename + "_ldamodel")
-        self.dictionary.save("models/" + filename + "_ldamodel.dict")
+        # check if folder exists to avoid error and create it if not
+        check_folder(self.folder_name)
+
+        self.lda_model.save(self.folder_name + "/" + filename + "_ldamodel")
+        self.dictionary.save(self.folder_name + "/" + filename + "_ldamodel.dict")
 
     def load(self, filename):
         """ For convenient use, take just the name LDA model file as argument and retrieve dictionary correctly

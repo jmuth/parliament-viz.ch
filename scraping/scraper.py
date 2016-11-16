@@ -1,10 +1,13 @@
 #! /usr/bin/env python
 # coding=utf-8
+import os
+
 import pandas as pd
 import urllib
 import xml.etree.ElementTree as ET
 import io
 import itertools as IT
+
 
 # Copyright © 2016 Joachim Muth <joachim.henri.muth@gmail.com>
 #
@@ -44,7 +47,7 @@ class Scraper:
         else:
             df = self._inner_get_small_table(table_name)
 
-        self.__inner_write_file(df, table_name)
+        self._inner_write_file(df, table_name)
         return df
 
     def count(self, table_name):
@@ -69,8 +72,8 @@ class Scraper:
         print("GET:", url)
         with urllib.request.urlopen(url) as url:
             s = url.read()
-        #root = ET.fromstring(s)
-        root = self.error_handling_xmlfromstring(s)
+        # root = ET.fromstring(s)
+        root = self._inner_error_handling_xmlfromstring(s)
 
         dict_ = {}
         base = "{http://www.w3.org/2005/Atom}"
@@ -88,7 +91,7 @@ class Scraper:
         data = pd.DataFrame(dict_)
         return data
 
-    def error_handling_xmlfromstring(self, content):
+    def _inner_error_handling_xmlfromstring(self, content):
         """ Print XML if error while parsing (mainly due to server API timeout)"""
         try:
             tree = ET.fromstring(content)
@@ -100,8 +103,9 @@ class Scraper:
             raise
         return tree
 
-    def __inner_write_file(self, table, table_name):
+    def _inner_write_file(self, table, table_name):
         """ Write table in csv file inside self.folder / table_name"""
+        self._inner_check_folder()
         table.to_csv(self.folder + '/' + table_name + '.csv')
 
     def _inner_get_big_table_skip(self, table_name):
@@ -197,7 +201,6 @@ class Scraper:
 
         return df
 
-
     def _inner_get_small_table(self, table_name):
         """
         Simple get request with language filer
@@ -215,3 +218,8 @@ class Scraper:
             print("[ERROR] in scraping table", table_name, "expected size of", expected_size, "but is", df.shape[0])
         else:
             print("[OK] table " + table_name + " correctly scraped, df.shape = ", df.shape[0], "as expected")
+
+    def _inner_check_folder(self):
+        """ check if folder exists to avoid error and create it if not """
+        if not os.path.exists(self.folder):
+            os.makedirs(self.folder)

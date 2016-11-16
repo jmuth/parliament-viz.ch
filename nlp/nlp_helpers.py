@@ -17,6 +17,8 @@ def create_corpus(df):
     """
     folder = 'data'
 
+    check_folder(folder)
+
     def _inner_create_corpus_one_line(df):
         """ write one text into one file """
         text = clean_html(df['Text'])
@@ -40,3 +42,9 @@ def get_size(start_path='.'):
             fp = os.path.join(dirpath, f)
             total_size += os.path.getsize(fp)
     return total_size
+
+
+def check_folder(folder_name):
+    """ check if folder exists to avoid error and create it if not """
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
