@@ -589,9 +589,9 @@ function color(colorType, val) {
         }
     } else if(colorType == "gender") {
         if (val == "m") {
-            return "#89CFF0";
+            return "#00FFFF";
         } else if (val == "f") {
-            return "#F4C2C2";
+            return "#FF69B4";
         }
     } else if(colorType == "language") {
         if (val == "I") {
