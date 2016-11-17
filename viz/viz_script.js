@@ -39,6 +39,9 @@ var width = 960,
     height = 600,
     height_l = 64;
 
+// Variable for node selection
+var node_selected = false;
+
 // Foci
 var foci = {
     "council": {
@@ -117,6 +120,8 @@ d3.json("data/active.json", function(error, graph) {
         nodes[i]["x"] = Math.random()*width;
         nodes[i]["y"] = Math.random()*height;
         nodes[i]["radius"] = radius;
+        nodes[i]["selected"] = false;
+        nodes[i]["dragged"] = false;
 
         // Get nbr by council
         if(!(nodes[i]["CouncilAbbreviation"] in nbr["council"])) {
@@ -208,12 +213,13 @@ d3.json("data/active.json", function(error, graph) {
             .attr("class", "dataNodes")
             .attr("r", radius)
             .attr("fill", function(d) { return color(colorType, d);})
+            .attr("desc", false)
             .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended))
             .on("mouseover", emphasis)
-            .on("mouseout", back_to_normal)
+            .on("click", clicked)
         ;
 
     simulation
@@ -241,17 +247,133 @@ d3.json("data/active.json", function(error, graph) {
     }
 
     function emphasis(d) {
-        d3.selectAll(".dataNodes").style("r", radius);
-        d3.select(this).style("r", 1.5*radius);
-        document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
-        document.getElementById("councilorParty").innerHTML = d.PartyName;
-        document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
-        document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
-        document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
-        document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
-        document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
+        if (node_selected == false) {
+            d3.selectAll(".dataNodes").style("r", radius);
+            d3.select(this).style("r", 1.5 * radius);
+            document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
+            document.getElementById("councilorParty").innerHTML = d.PartyName;
+            document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
+            document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
+            document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
+            document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
+            document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
+        }
     }
 
+    // Simple click on node
+    function clicked(d) {
+        var node = d3.select(this);
+
+        if(d.selected == false) {
+            d3.selectAll(".dataNodes")
+                .style("r", radius)
+                .style("stroke", function(o,i) {
+                    if(nodes[i].dragged == false) {
+                        return null;
+                    } else {
+                        return color(colorType, getValForColor(colorType, nodes[i]));
+                    }
+                })
+                .style("fill", function(o,i) {
+                    if(nodes[i].dragged == false) {
+                        return color(colorType, getValForColor(colorType, nodes[i]));
+                    } else {
+                        return "black";
+                    }
+                })
+                ;
+
+            node.style("r", 1.5*radius)
+                .style("stroke", function(d) {
+                    if (d.dragged == true) {
+                        return color(colorType, getValForColor(colorType, d));
+                    } else {
+                        return "#D3D3D3"
+                    }
+                })
+                .style("fill", function(d) {
+                    if (d.dragged == false) {
+                        return color(colorType, getValForColor(colorType, d));
+                    } else {
+                        return "#D3D3D3"
+                    }
+                })
+                .style("stroke-width", 3);
+
+            d3.selectAll(".dataNodes").style("r", radius);
+            d3.select(this).style("r", 1.5 * radius);
+            document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
+            document.getElementById("councilorParty").innerHTML = d.PartyName;
+            document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
+            document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
+            document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
+            document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
+            document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
+
+            for(var i=0; i<nodes.length; i++) {
+                nodes[i].selected = false;
+            }
+
+            d.selected = true;
+            node_selected = true;
+
+        } else {
+            node.style("r", radius)
+                .style("stroke", function(d) {
+                    if(d.dragged == true) {
+                        return color(colorType, getValForColor(colorType, d));
+                    } else {
+                        return null;
+                    }
+                })
+                .style("fill", function(d) {
+                    if(d.dragged == true) {
+                        return "black";
+                    } else {
+                        return color(colorType, getValForColor(colorType, d));
+                    }
+                });
+
+            d.selected = false;
+            node_selected = false;
+        }
+
+    }
+
+    // Double click on window
+    function dbclick() {
+
+        var nslctd = -1;
+        // Put force back to null
+        nodes.forEach(function(o,i) {
+            o.fx = null;
+            o.fy = null;
+            o.dragged = false;
+        });
+
+        // Change stroke back to white
+        node
+            .style("fill", function(o,i) {
+                return color(colorType, getValForColor(colorType, nodes[i]));
+            })
+            .style("stroke", function(o,i) {
+                if(nodes[i].selected == false) {
+                    return null;
+                } else {
+                    return "#D3D3D3";
+                }
+            })
+            .style("stroke-width", function(o,i) {
+                if(nodes[i].selected == false) {
+                    return 0;
+                } else {
+                    return 3;
+                }
+            })
+            ;
+    }
+
+    // Triple click on window
     window.addEventListener('click', function (evt) {
         if (evt.detail === 3) {
             nodes.forEach(function(o, i) {
@@ -261,27 +383,33 @@ d3.json("data/active.json", function(error, graph) {
         }
     });
 
-    function back_to_normal(d) {
-        //d3.select(this).style("r", radius);
-    }
-
-    function dbclick() {
-        // Put force back to null
-        nodes.forEach(function(o,i) {
-            o.fx = null;
-            o.fy = null;
-        });
-
-        // Change stroke back to white
-        node.style("stroke", null);
-    }
-
     function update_color() {
         if (color_changed) {
 
             // Change the color
-            d3.selectAll(".dataNodes").style("fill", function(d) { return color(colorType, getValForColor(colorType, d));});
-
+            d3.selectAll(".dataNodes")
+                .style("fill", function(d) {
+                    if (d.dragged == true && d.selected == true) {
+                        return "#D3D3D3";
+                    } else if (d.dragged == true && d.selected == false) {
+                        return "black";
+                    } else if (d.dragged == false && d.selected == true) {
+                        return color(colorType, getValForColor(colorType, d));
+                    } else {
+                        return color(colorType, getValForColor(colorType, d));
+                    }
+                })
+                .style("stroke", function(d) {
+                    if (d.dragged == true && d.selected == true) {
+                        return color(colorType, getValForColor(colorType, d));
+                    } else if (d.dragged == true && d.selected == false) {
+                        return color(colorType, getValForColor(colorType, d));
+                    } else if (d.dragged == false && d.selected == true) {
+                        return "#D3D3D3";
+                    } else {
+                        return null;
+                    }
+                });
 
             // Change the legend
             legend.selectAll(".circleLegend").remove();
@@ -511,37 +639,33 @@ function gravity() {
         var dx = foci_x - d.x;
         var dy = foci_y - d.y;
 
-        var sgn_dx = 1;
-        var sgn_dy = 1;
-
-        if (dx != 0) {
-            sgn_dx = dx/Math.abs(dx);
-        }
-
-        if (dy != 0) {
-            sgn_dy = dx/Math.abs(dy);
-        }
-
-        //d.x += sgn_dx*Math.pow(dx,1) * alpha;
-        //d.y += sgn_dy*Math.pow(dy,1) * alpha;
-
         d.x += dx*alpha;
         d.y += dy*alpha;
     };
 }
 
 function dragstarted(d) {
-    d3.select(this).style("stroke", "black");
     if (!d3.event.active) simulation.alphaTarget(0.1).restart();
 }
 
 function dragged(d) {
+    d3.select(this)
+        .style("fill", function(d) {
+            if (d.selected == true) {
+                return "#D3D3D3";
+            } else {
+                return "black";
+            }
+        })
+        .style("stroke", color(colorType,getValForColor(colorType, d)))
+        .style("stroke-width", 3)
+    ;
+    d.dragged = true;
     d.fx = d3.event.x;
     d.fy = d3.event.y;
 }
 
 function dragended(d) {
-    d3.select(this).style("stroke", "black");
     if (!d3.event.active) simulation.alphaTarget(0);
 }
 
