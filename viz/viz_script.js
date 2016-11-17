@@ -1,20 +1,34 @@
 // Get the clustering
-var rad = document.Clustering.buttons;
-var prev = null;
+var rad_cluster = document.Clustering.buttons;
+var prev_cluster = null;
 var cluster = "none";
-var changed = false;
-for(var i = 0; i < rad.length; i++) {
-    rad[i].onclick = function() {
-        (prev)? console.log(prev.value):null;
-        if(this !== prev) {
-            prev = this;
+var cluster_changed = false;
+for(var i = 0; i < rad_cluster.length; i++) {
+    rad_cluster[i].onclick = function() {
+        (prev_cluster)? console.log(prev_cluster.value):null;
+        if(this !== prev_cluster) {
+            prev_cluster = this;
             cluster = this.value;
         }
-        changed = true;
+        cluster_changed = true;
     };
 }
 
-var pi = Math.PI;
+// Get the color
+var rad_color = document.Colors.buttons;
+var prev_color = null;
+var colorType = "none";
+var color_changed = false;
+for(var i = 0; i < rad_color.length; i++) {
+    rad_color[i].onclick = function() {
+        (prev_color)? console.log(prev_color.value):null;
+        if(this !== prev_color) {
+            prev_color = this;
+            colorType = this.value;
+        }
+        color_changed = true;
+    };
+}
 
 // Define some variables
 var radius = 7,
@@ -166,7 +180,7 @@ d3.json("data/active.json", function(error, graph) {
             .enter().append("circle")
             .attr("class", "dataNodes")
             .attr("r", radius)
-            .attr("fill", function(d) { return colors_parties(d.PartyAbbreviation);})
+            .attr("fill", function(d) { return color(colorType, d);})
             .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -189,7 +203,9 @@ d3.json("data/active.json", function(error, graph) {
          .attr("x2", function(d) { return d.target.x; })
          .attr("y2", function(d) { return d.target.y; });*/
 
-        update_foci(changed);
+        update_cluster(cluster_changed);
+
+        update_color(color_changed);
 
         node
             .each(gravity())
@@ -233,8 +249,17 @@ d3.json("data/active.json", function(error, graph) {
         node.style("stroke", null);
     }
 
-    function update_foci() {
-        if (changed) {
+    function update_color(color_changed) {
+        if (color_changed) {
+
+            d3.selectAll(".dataNodes").style("fill", function(d) { return color(colorType, d);});
+
+            color_changed = false;
+        }
+    }
+
+    function update_cluster(cluster_changed) {
+        if (cluster_changed) {
             svg.selectAll(".textFoci").remove();
 
             if(cluster != "none") {
@@ -257,7 +282,7 @@ d3.json("data/active.json", function(error, graph) {
                     .attr("font-weight", "bold")
                     .attr("text-anchor", "middle");
 
-                changed = false;
+                cluster_changed = false;
             }
 
         }
@@ -265,37 +290,73 @@ d3.json("data/active.json", function(error, graph) {
 
 });
 
-function colors_parties(abbrev) {
-    if (abbrev == 'PLD') {
-        return '#3131BD'
-    } else if (abbrev == 'UDC') {
-        return '#088A4B'
-    } else if (abbrev == 'PSS') {
-        return '#FA1360'
-    } else if (abbrev == 'PDC') {
-        return '#FE9A2E'
-    } else if (abbrev == 'PLR') {
-        return '#0174DF'
-    } else if (abbrev == 'PES') {
-        return '#01DF01'
-    } else if (abbrev == 'pvl') {
-        return '#9AFE2E'
-    } else if (abbrev == 'PBD') {
-        return '#FFFF00'
-    } else if (abbrev == 'PEV') {
-        return '#FFD735'
-    } else if (abbrev == 'Lega') {
-        return '#0B3861'
-    } else if (abbrev == 'csp-ow') {
-        return '#E2563B'
-    } else if (abbrev == '-') {
-        return '#CCCCCC'
-    } else if (abbrev == 'MCG') {
-        return '#FECC01'
-    } else if (abbrev == 'BastA') {
-        return '#DFDE00'
-    }  else if (abbrev == 'PdT') {
-        return '#FF0000'
+function color(colorType, node) {
+    if (colorType == "none") {
+        return "#000000";
+    } else if(colorType == "party") {
+        var abbrev = node.PartyAbbreviation;
+        if (abbrev == 'PLD') {
+            return '#3131BD'
+        } else if (abbrev == 'UDC') {
+            return '#088A4B'
+        } else if (abbrev == 'PSS') {
+            return '#FA1360'
+        } else if (abbrev == 'PDC') {
+            return '#FE9A2E'
+        } else if (abbrev == 'PLR') {
+            return '#0174DF'
+        } else if (abbrev == 'PES') {
+            return '#01DF01'
+        } else if (abbrev == 'pvl') {
+            return '#9AFE2E'
+        } else if (abbrev == 'PBD') {
+            return '#FFFF00'
+        } else if (abbrev == 'PEV') {
+            return '#FFD735'
+        } else if (abbrev == 'Lega') {
+            return '#0B3861'
+        } else if (abbrev == 'csp-ow') {
+            return '#E2563B'
+        } else if (abbrev == '-') {
+            return '#CCCCCC'
+        } else if (abbrev == 'MCG') {
+            return '#FECC01'
+        } else if (abbrev == 'BastA') {
+            return '#DFDE00'
+        }  else if (abbrev == 'PdT') {
+            return '#FF0000'
+        }
+    } else if(colorType == "council") {
+        var cncil = node.CouncilAbbreviation;
+        if (cncil == "CN") {
+            return "#ff1c14";
+        } else if (cncil == "CE") {
+            return "#3b5998";
+        } else if (cncil == "CF") {
+            return "#2ea52a";
+        }
+    } else if(colorType == "gender") {
+        var gndr = node.GenderAsString;
+        if (gndr == "m") {
+            return "#89CFF0";
+        } else if (gndr == "f") {
+            return "#F4C2C2";
+        }
+    } else if(colorType == "language") {
+        var lng = node.NativeLanguage;
+        if (lng == "I") {
+            return "#009246";
+        } else if (lng == "D") {
+            return "#FFCC1E";
+        } else if (lng == "F") {
+            return "#002395";
+        } else if (lng == "Tr") {
+            return "#E30A17";
+        } else if (lng == "Sk") {
+            return "#489DD3";
+        } else if (lng == "RM") {
+            return "#E2017B";
+        }
     }
 }
 
