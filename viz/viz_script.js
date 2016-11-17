@@ -46,6 +46,12 @@ nbr["party"] = {};
 nbr["gender"] = {};
 nbr["language"] = {};
 
+var texts = {}
+texts["council"] = {'CN': 'National Council', 'CE': 'States Council', 'CF': 'Federal Council'};
+texts["party"] = {};
+texts["gender"] = {'m': 'Men', 'f': 'Women'};
+texts["language"] = {};
+
 var svg = d3.select("div#viz")
         .append("div")
         .classed("svg-container", true) //container class to make it responsive
@@ -88,6 +94,7 @@ d3.json("data/active.json", function(error, graph) {
         if(!(nodes[i]["PartyAbbreviation"] in nbr["party"])) {
             nbr["party"][nodes[i]["PartyAbbreviation"]] = 1;
             list_parties.push(nodes[i]["PartyAbbreviation"]);
+            texts["party"][nodes[i]["PartyAbbreviation"]] = nodes[i]["PartyAbbreviation"];
         } else {
             nbr["party"][nodes[i]["PartyAbbreviation"]] += 1;
         }
@@ -103,6 +110,20 @@ d3.json("data/active.json", function(error, graph) {
         if(!(nodes[i]["NativeLanguage"] in nbr["language"])) {
             nbr["language"][nodes[i]["NativeLanguage"]] = 1;
             list_languages.push(nodes[i]["NativeLanguage"]);
+            var lng = nodes[i]["NativeLanguage"];
+            if(lng == "F") {
+                texts["language"][lng] = "French";
+            } else if(lng == "I") {
+                texts["language"][lng] = "Italian";
+            } else if(lng == "Sk") {
+                texts["language"][lng] = "Slovak";
+            } else if(lng == "RM") {
+                texts["language"][lng] = "Romansh";
+            } else if(lng == "D") {
+                texts["language"][lng] = "German";
+            } else if(lng == "Tr") {
+                texts["language"][lng] = "Turkish";
+            }
         } else {
             nbr["language"][nodes[i]["NativeLanguage"]] += 1;
         }
@@ -168,7 +189,7 @@ d3.json("data/active.json", function(error, graph) {
          .attr("x2", function(d) { return d.target.x; })
          .attr("y2", function(d) { return d.target.y; });*/
 
-        //update_foci(changed);
+        update_foci(changed);
 
         node
             .each(gravity())
@@ -214,60 +235,31 @@ d3.json("data/active.json", function(error, graph) {
 
     function update_foci() {
         if (changed) {
-            d3.selectAll(".surroundings").remove();
-            if (cluster != "none") {
-                var surroundings = svg.append("g")
-                    .selectAll("circle")
-                    .data(array_foci[cluster])
-                    .enter().append("circle")
-                    .attr("class", "surroundings")
-                    .attr("cx", function (d) {
-                        return d.cx
-                    })
-                    .attr("cy", function (d) {
-                        return d.cy
-                    })
-                    .attr("r", function (d) {
-                        return radius_foci(radius, nbr[cluster][d.key]);
-                    })
-                    .attr("fill", "transparent")
-                    .attr("stroke-width", 3)
-                    .attr("stroke", "black");
+            svg.selectAll(".textFoci").remove();
 
-                for(var key in nbr[cluster]) {
-                    var rad = radius_foci(radius, nbr[cluster][key])
+            if(cluster != "none") {
 
-                    var arc = d3.arc()
-                            .innerRadius(20)
-                            .outerRadius(20+10)
-                            .startAngle(45 * (Math.PI/180)) //convert from degs to radians
-                            .endAngle(3) //just radians
-                        ;
-
-                    svg.append("g")
-                        .selectAll("path")
-                        .append("path")
-                        .attr("class", "arcFoci")
-                        .attr("id", "arcFoci_"+key)
-                        .attr("d", arc)
-                        .attr("transform", function(d) {
-                            return "translate(" + array_foci[cluster][key].cx + ", " + array_foci[cluster][key].cy + ")";
-                        })
-                        .attr("stroke", "red")
-                        .attr("stroke-width", 18);
-                }
-
-                /*svg.append("g")
+                svg.selectAll("text")
                     .data(array_foci[cluster])
                     .enter().append("text")
                     .attr("class", "textFoci")
-                    .append("textPath")
-                    .attr("xlink:href",function(d){return "#arcFoci_"+d.key;})
-                    .text("LOOOOOOOOOOOOL");*/
+                    .attr("x", function (d) {
+                        return d.cx;
+                    })
+                    .attr("y", function (d) {
+                        return d.cy-radius_foci(radius, nbr[cluster][d.key]);
+                    })
+                    .text(function (d) {
+                        return texts[cluster][d.key] + " (" + nbr[cluster][d.key] + ")";
+                    })
+                    .attr("font-family", "serif")
+                    .attr("font-size", "18px")
+                    .attr("font-weight", "bold")
+                    .attr("text-anchor", "middle");
 
                 changed = false;
-
             }
+
         }
     }
 
