@@ -9,7 +9,7 @@ import gensim
 import time
 
 from cleaner import Cleaner
-from nlp_helpers import check_folder
+from helpers import check_folder
 
 
 def timing(f):

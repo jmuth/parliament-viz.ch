@@ -6,7 +6,6 @@
 # Distributed under terms of the MIT license.
 
 import os
-from cleaner import clean_html
 
 
 def create_corpus(df):
@@ -21,7 +20,7 @@ def create_corpus(df):
 
     def _inner_create_corpus_one_line(df):
         """ write one text into one file """
-        text = clean_html(df['Text'])
+        text = df['Text']
         id = df['ID']
         file_name = folder + '/Transcript' + str(id) + '.txt'
         text_file = open(file_name, "w")
@@ -48,3 +47,11 @@ def check_folder(folder_name):
     """ check if folder exists to avoid error and create it if not """
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
+
+
+def load_txt(file_name):
+    with open(file_name) as f:
+        data = f.readlines()
+        data = [x.strip('\n') for x in data]
+
+    return data

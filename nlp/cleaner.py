@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup as BSoup
 from nltk.tokenize import RegexpTokenizer
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
+from helpers import load_txt
 
 
 def clean_html(text_html):
@@ -24,9 +25,26 @@ def tokenize(text):
 
 def remove_stop_words(list_words):
     """ remove stop word from french + german + english + italian. To be precised ? """
-    stop_list = get_stop_words('fr') + get_stop_words('de') + get_stop_words('en') + get_stop_words('it')
+    stop_list = _inner_load_stopwords()
     clean_list = [i for i in list_words if i not in stop_list]
     return clean_list
+
+
+def _inner_load_stopwords():
+    # from stop_words python package
+    pyth_fr = get_stop_words('fr')
+    pyth_de = get_stop_words('de')
+    pyth_en = get_stop_words('en')
+    pyth_it = get_stop_words('it')
+
+    # from Peter Graham on GitHub
+    graham_fr = load_txt('stop_words/smart_stop_words_fr.txt')
+    graham_de = load_txt('stop_words/smart_stop_words_de.txt')
+    graham_en = load_txt('stop_words/smart_stop_words_en.txt')
+    graham_it = load_txt('stop_words/smart_stop_words_it.txt')
+
+    union = list(set().union(pyth_fr, pyth_de, pyth_en, pyth_it, graham_fr, graham_de, graham_en, graham_it))
+    return union
 
 
 def remove_short_words(list_words, min_size=3):
@@ -72,13 +90,9 @@ class Cleaner:
         self.filter_list = filter_list
 
     def load(self, filename):
-        with open(filename) as f:
-            content = f.readlines()
-        # remove endline marker
-        content = [x.strip('\n') for x in content]
-        self.filter_list = content
+        self.filter_list = load_txt(filename)
 
-    def save(self, suffix = None):
+    def save(self, suffix=None):
         filename = "filter_list"
         if suffix is not None:
             filename += "_" + suffix
