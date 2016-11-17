@@ -23,13 +23,6 @@ def tokenize(text):
     return tokenizer.tokenize(text)
 
 
-def remove_stop_words(list_words):
-    """ remove stop word from french + german + english + italian. To be precised ? """
-    stop_list = _inner_load_stopwords()
-    clean_list = [i for i in list_words if i not in stop_list]
-    return clean_list
-
-
 def _inner_load_stopwords():
     # from stop_words python package
     pyth_fr = get_stop_words('fr')
@@ -62,6 +55,7 @@ def stem(list_words):
 class Cleaner:
     def __init__(self, filter_list=[]):
         self.filter_list = filter_list
+        self.stop_list = _inner_load_stopwords()
 
     def cleaning_pipeline_series(self, series):
         return series.apply(self.cleaning_pipeline)
@@ -76,11 +70,17 @@ class Cleaner:
         clean_text = clean_html(text)
         clean_text = clean_text.lower()
         clean_text = tokenize(clean_text)
-        clean_text = remove_stop_words(clean_text)
+        clean_text = self.remove_stop_words(clean_text)
         clean_text = remove_short_words(clean_text)
         clean_text = self.remove_from_filter_list(clean_text)
         clean_text = stem(clean_text)
         return clean_text
+
+    def remove_stop_words(self, list_words):
+        """ remove stop word from french + german + english + italian. To be precised ? """
+
+        clean_list = [i for i in list_words if i not in self.stop_list]
+        return clean_list
 
     def remove_from_filter_list(self, list_words):
         clean_list = [i for i in list_words if i not in self.filter_list]

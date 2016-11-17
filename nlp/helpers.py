@@ -6,6 +6,7 @@
 # Distributed under terms of the MIT license.
 
 import os
+import time
 
 
 def create_corpus(df):
@@ -55,3 +56,14 @@ def load_txt(file_name):
         data = [x.strip('\n') for x in data]
 
     return data
+
+
+def timing(f):
+    def wrap(*args):
+        time1 = time.time()
+        ret = f(*args)
+        time2 = time.time()
+        print('[INFO] %s took %0.3f s' % (f.__name__, (time2 - time1)))
+        return ret
+
+    return wrap

@@ -6,21 +6,9 @@
 # Distributed under terms of the MIT license.
 
 import gensim
-import time
 
 from cleaner import Cleaner
-from helpers import check_folder
-
-
-def timing(f):
-    def wrap(*args):
-        time1 = time.time()
-        ret = f(*args)
-        time2 = time.time()
-        print('[INFO] %s took %0.3f s' % (f.__name__, (time2 - time1)))
-        return ret
-
-    return wrap
+from helpers import check_folder, timing
 
 
 class Classifier:
