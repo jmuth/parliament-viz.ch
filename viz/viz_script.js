@@ -55,7 +55,9 @@ var foci = {
         "m": {"x": 0.3*width, "y": 0.5*height},             // Foci Male
         "f": {"x": 0.7*width, "y": 0.5*height}              // Foci Female
     },
-    "language": {}                                          // Foci are created later
+    "language": {},                                         // Foci are created later
+    "age": {},                                              // Foci are created later
+    "canton": {}                                            // Foci are created later
 };
 
 var nbr = {};
@@ -63,18 +65,25 @@ nbr["council"] = {};
 nbr["party"] = {};
 nbr["gender"] = {};
 nbr["language"] = {};
+nbr["age"] = {};
+nbr["canton"] = {};
 
 var texts = {};
 texts["council"] = {'CN': 'National Council', 'CE': 'States Council', 'CF': 'Federal Council'};
 texts["party"] = {};
 texts["gender"] = {'m': 'Men', 'f': 'Women'};
 texts["language"] = {};
+texts["age"] = {};
+texts["canton"] = {};
 
 var variables = {};
 variables["council"] = [];
 variables["party"] = [];
 variables["gender"] = [];
 variables["language"] = [];
+variables["age"] = [];
+variables["canton"] = [];
+
 
 // SVG for the main Viz
 var svg = d3.select("div#viz")
@@ -115,6 +124,8 @@ d3.json("data/active.json", function(error, graph) {
 
     var list_parties = [];
     var list_languages = [];
+    var list_ages = [];
+    var list_cantons = [];
 
     for(var i=0; i<nodes.length; i++) {
         nodes[i]["x"] = Math.random()*width;
@@ -145,7 +156,6 @@ d3.json("data/active.json", function(error, graph) {
         if(!(nodes[i]["GenderAsString"] in nbr["gender"])) {
             nbr["gender"][nodes[i]["GenderAsString"]] = 1;
             variables["gender"].push(nodes[i]["GenderAsString"]);
-
         } else {
             nbr["gender"][nodes[i]["GenderAsString"]] += 1;
         }
@@ -173,13 +183,33 @@ d3.json("data/active.json", function(error, graph) {
         } else {
             nbr["language"][nodes[i]["NativeLanguage"]] += 1;
         }
+
+        // Get nbr by age
+        if(!(nodes[i]["AgeCategory"] in nbr["age"])) {
+            nbr["age"][nodes[i]["AgeCategory"]] = 1;
+            texts["age"][nodes[i]["AgeCategory"]] = nodes[i]["AgeCategoryText"];
+            variables["age"].push(nodes[i]["AgeCategory"]);
+            list_ages.push(nodes[i]["AgeCategory"]);
+        } else {
+            nbr["age"][nodes[i]["AgeCategory"]] += 1;
+        }
+
+        // Get nbr by cantons
+        if(!(nodes[i]["CantonAbbreviation"] in nbr["canton"])) {
+            nbr["canton"][nodes[i]["CantonAbbreviation"]] = 1;
+            texts["canton"][nodes[i]["CantonAbbreviation"]] = nodes[i]["CantonAbbreviation"];
+            variables["canton"].push(nodes[i]["CantonAbbreviation"]);
+            list_cantons.push(nodes[i]["CantonAbbreviation"]);
+        } else {
+            nbr["canton"][nodes[i]["CantonAbbreviation"]] += 1;
+        }
     }
 
     // Create Foci for parties
     shuffle(list_parties);
 
     for(var i=0; i<list_parties.length; i++) {
-        foci["party"][list_parties[i]] = {"x": (i+1)/(list_parties.length+1)*width, "y": (Math.pow(-1, i)*0.25 + 0.5)*height};
+        foci["party"][list_parties[i]] = {"x": (i+1)/(list_parties.length+1)*width, "y": (Math.pow(-1, i)*0.2 + 0.6)*height};
     }
 
     // Create Foci for languages
@@ -187,6 +217,35 @@ d3.json("data/active.json", function(error, graph) {
 
     for(var i=0; i<list_languages.length; i++) {
         foci["language"][list_languages[i]] = {"x": (i+1)/(list_languages.length+1)*width, "y": (Math.pow(-1, i)*0.25 + 0.5)*height};
+    }
+
+    list_ages.sort();
+    variables["age"].sort();
+
+    // Create Foci for age
+    for(var i=0; i<list_ages.length; i++) {
+        foci["age"][list_ages[i]] = {"x": (i+1)/(list_ages.length+1)*width, "y": (Math.pow(-1, i)*0.2 + 0.6)*height};
+    }
+
+    // Create Foci for canton
+    shuffle(list_cantons);
+
+    for(var i=0; i<list_cantons.length; i++) {
+        var yy = 0;
+        var xx = 0;
+
+        if (i<9) {
+            yy = 1/4*height;
+            xx = (i+1)/10*width;
+        } else if (i<17) {
+            yy = 1/2*height;
+            xx = (i-8)/9*width;
+        } else {
+            yy = 3/4*height;
+            xx = (i-16)/10*width;
+        }
+
+        foci["canton"][list_cantons[i]] = {"x": xx, "y": yy};
     }
 
     // Create array of foci
@@ -254,6 +313,8 @@ d3.json("data/active.json", function(error, graph) {
             document.getElementById("councilorParty").innerHTML = d.PartyName;
             document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
             document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
+            document.getElementById("councilorAge").innerHTML = d.age;
+            document.getElementById("councilorCanton").innerHTML = d.CantonName;
             document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
             document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
             document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
@@ -306,6 +367,8 @@ d3.json("data/active.json", function(error, graph) {
             document.getElementById("councilorParty").innerHTML = d.PartyName;
             document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
             document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
+            document.getElementById("councilorAge").innerHTML = d.age;
+            document.getElementById("councilorCanton").innerHTML = d.CantonName;
             document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
             document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
             document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
@@ -541,6 +604,10 @@ function getValForColor(colorType, node) {
         return node.CouncilAbbreviation;
     } else if(colorType == "language") {
         return node.NativeLanguage;
+    } else if(colorType == "age") {
+        return node.AgeCategoryText;
+    } else if(colorType == "canton") {
+        return node.cantonAbbreviation;
     }
 }
 
@@ -607,6 +674,22 @@ function color(colorType, val) {
         } else if (val == "RM") {
             return "#E2017B";
         }
+    } else if(colorType == "age") {
+        if (val == 0 || val == "-20") {
+            return "#a65628";
+        } else if (val == 1 || val == "20-29") {
+            return "#e41a1c";
+        } else if (val == 2 || val == "30-39") {
+            return "#377eb8";
+        } else if (val == 3 || val == "40-49") {
+            return "#4daf4a";
+        } else if (val == 4 || val == "50-59") {
+            return "#984ea3";
+        } else if (val == 5 || val == "60-69") {
+            return "#ff7f00";
+        } else if (val == 6 || val == "70+") {
+            return "#ffff33";
+        }
     }
 }
 
@@ -633,6 +716,12 @@ function gravity() {
         } else if (cluster == "language") {
             foci_x = foci[cluster][d.NativeLanguage].x;
             foci_y = foci[cluster][d.NativeLanguage].y;
+        } else if (cluster == "age") {
+            foci_x = foci[cluster][d.AgeCategory].x;
+            foci_y = foci[cluster][d.AgeCategory].y;
+        } else if (cluster == "canton") {
+            foci_x = foci[cluster][d.CantonAbbreviation].x;
+            foci_y = foci[cluster][d.CantonAbbreviation].y;
         }
         alpha = 0.05;
 
@@ -685,7 +774,7 @@ function radius_foci(radius, n) {
         ratio = 6;
     } else if (n<=19) {
         ratio = 9;
-    } else if (n<=37) {
+    } else if (n<=38) {
         ratio = 12;
     } else if (n<=61) {
         ratio = 15;
