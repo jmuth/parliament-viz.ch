@@ -440,8 +440,8 @@ d3.json("data/active.json", function(error, graph) {
     window.addEventListener('click', function (evt) {
         if (evt.detail === 3) {
             nodes.forEach(function(o, i) {
-                o.x += (Math.random() - .5) * 50;
-                o.y += (Math.random() - .5) * 50;
+                o.x = get_foci(o).x;
+                o.y = get_foci(o).y;
             });
         }
     });
@@ -693,6 +693,29 @@ function color(colorType, val) {
     }
 }
 
+function get_foci(d) {
+    var foci_spec;
+
+    if (cluster == "council") {
+        foci_spec = foci[cluster][d.CouncilAbbreviation];
+    } else if (cluster == "none") {
+        // Find a way such that the points goes to a random location
+        foci_spec = d;
+    } else if (cluster == "party") {
+        foci_spec = foci[cluster][d.PartyAbbreviation];
+    } else if (cluster == "gender") {
+        foci_spec = foci[cluster][d.GenderAsString];
+    } else if (cluster == "language") {
+        foci_spec = foci[cluster][d.NativeLanguage];
+    } else if (cluster == "age") {
+        foci_spec = foci[cluster][d.AgeCategory];
+    } else if (cluster == "canton") {
+        foci_spec = foci[cluster][d.CantonAbbreviation];
+    }
+
+    return foci_spec;
+}
+
 // Move nodes toward cluster focus.
 function gravity() {
     return function(d) {
@@ -700,29 +723,11 @@ function gravity() {
             foci_x,
             foci_y;
 
-        if(cluster == "council") {
-            foci_x = foci[cluster][d.CouncilAbbreviation].x;
-            foci_y = foci[cluster][d.CouncilAbbreviation].y;
-        } else if (cluster == "none") {
-            // Find a way such that the points goes to a random location
-            foci_x = d.x;
-            foci_y = d.y;
-        } else if (cluster == "party") {
-            foci_x = foci[cluster][d.PartyAbbreviation].x;
-            foci_y = foci[cluster][d.PartyAbbreviation].y;
-        } else if (cluster == "gender") {
-            foci_x = foci[cluster][d.GenderAsString].x;
-            foci_y = foci[cluster][d.GenderAsString].y;
-        } else if (cluster == "language") {
-            foci_x = foci[cluster][d.NativeLanguage].x;
-            foci_y = foci[cluster][d.NativeLanguage].y;
-        } else if (cluster == "age") {
-            foci_x = foci[cluster][d.AgeCategory].x;
-            foci_y = foci[cluster][d.AgeCategory].y;
-        } else if (cluster == "canton") {
-            foci_x = foci[cluster][d.CantonAbbreviation].x;
-            foci_y = foci[cluster][d.CantonAbbreviation].y;
-        }
+        foci_x = get_foci(d).x;
+        foci_y = get_foci(d).y;
+
+
+
         alpha = 0.05;
 
         var dx = foci_x - d.x;
