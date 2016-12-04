@@ -95,3 +95,4 @@ ENV/
 scraping/data/*.*
 nlp/data/*.*
 nlp/models/*.*
+graph/data/*.*
