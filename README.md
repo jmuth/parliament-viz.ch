@@ -3,6 +3,11 @@
 # parliament-viz.ch
 (ADA CS-401 EPFL)
 
+[Gael Lederrey](https://github.com/glederrey), [Jonas Racine](https://github.com/jonasracine) and [Joachim Muth](https://github.com/jmuth)
+
+The current draft of the website is available [here](http://178.62.67.149)
+
+
 ## Similar Project
 
 A project about predictions on the same data exists [here](https://github.com/thom056/ada-parliament-ML). 
@@ -129,7 +134,7 @@ Visitors will be able to see the evolution of frequencies of specific themes in 
   - **November 6th, 2016**: Start of the project ✔
   - **November 13th, 2016**: Data scraping and parsing of a first usable dataset ✔
   - **November 27th, 2016**: Content extraction of the official bulletins using NLP tools (speaker, themes, ...)
-  - **December 11th, 2016**: First interactive data visualization (local hosted)
+  - **December 11th, 2016**: First interactive data visualization (local hosted) ✔
   - **Mid-December, 2016**: Checkpoint
   - **January 1st, 2017**: Growing of the database
   - **January 15th, 2017**: website design for user-friendly visualization
