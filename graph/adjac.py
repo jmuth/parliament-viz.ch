@@ -49,12 +49,9 @@ ppl = pd.read_csv('data/Person.csv').dropna(axis=0, subset=['PersonNumber', 'Per
 
 #df = pd.read_csv('data/Transcript.csv', skiprows=range(1, 150000)).dropna(axis=0, subset=['End', 'PersonNumber', 'IdSubject'])
 df = pd.read_csv('data/Transcript.csv').dropna(axis=0, subset=['End', 'PersonNumber', 'IdSubject'])
-df = df.loc[df.IdSession == 4905]
 
-adj = pd.read_csv('data/adj.csv').set_index('PersonNumber')
-subjects = df['IdSubject'].unique().tolist()
-dico, active_numbers = person_number_to_id(active_ids, ppl)
-print('#subjects: '+str(len(subjects)))
+
+#df = df.loc[df.IdSession == 4905]
 
 #### THE PROCESS ####
 def populate_adj(adj, df, dico, active_numbers, subjects):
@@ -70,11 +67,21 @@ def populate_adj(adj, df, dico, active_numbers, subjects):
 					pair = [int(dico[pair[0]]), int(dico[pair[1]])]
 					#print(pair)
 					update_adj(adj, pair)
-		print('subject '+str(subj)+' done!')
+		#print('subject '+str(subj)+' done!')
 	end_time = time.time()
 	print('time elapsed: '+str(end_time-start_time))
 	return adj
 #####################
 
-adja = populate_adj(adj, df, dico, active_numbers, subjects)
-adja.to_csv('data/adja_one_sesh.csv')
+sessions = df.IdSession.unique()
+
+for sesh in sessions:
+
+    adj = pd.read_csv('data/adj.csv').set_index('PersonNumber')
+    subjects = df['IdSubject'].unique().tolist()
+    dico, active_numbers = person_number_to_id(active_ids, ppl)
+    print('sesh: '+str(sesh))
+    print('#subjects: '+str(len(subjects)))
+
+    adja = populate_adj(adj, df, dico, active_numbers, subjects)
+    adja.to_csv('data/adja_sesh'+str(sesh)+'.csv')
