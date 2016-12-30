@@ -1,6 +1,6 @@
 # State of our project
 
-With this project, we will provide a better, more intuitive and synthetized, visualisation of the data hosted on www.parlament.ch.
+With this project, we will provide a better, more intuitive and synthetized visualisation of the data hosted on www.parlament.ch.
 
 ## What we've done so far
 
