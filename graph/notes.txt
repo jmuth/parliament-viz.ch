@@ -8,3 +8,6 @@ transcript_clean.csv est le résultat de ça:
 transc = pd.read_csv('data/Transcript.csv').drop('Unnamed: 0', axis=1)
 transc.dropna(axis=0, inplace=True, subset=['PersonNumber', 'Text'])
 transc['PersonNumber'] = transc['PersonNumber'].apply(lambda x: int(x))
+
+
+FirstSession est pas forcément la première session de présence, c’est la première session où la personne parle
