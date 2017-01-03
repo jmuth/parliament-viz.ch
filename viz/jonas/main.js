@@ -1,9 +1,20 @@
+var colors = {
+	'st0': '#BD2227',
+    'st1': '#9CCC4A',
+    'st2': '#A1729A',
+    'st3': '#FBEF98',
+    'st4': '#F79753',
+    'st5': '#486FB6',
+    'st6': '#258051',
+}
+
 var bitch;
 var ints;
 var people;
+var friends;
 
-var height = 150;
-var width = 400;
+var height = 105;
+var width = 390;
 
 function importAdj(json) {
 	$.getJSON(json, function(d) {
@@ -23,16 +34,46 @@ function importPeople(json) {
 	});
 }
 
-$('circle').each(function(i, obj) {
-	var oldId = obj.id;
-	var newId = oldId[3]+oldId.slice(5,8);
-	obj.id = newId;
-	$(obj).attr('r', 6.5)
-	$(obj).attr('stroke', '#555555');
-	$(obj).attr('stroke-opacity', .7);
-	$(this).on('mouseover', {'id': obj.id}, opacBitch);
-	$(this).on('mouseleave', resetOp)
-})
+function importFriends(json) {
+	$.getJSON(json, function(d) {
+		friends = d;
+	});
+}
+
+function setupId() {
+	$('circle').each(function(i, obj) {
+		var oldId = obj.id;
+		var newId = oldId[3]+oldId.slice(5,8);
+		obj.id = newId;
+		$(obj).attr('r', 6.5)
+		$(obj).attr('stroke', '#555555');
+		$(obj).attr('stroke-opacity', .7);
+		$(this).on('mouseover', {'id': obj.id}, showInfo);
+		$(this).on('mouseleave', resetOp)
+		$(this).on('click', bitchbitch)
+	})
+}
+
+function setupCircles() {
+	$('circle').each(function(i, obj) {
+		$(obj).attr('r', 6.5)
+		$(obj).attr('stroke', '#555555');
+		$(obj).attr('stroke-opacity', .7);
+		$(this).on('mouseover', {'id': obj.id}, showInfo);
+		$(this).on('mouseleave', resetOp)
+		$(this).on('click', bitchbitch)
+	})
+}
+
+function bitchbitch() {
+	$('circle').each(function() {
+		console.log('bitch')
+		$(this).off('mouseover');
+		$(this).off('mouseleave');
+	})
+	$(this).on('click', setupCircles);
+	//$(document).on('click', setup);
+}
 
 function findMax(line) {
 	var max = 0;
@@ -47,27 +88,37 @@ function findMax(line) {
 
 function resetOp() {
 	$('circle').each(function(i, obj) {
-		$(obj).attr('fill-opacity', 1);
-		$(obj).attr('stroke-opacity', .7);
+		$(obj).attr('fill-opacity', 1)
+			.attr('stroke-opacity', .7)
+			.attr('stroke', '#555555')
+			.attr('stroke-width', 1);
 	})
 }
 
-function opacBitch(event) {
+function showInfo(event) {
 	var id = event.data.id;
+	opacBitch(id);
+}
+
+function opacBitch(id) {
 	var line = bitch[id];
 	var max = findMax(line);
 
-	$('#pic').attr('src', 'portraits/'+event.data.id+'.jpg');
+	$('#'+id).attr('stroke', 'red')
+		.attr('stroke-width', 2);
+
+	$('#pic').attr('src', 'portraits/'+id+'.jpg');
 
 	$('#bioName').text(people[id].FirstName+' '+people[id].LastName);
 	$('#bioParty').text(people[id].PartyName);
 	$('#bioCanton').text(people[id].CantonAbbreviation);
 
 	//$('#wc').attr('src', 'wc/'+event.data.id+'_wc.jpg');
-	showTimeline(event.data.id);
+	showTimeline(id);
+	showFriends(id);
 	$('circle').each(function(i, obj) {
 		var thisId = obj.id;
-		if (thisId != event.data.id) {
+		if (thisId != id) {
 			var value = line[thisId]/max;	
 			$(obj).attr('fill-opacity', value);
 			$(obj).attr('stroke-opacity', Math.max(value, .05));
@@ -120,7 +171,7 @@ function showTimeline(id) {
 
   	
 	g.append("g")
-		.attr("class", "axis axis--x")
+		.attr("class", "axis")
 		.attr("transform", "translate(0," + height + ")")
 		.call(d3.axisBottom(x).ticks(3))
 		.selectAll("text")
@@ -131,7 +182,7 @@ function showTimeline(id) {
 	    .style("text-anchor", "start");
 	
 	g.append("g")
-		.attr("class", "axis axis--y")
+		.attr("class", "axis")
 		.call(d3.axisLeft(y).ticks(3))
 
 	g.selectAll(".bar")
@@ -172,7 +223,49 @@ function showTimeline(id) {
 	  .attr("class", "line")
 	  .attr("d", line);
 	*/
+	//console.log(data);
+}
+
+function showFriends(id) {
+	gFriends.selectAll('*').remove();
+	data = friends[id];
 	console.log(data);
+	gFriends.selectAll('.friend')
+		.data(data)
+		.enter().append('g')
+		.attr('class', 'grect')
+		.append('rect')
+		.attr('x', 5)
+		.attr('y', function(d, i) {return 5+i*(223/5);})
+		.attr('width', 175)
+		.attr('height', (223/5)-3)
+		.attr('fill', function(d) {
+			var cla = $('#'+d.friend).attr('class');
+			return colors[cla]
+		})
+		.attr('opacity', .7)
+		.on('mouseover', function() { $(this).attr('opacity', 1);})
+		.on('mouseleave', function() { $(this).attr('opacity', .7);})
+		
+	d3.selectAll('.grect')
+		.append('image')
+		.attr('xlink:href', function(d) { return 'portraits/'+d.friend+'.jpg'; })
+		.attr('x', 9)
+		.attr('y', function(d, i) {return 9+i*(223/5);})
+		.attr('height', '34px')
+		.attr('width', '34px');
+
+	d3.selectAll('.grect')
+		.append('text')
+		.attr('x', 48)
+		.attr('y', function(d, i){ return 21+i*(223/5)})
+		.text(function(d) { return people[d.friend].FirstName+' '+people[d.friend].LastName; });
+
+	d3.selectAll('.grect')
+		.append('text')
+		.attr('x', 48)
+		.attr('y', function(d, i){ return 38+i*(223/5)})
+		.text(function(d) { return '# together: '+d.number; });
 }
 
 var svg = d3.select("#bitch"),
@@ -181,9 +274,11 @@ var svg = d3.select("#bitch"),
     width = +width - margin.left - margin.right,
     height = +height - margin.top - margin.bottom,
     g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var svgFriends = d3.select('#friends'),
+	gFriends = svgFriends.append('g');
+
 /*
-
-
 d3.tsv("data.tsv", function(d) {
   d.date = parseTime(d.date);
   d.close = +d.close;
@@ -218,5 +313,8 @@ d3.tsv("data.tsv", function(d) {
 
 */
 importAdj('adj.JSON');
-importInts('year_ints.json');
-importPeople('people_jonas.json');
+importInts('year_ints2.json');
+importPeople('people_jonas2.json');
+importFriends('friends.json');
+setupId();
+setupCircles();

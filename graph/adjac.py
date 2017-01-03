@@ -48,7 +48,7 @@ active_ids = get_active_ids(data)
 ppl = pd.read_csv('data/Person.csv').dropna(axis=0, subset=['PersonNumber', 'PersonIdCode'])
 
 #df = pd.read_csv('data/Transcript.csv', skiprows=range(1, 150000)).dropna(axis=0, subset=['End', 'PersonNumber', 'IdSubject'])
-df = pd.read_csv('data/Transcript.csv').dropna(axis=0, subset=['End', 'PersonNumber', 'IdSubject'])
+df = pd.read_csv('data/Transcript2.csv').dropna(axis=0, subset=['End', 'PersonNumber', 'IdSubject'])
 
 
 #df = df.loc[df.IdSession == 4905]
@@ -73,6 +73,7 @@ def populate_adj(adj, df, dico, active_numbers, subjects):
 	return adj
 #####################
 
+"""
 sessions = df.IdSession.unique()
 
 for sesh in sessions:
@@ -85,3 +86,11 @@ for sesh in sessions:
 
     adja = populate_adj(adj, df, dico, active_numbers, subjects)
     adja.to_csv('data/adja_sesh'+str(sesh)+'.csv')
+"""
+
+adj = pd.read_csv('data/adj.csv').set_index('PersonNumber')
+subjects = df['IdSubject'].unique().tolist()
+dico, active_numbers = person_number_to_id(active_ids, ppl)
+adja = populate_adj(adj, df, dico, active_numbers, subjects)
+
+adja.to_csv('new_data/new_adja.csv')
