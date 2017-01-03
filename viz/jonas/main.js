@@ -8,72 +8,57 @@ var colors = {
     'st6': '#258051',
 }
 
-var bitch;
+var adj;
 var ints;
 var people;
 var friends;
 
+var focusOn = 0;
+
 var height = 105;
 var width = 390;
 
-function importAdj(json) {
-	$.getJSON(json, function(d) {
-		bitch =  d;
-	});
-};
 
-function importInts(json) {
-	$.getJSON(json, function(d) {
-		ints = d;
-	});
-}
-
-function importPeople(json) {
-	$.getJSON(json, function(d) {
-		people = d;
-	});
-}
-
-function importFriends(json) {
-	$.getJSON(json, function(d) {
-		friends = d;
-	});
-}
-
+// modifies the ID's so they're correct
 function setupId() {
 	$('circle').each(function(i, obj) {
 		var oldId = obj.id;
 		var newId = oldId[3]+oldId.slice(5,8);
 		obj.id = newId;
-		$(obj).attr('r', 6.5)
-		$(obj).attr('stroke', '#555555');
-		$(obj).attr('stroke-opacity', .7);
-		$(this).on('mouseover', {'id': obj.id}, showInfo);
-		$(this).on('mouseleave', resetOp)
-		$(this).on('click', bitchbitch)
 	})
 }
 
 function setupCircles() {
 	$('circle').each(function(i, obj) {
 		$(obj).attr('r', 6.5)
-		$(obj).attr('stroke', '#555555');
-		$(obj).attr('stroke-opacity', .7);
-		$(this).on('mouseover', {'id': obj.id}, showInfo);
-		$(this).on('mouseleave', resetOp)
-		$(this).on('click', bitchbitch)
+			.attr('stroke', '#555555')
+			.attr('stroke-opacity', .7)
+			.attr('stroke-width', 1)
+			.on('mouseover', {'id': obj.id}, showInfo)
+			.on('mouseleave', resetOp)
+			.off('click')
+			.on('click', focus);
 	})
 }
 
-function bitchbitch() {
+function focus() {
+	focusOn = 1;
+	/*
 	$('circle').each(function() {
-		console.log('bitch')
 		$(this).off('mouseover');
 		$(this).off('mouseleave');
 	})
-	$(this).on('click', setupCircles);
+	*/
+	$(this).off('click')
+		.on('click', unfocus);
 	//$(document).on('click', setup);
 }
+
+function focusId(id) {
+	focusOn = 1;
+	$('#'+id).off('click')
+		.on('click', unfocus);
+} 
 
 function findMax(line) {
 	var max = 0;
@@ -86,26 +71,43 @@ function findMax(line) {
 	return max;
 }
 
+function unfocus() {
+	focusOn = 0;
+	resetOp();
+}
+
 function resetOp() {
-	$('circle').each(function(i, obj) {
-		$(obj).attr('fill-opacity', 1)
-			.attr('stroke-opacity', .7)
-			.attr('stroke', '#555555')
-			.attr('stroke-width', 1);
-	})
+	if (focusOn == 0) {
+		$('circle').each(function(i, obj) {
+			$(obj).attr('fill-opacity', 1)
+				.attr('stroke-opacity', .7)
+				.attr('stroke', '#555555')
+				.attr('stroke-width', 1)
+				.off('click')
+				.on('click', focus);
+		})
+	}
+	//setupCircles();
 }
 
 function showInfo(event) {
-	var id = event.data.id;
+	if (focusOn == 0) {
+		var id = event.data.id;
+		opacBitch(id);
+	}
+}
+
+function showInfo2(id) {
+	console.log('bitches');
 	opacBitch(id);
 }
 
 function opacBitch(id) {
-	var line = bitch[id];
+	var line = adj[id];
 	var max = findMax(line);
 
 	$('#'+id).attr('stroke', 'red')
-		.attr('stroke-width', 2);
+		.attr('stroke-width', 4);
 
 	$('#pic').attr('src', 'portraits/'+id+'.jpg');
 
@@ -130,28 +132,14 @@ function opacBitch(id) {
 	
 }
 
-function checkBitch() {
-	var test = [];
-	$('.st1').each(function(i, obj) {
-		var this_id = obj.id;
-		if (test.indexOf(this_id) == -1) {
-			test.push(this_id);
-			console.log(test.length);
-		} else {
-			console.log('BIATCH!!');
-		}
-	})
-}
-
+///////////////////////////////
+//// BAR GRAPH FUNCTIONS //////
+///////////////////////////////
 function showTimeline(id) {
 
 	g.selectAll('*').remove();
 
-	dat = ints[id];
-
-	data = dat.years.map(function(d, i) {
-		return { 'year' : d, 'int' : dat.ints[i], 'median' : dat.median[i] };
-	});
+	data = ints[id];
 
 	var x = d3.scaleBand()
     	.rangeRound([0, width]).padding(0.1);
@@ -159,16 +147,8 @@ function showTimeline(id) {
 	var y = d3.scaleLinear()
 	    .rangeRound([height, 0]);
 
-   /*
-    var line = d3.line()
-    	.curve(d3.curveMonotoneX)
-	    .x(function(d) { return x(d.sesh); })
-	    .y(function(d) { return y(d.int); });
-    */
-
 	x.domain(data.map(function(d) { return d.year; }));
   	y.domain([0, Math.max(d3.max(data, function(d) { return d.int; }), d3.max(data, function(d) { return d.median; }))]);
-
   	
 	g.append("g")
 		.attr("class", "axis")
@@ -208,45 +188,54 @@ function showTimeline(id) {
 		//.attr("height", function(d) { return height - y(d.median); });
 		.attr('height', 1);
 
-  	/*
-	g.append("g")
-      .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-
-	g.append("g")
-	  .attr("class", "axis axis--y")
-	  .call(d3.axisLeft(y));
-
-	g.append("path")
-	  .datum(data)
-	  .attr("class", "line")
-	  .attr("d", line);
-	*/
-	//console.log(data);
 }
 
+
+///////////////////////////////
+//// 'FRIENDS' FUNCTIONS //////
+///////////////////////////////
+function friendOver(id) {
+	$('#rect'+id).attr('opacity', 1);
+}
+
+function friendOut(id) {
+	$('#rect'+id).attr('opacity', .7);
+}
+
+// some height values hardcoded, bad
 function showFriends(id) {
+	// removing the previous ones
 	gFriends.selectAll('*').remove();
+	// slicing the data
 	data = friends[id];
-	console.log(data);
+
 	gFriends.selectAll('.friend')
 		.data(data)
 		.enter().append('g')
+		.attr('personIdCode', id)
 		.attr('class', 'grect')
+		// mouse events on the g element
+		.on('mouseover', function(d) { friendOver(d.friend);})
+		.on('mouseleave', function(d) { friendOut(d.friend);})
+		// friendclick
+		.on('click', function(d) { unfocus(); console.log('bitch'); showInfo2(d.friend); focusId(d.friend);})
+		// rectangle
 		.append('rect')
+		.attr('rx', 2)
+		.attr('ry', 2)
+		.attr('id', function(d) { return 'rect'+d.friend; })
 		.attr('x', 5)
 		.attr('y', function(d, i) {return 5+i*(223/5);})
 		.attr('width', 175)
 		.attr('height', (223/5)-3)
 		.attr('fill', function(d) {
+			// looking for the node class to check color
 			var cla = $('#'+d.friend).attr('class');
 			return colors[cla]
 		})
 		.attr('opacity', .7)
-		.on('mouseover', function() { $(this).attr('opacity', 1);})
-		.on('mouseleave', function() { $(this).attr('opacity', .7);})
-		
+	
+	// mini photo
 	d3.selectAll('.grect')
 		.append('image')
 		.attr('xlink:href', function(d) { return 'portraits/'+d.friend+'.jpg'; })
@@ -255,12 +244,14 @@ function showFriends(id) {
 		.attr('height', '34px')
 		.attr('width', '34px');
 
+	// names
 	d3.selectAll('.grect')
 		.append('text')
 		.attr('x', 48)
 		.attr('y', function(d, i){ return 21+i*(223/5)})
 		.text(function(d) { return people[d.friend].FirstName+' '+people[d.friend].LastName; });
 
+	// # of common interventions
 	d3.selectAll('.grect')
 		.append('text')
 		.attr('x', 48)
@@ -268,6 +259,10 @@ function showFriends(id) {
 		.text(function(d) { return '# together: '+d.number; });
 }
 
+
+///////////////////////////////
+//// SETTING D3 VARIABLES /////
+///////////////////////////////
 var svg = d3.select("#bitch"),
     g = svg.append("g"),
     margin = {top: 10, right: 10, bottom: 10, left: 30},
@@ -278,40 +273,37 @@ var svg = d3.select("#bitch"),
 var svgFriends = d3.select('#friends'),
 	gFriends = svgFriends.append('g');
 
-/*
-d3.tsv("data.tsv", function(d) {
-  d.date = parseTime(d.date);
-  d.close = +d.close;
-  return d;
-}, function(error, data) {
-  if (error) throw error;
 
-  x.domain(d3.extent(data, function(d) { return d.date; }));
-  y.domain(d3.extent(data, function(d) { return d.close; }));
+///////////////////////////////
+//// IMPORT FUNCTIONS /////////
+///////////////////////////////
+function importAdj(json) {
+	$.getJSON(json, function(d) {
+		adj =  d;
+	});
+};
 
-  g.append("g")
-      .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+function importInts(json) {
+	$.getJSON(json, function(d) {
+		ints = d;
+	});
+}
 
-  g.append("g")
-      .attr("class", "axis axis--y")
-      .call(d3.axisLeft(y))
-    .append("text")
-      .attr("fill", "#000")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", "0.71em")
-      .style("text-anchor", "end")
-      .text("Price ($)");
+function importPeople(json) {
+	$.getJSON(json, function(d) {
+		people = d;
+	});
+}
 
-  g.append("path")
-      .datum(data)
-      .attr("class", "line")
-      .attr("d", line);
-});
+function importFriends(json) {
+	$.getJSON(json, function(d) {
+		friends = d;
+	});
+}
 
-*/
+///////////////////////////////
+//// INITIALIZING /////////////
+///////////////////////////////
 importAdj('adj.JSON');
 importInts('year_ints2.json');
 importPeople('people_jonas2.json');
