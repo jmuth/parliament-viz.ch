@@ -95,3 +95,23 @@ circle {
 	font-size: 9pt;
 	cursor: pointer;
 }
+
+#tag {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: none;
+	width: auto;
+	height: auto;
+	background-color: grey;
+	padding: 5px;
+	border-radius: 2px;
+	font-family: sans-serif;
+	font-size: 9pt;
+	color: white;
+}
+
+#search {
+	width: 90px;
+	color: grey;
+}

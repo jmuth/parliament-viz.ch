@@ -11,3 +11,5 @@ transc['PersonNumber'] = transc['PersonNumber'].apply(lambda x: int(x))
 
 
 FirstSession est pas forcément la première session de présence, c’est la première session où la personne parle
+
+problème sur Hermann Hess

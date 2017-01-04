@@ -8,10 +8,6 @@ var colors = {
     'st6': '#258051',
 }
 
-var adj;
-var ints;
-var people;
-var friends;
 
 var focusOn = 0;
 
@@ -20,6 +16,10 @@ var width = 390;
 
 
 // modifies the ID's so they're correct
+// this is absolutely needed as the export from
+// illustrator was weird
+// could think of changing it once and for all
+// but too lazy
 function setupId() {
 	$('circle').each(function(i, obj) {
 		var oldId = obj.id;
@@ -28,6 +28,8 @@ function setupId() {
 	})
 }
 
+// modifies the circles a bit and
+// add event listeners to them
 function setupCircles() {
 	$('circle').each(function(i, obj) {
 		$(obj).attr('r', 6.5)
@@ -44,9 +46,9 @@ function setupCircles() {
 function focus() {
 	focusOn = 1;
 	/*
-	$('circle').each(function() {
-		$(this).off('mouseover');
-		$(this).off('mouseleave');
+	$('circle').each(function(obj) {
+		$(obj).off('click');
+		$(obj).on('click', function(obj) { unfocus(); showInfo2(obj.attr('id')); focusId(obj.attr('id'));});
 	})
 	*/
 	$(this).off('click')
@@ -77,6 +79,7 @@ function unfocus() {
 }
 
 function resetOp() {
+	$('#tag').css('display', 'none');
 	if (focusOn == 0) {
 		$('circle').each(function(i, obj) {
 			$(obj).attr('fill-opacity', 1)
@@ -91,24 +94,35 @@ function resetOp() {
 }
 
 function showInfo(event) {
+	var id = event.data.id;
 	if (focusOn == 0) {
-		var id = event.data.id;
-		opacBitch(id);
+		populateInfo(id);
+		changeOpac(id);
+	} else {
+		showTag(event, id)
 	}
 }
 
 function showInfo2(id) {
-	console.log('bitches');
-	opacBitch(id);
+	unfocus();
+	populateInfo(id)
+	changeOpac(id);
+	focusId(id);
 }
 
-function opacBitch(id) {
-	var line = adj[id];
-	var max = findMax(line);
+function showTag(event, id) {
+	var circle = $('#'+id);
+	var div = $('#tag');
+	var top = event.clientY-7,
+		left = event.clientX+15;
 
-	$('#'+id).attr('stroke', 'red')
-		.attr('stroke-width', 4);
+	div.css('display', 'block')
+		.css('top', top+'px')
+		.css('left', left+'px')
+		.text(people[id].FirstName+' '+people[id].LastName);
+}
 
+function populateInfo(id) {
 	$('#pic').attr('src', 'portraits/'+id+'.jpg');
 
 	$('#bioName').text(people[id].FirstName+' '+people[id].LastName);
@@ -118,6 +132,16 @@ function opacBitch(id) {
 	//$('#wc').attr('src', 'wc/'+event.data.id+'_wc.jpg');
 	showTimeline(id);
 	showFriends(id);
+}
+
+function changeOpac(id) {
+	var line = adj[id];
+	var max = findMax(line);
+
+	$('#'+id).attr('stroke', 'red')
+		.attr('stroke-width', 4);
+
+	
 	$('circle').each(function(i, obj) {
 		var thisId = obj.id;
 		if (thisId != id) {
@@ -136,7 +160,9 @@ function opacBitch(id) {
 //// BAR GRAPH FUNCTIONS //////
 ///////////////////////////////
 function showTimeline(id) {
+	// declaring the bar graph according to id
 
+	// remove what was previously there
 	g.selectAll('*').remove();
 
 	data = ints[id];
@@ -196,10 +222,14 @@ function showTimeline(id) {
 ///////////////////////////////
 function friendOver(id) {
 	$('#rect'+id).attr('opacity', 1);
+	$('#'+id).attr('stroke', 'red')
+		.attr('stroke-width', 4);
 }
 
 function friendOut(id) {
 	$('#rect'+id).attr('opacity', .7);
+	$('#'+id).attr('stroke', '#555555')
+		.attr('stroke-width', 1);
 }
 
 // some height values hardcoded, bad
@@ -218,7 +248,7 @@ function showFriends(id) {
 		.on('mouseover', function(d) { friendOver(d.friend);})
 		.on('mouseleave', function(d) { friendOut(d.friend);})
 		// friendclick
-		.on('click', function(d) { unfocus(); console.log('bitch'); showInfo2(d.friend); focusId(d.friend);})
+		.on('click', function(d) { showInfo2(d.friend);})
 		// rectangle
 		.append('rect')
 		.attr('rx', 2)
@@ -263,7 +293,7 @@ function showFriends(id) {
 ///////////////////////////////
 //// SETTING D3 VARIABLES /////
 ///////////////////////////////
-var svg = d3.select("#bitch"),
+var svg = d3.select("#int_graph"),
     g = svg.append("g"),
     margin = {top: 10, right: 10, bottom: 10, left: 30},
     width = +width - margin.left - margin.right,
@@ -277,36 +307,61 @@ var svgFriends = d3.select('#friends'),
 ///////////////////////////////
 //// IMPORT FUNCTIONS /////////
 ///////////////////////////////
+var adj;
 function importAdj(json) {
 	$.getJSON(json, function(d) {
 		adj =  d;
 	});
 };
 
+var ints;
 function importInts(json) {
 	$.getJSON(json, function(d) {
 		ints = d;
 	});
 }
 
+var people;
 function importPeople(json) {
 	$.getJSON(json, function(d) {
 		people = d;
 	});
 }
 
+var friends;
 function importFriends(json) {
 	$.getJSON(json, function(d) {
 		friends = d;
 	});
 }
 
+var allNames;
+function importNames(json) {
+	$.getJSON(json, function(d) {
+		allNames = d;
+		$('#search').autocomplete({source: allNames['names']});
+	});
+}
+
 ///////////////////////////////
 //// INITIALIZING /////////////
 ///////////////////////////////
-importAdj('adj.JSON');
+importAdj('adj.json');
 importInts('year_ints2.json');
 importPeople('people_jonas2.json');
 importFriends('friends.json');
+
+// Preparing for search field
+//importNames('names.json');
+
+// modifies the ID's so they're correct
+// this is absolutely needed as the export from
+// illustrator was weird
+// could think of changing it once and for all
+// but too lazy
 setupId();
+
+// modifies the circles a bit and
+// add event listeners to them
 setupCircles();
+
