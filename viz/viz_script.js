@@ -339,7 +339,7 @@ d3.json("data/active.json", function(error, graph) {
                     if(nodes[i].dragged == false) {
                         return color(colorType, getValForColor(colorType, nodes[i]));
                     } else {
-                        return "black";
+                        return "#FFFFFF";
                     }
                 })
                 ;
@@ -349,14 +349,14 @@ d3.json("data/active.json", function(error, graph) {
                     if (d.dragged == true) {
                         return color(colorType, getValForColor(colorType, d));
                     } else {
-                        return "#D3D3D3"
+                        return "#83878D"
                     }
                 })
                 .style("fill", function(d) {
                     if (d.dragged == false) {
                         return color(colorType, getValForColor(colorType, d));
                     } else {
-                        return "#D3D3D3"
+                        return "#83878D"
                     }
                 })
                 .style("stroke-width", 3);
@@ -391,7 +391,7 @@ d3.json("data/active.json", function(error, graph) {
                 })
                 .style("fill", function(d) {
                     if(d.dragged == true) {
-                        return "black";
+                        return "#FFFFFF";
                     } else {
                         return color(colorType, getValForColor(colorType, d));
                     }
@@ -423,7 +423,7 @@ d3.json("data/active.json", function(error, graph) {
                 if(nodes[i].selected == false) {
                     return null;
                 } else {
-                    return "#D3D3D3";
+                    return "#83878D";
                 }
             })
             .style("stroke-width", function(o,i) {
@@ -453,9 +453,9 @@ d3.json("data/active.json", function(error, graph) {
             d3.selectAll(".dataNodes")
                 .style("fill", function(d) {
                     if (d.dragged == true && d.selected == true) {
-                        return "#D3D3D3";
+                        return "#83878D";
                     } else if (d.dragged == true && d.selected == false) {
-                        return "black";
+                        return "#FFFFFF";
                     } else if (d.dragged == false && d.selected == true) {
                         return color(colorType, getValForColor(colorType, d));
                     } else {
@@ -468,7 +468,7 @@ d3.json("data/active.json", function(error, graph) {
                     } else if (d.dragged == true && d.selected == false) {
                         return color(colorType, getValForColor(colorType, d));
                     } else if (d.dragged == false && d.selected == true) {
-                        return "#D3D3D3";
+                        return "#83878D";
                     } else {
                         return null;
                     }
@@ -552,7 +552,7 @@ d3.json("data/active.json", function(error, graph) {
                         return texts[colorType][variables[colorType][i]] + " (" + nbr[colorType][variables[colorType][i]] + ")";
                     })
                     .attr("font-weight", "bold")
-                    .attr("fill", "white")
+                    .attr("fill", "#000000")
                     .attr("dominant-baseline", "central");
             }
             color_changed = false;
@@ -582,7 +582,7 @@ d3.json("data/active.json", function(error, graph) {
                     .attr("font-size", "18px")
                     .attr("font-weight", "bold")
                     .attr("text-anchor", "middle")
-                    .attr("fill", "white")
+                    .attr("fill", "#000000")
                     .attr("dominant-baseline", "central");
 
                 cluster_changed = false;
@@ -613,7 +613,7 @@ function getValForColor(colorType, node) {
 
 function color(colorType, val) {
     if (colorType == "none") {
-        return "#FFFFFF";
+        return "#000000";
     } else if(colorType == "party") {
         if (val == 'PLD') {
             return '#3131BD'
@@ -746,9 +746,9 @@ function dragged(d) {
     d3.select(this)
         .style("fill", function(d) {
             if (d.selected == true) {
-                return "#D3D3D3";
+                return "#83878D";
             } else {
-                return "black";
+                return "#FFFFFF";
             }
         })
         .style("stroke", color(colorType,getValForColor(colorType, d)))
