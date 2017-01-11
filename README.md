@@ -5,14 +5,16 @@
 
 [Gael Lederrey](https://github.com/glederrey), [Jonas Racine](https://github.com/jonasracine) and [Joachim Muth](https://github.com/jmuth)
 
-The current draft of the website is available [here](http://178.62.67.149)
+The current drafts of visualizations are available on website:
+  * [Draft 1](http://178.62.67.149)
+  * [Draft 2](http://178.62.67.149/parl/parliament.html)
 
 
 ## Similar Project
 
 A project about predictions on the same data exists [here](https://github.com/thom056/ada-parliament-ML). 
 
-It is possible that, in the future, the two teams will work together. 
+It is possible that, in the future, both teams will work together. 
 
 ## Abstract
 
@@ -133,11 +135,18 @@ Visitors will be able to see the evolution of frequencies of specific themes in 
 
   - **November 6th, 2016**: Start of the project ✔
   - **November 13th, 2016**: Data scraping and parsing of a first usable dataset ✔
-  - **November 27th, 2016**: Content extraction of the official bulletins using NLP tools (speaker, themes, ...)
-  - **December 11th, 2016**: First interactive data visualization (local hosted) ✔
-  - **Mid-December, 2016**: Checkpoint
+  - **November 27th, 2016**: Content extraction of the official bulletins using NLP tools (speaker, themes, ...) 
+  - [UPD] Topics will be extracted from tags
+  - **December 11th, 2016**: First interactive data visualization (local hosted) ✔
+  - **Mid-December, 2016**: Checkpoint ✔
   - **January 1st, 2017**: Growing of the database
+  - [ADD] Distinction between speeches as reporter and questions in participation scale.
+  - [ADD] Focus on initiatives and interventions.
+  - [ADD] Friendship though co-signatures.
   - **January 15th, 2017**: website design for user-friendly visualization
   - **January 31th, 2017**: Final deadline
+
+## Acknowledgements
+A warm thank you to **Alain Rebetez**, political journalist, and **Philippe Nantermod**, PLR deputy at National Council, for their expertise in Swiss parliamentary system and their external point of view about the project.
 
 
