@@ -137,7 +137,7 @@ Visitors will be able to see the evolution of frequencies of specific themes in 
   - **November 13th, 2016**: Data scraping and parsing of a first usable dataset ✔
   - **November 27th, 2016**: Content extraction of the official bulletins using NLP tools (speaker, themes, ...) 
   - [UPD] Topics will be extracted from tags
-  - **December 11th, 2016**: First interactive data visualization (local hosted) ✔
+  - **December 11th, 2016**: First interactive data visualization (local hosted) ✔
   - **Mid-December, 2016**: Checkpoint ✔
   - **January 1st, 2017**: Growing of the database
   - [ADD] Distinction between speeches as reporter and questions in participation scale.
