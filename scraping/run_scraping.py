@@ -16,6 +16,7 @@ from scraper import *
 print("[INFO] Start scraping")
 
 scrap = Scraper(time_out=3000000)
+scrap.get('Business')
 scrap.get('BusinessRole')
 scrap.get('BusinessStatus')
 scrap.get('BusinessType')
