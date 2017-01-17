@@ -40,7 +40,11 @@ class Scraper:
         :return (pandas.data_frame): table
         """
         table_size = self.count(table_name)
-        if table_size > 10000:
+        if table_name == 'BusinessRole':
+            df = self._inner_get_business_role(table_name)
+        elif table_name == 'BusinessStatus':
+            df = self._inner_get_big_table_skip(table_name)
+        elif table_size > 10000:
             df = self._inner_get_big_table_ids(table_name)
         elif table_size > 900:
             df = self._inner_get_big_table_skip(table_name)
@@ -173,15 +177,24 @@ class Scraper:
         # loop parameters
         limit_api = self.limit_api
         data_frames = []
-        id_ = 0
+        id_ = self._inner_get_smaller_id(table_name)
         i = 0
+        n_downloaded = 0
+        expected_size = self.count(table_name)
         while True:
             url = base + table_name + '?' + language + '%20and%20' + id_from + str(id_) + id_to + str(id_ + limit_api)
 
             df = self._inner_get_and_parse(url)
 
             # stop when we reach the end of the data
-            if df.shape == (0, 0):
+            # if df.shape == (0, 0):
+            #     break
+
+            # add number of elements downloaded
+            n_downloaded += df.shape[0]
+
+            # stop when downloaded the whole table
+            if n_downloaded >= expected_size:
                 break
 
             # stop after 10 iteration to avoid swiss police to knock at our door
@@ -223,3 +236,80 @@ class Scraper:
         """ check if folder exists to avoid error and create it if not """
         if not os.path.exists(self.folder):
             os.makedirs(self.folder)
+
+    def _inner_get_smaller_id(self, table_name):
+        url = self.url_base + table_name + '?' + self.url_lang_filter
+        df = self._inner_get_and_parse(url)
+        return int(df.ID[0])
+
+    def _inner_get_business_role(self, table_name):
+        """
+        Special case of Table BusinessRole which has non-trivial ID.
+        Filter result base on BusinessNumber (which is a random attribute) and iterate over it
+        At each iteratino process an _inner_get_big_table_skip method
+
+        Time Out after self.time_out iterations
+        :param table_name: Name of the wished table
+        :return: (pandas.data_frame) table
+        """
+        # url
+        base = self.url_base
+        language = "$filter=Language%20eq%20%27FR%27"
+        id_ = 19000000
+        step_id = 10000
+
+        # id filter (too long)
+        id_from = "BusinessNumber%20ge%20"
+        id_to = "%20and%20BusinessNumber%20lt%20"
+
+        # loop parameters
+        data_frames = []
+        i = 0
+        top = 1000
+        skip = 0
+        limit_api = self.limit_api
+        while True:
+            while True:
+                url = base + table_name + '?' + "$top=" + str(top) + \
+                      '&' + language + \
+                      '%20and%20' + id_from + str(id_) + id_to + str(id_ + step_id) + \
+                      '&' + "$skip=" + str(skip)
+
+                df = self._inner_get_and_parse(url)
+
+                # stop when we reach the end of the data
+                if df.shape == (0, 0):
+                    break
+
+                # # stop when we reach the end of the data
+                # url_count = base + table_name + "/$count?" + "$top=" + str(top) + \
+                #             '&' + language + \
+                #             '&' + id_from + str(id_) + id_to + str(id_ + step_id) + \
+                #             '&' + "$skip=" + str(skip)
+                # print(self._inner_url_count(url_count))
+                # if self._inner_url_count(url_count) == 0:
+                #     break
+
+                # stop after 10 iteration to avoid swiss police to knock at our door
+                if i > self.time_out:
+                    print("Loader timed out after ", i, " iterations. Data frame IDs are greater than ", top)
+                    break
+
+                data_frames.append(df)
+                # top += limit_api
+                skip += limit_api
+                i += 1
+
+            if id_ > 22000000:
+                break
+
+            id_ += step_id
+            skip = 0
+
+        # concat all downloaded tables
+        df = pd.concat(data_frames, ignore_index=True)
+
+        # check if we really download the whole table
+        self._inner_check_size(df, table_name)
+
+        return df
