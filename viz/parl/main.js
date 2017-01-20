@@ -14,12 +14,16 @@ var focusOn = 0;
 var height = 105;
 var width = 390;
 
+var coloring = 'intervention';
 
 // modifies the ID's so they're correct
 // this is absolutely needed as the export from
 // illustrator was weird
 // could think of changing it once and for all
 // but too lazy
+/////////////////////////
+// DEPRECATED, USELESS //
+///////////////////////// 
 function setupId() {
 	$('circle').each(function(i, obj) {
 		var oldId = obj.id;
@@ -135,7 +139,12 @@ function populateInfo(id) {
 }
 
 function changeOpac(id) {
-	var line = adj[id];
+	if (coloring == 'intervention') {
+		var line = adj[id];
+	} else if (coloring == 'cosign') {
+		var line = adjCosign[id];
+	}
+	
 	var max = findMax(line);
 
 	$('#'+id).attr('stroke', 'red')
@@ -145,9 +154,11 @@ function changeOpac(id) {
 	$('circle').each(function(i, obj) {
 		var thisId = obj.id;
 		if (thisId != id) {
-			var value = line[thisId]/max;	
-			$(obj).attr('fill-opacity', value);
-			$(obj).attr('stroke-opacity', Math.max(value, .05));
+			var value = line[thisId]/max;
+
+			$(obj).attr('fill-opacity', value)
+				.attr('stroke-opacity', Math.max(value, .05))
+				.attr('bitch', line[thisId]);
 			/*if (thisId[0] == 'I') {
 				$(obj).fadeTo(300, 0);
 			}*/
@@ -237,7 +248,11 @@ function showFriends(id) {
 	// removing the previous ones
 	gFriends.selectAll('*').remove();
 	// slicing the data
-	data = friends[id];
+	if (coloring == 'intervention') {
+		var data = friends[id];
+	} else if (coloring == 'cosign') {
+		var data = friendsCosign[id];
+	}
 
 	gFriends.selectAll('.friend')
 		.data(data)
@@ -314,6 +329,13 @@ function importAdj(json) {
 	});
 };
 
+var adj_cosign;
+function importAdjCosign(json) {
+	$.getJSON(json, function(d) {
+		adjCosign = d;
+	})
+}
+
 var ints;
 function importInts(json) {
 	$.getJSON(json, function(d) {
@@ -335,6 +357,13 @@ function importFriends(json) {
 	});
 }
 
+var friends_cosign;
+function importFriendsCosign(json) {
+	$.getJSON(json, function(d) {
+		friendsCosign = d;
+	});
+}
+
 var allNames;
 function importNames(json) {
 	$.getJSON(json, function(d) {
@@ -350,6 +379,8 @@ importAdj('adj.json');
 importInts('year_ints2.json');
 importPeople('people_jonas2.json');
 importFriends('friends.json');
+importAdjCosign('adj_cosign.json');
+importFriendsCosign('friends_cosign.json');
 
 // Preparing for search field
 //importNames('names.json');
@@ -359,7 +390,7 @@ importFriends('friends.json');
 // illustrator was weird
 // could think of changing it once and for all
 // but too lazy
-setupId();
+//setupId();
 
 // modifies the circles a bit and
 // add event listeners to them
