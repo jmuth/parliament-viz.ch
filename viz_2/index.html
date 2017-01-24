@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    body {
+        #background:black;
+        #color:white;
+    }
+
+    .node circle {
+        stroke-width: 2px;
+    }
+
+    #visualisation {
+        border:0;
+        margin:none;
+        width:100%;
+    }
+
+    #choices {
+        float:left;
+        width:10%;
+        #background:blue;
+    }
+
+    #councilor {
+        float:right;
+        width:20%;
+        #background:red;
+    }
+
+    #viz {
+        display: inline-block;
+        width: 70%;
+        #background:black;
+    }
+
+    #legend {
+        display: inline-block;
+        width: 70%;
+        #background:black;
+        margin-left: 10%;
+        #height: 30px;
+    }
+
+    .svg-container {
+        display: inline-block;
+        position: relative;
+        width: 100%;
+        padding-bottom: 62.5%; /* aspect ratio */
+        vertical-align: top;
+        overflow: hidden;
+    }
+    .svg-content-responsive {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+    }
+
+    .svg-container-legend {
+        display: inline-block;
+        position: relative;
+        width: 100%;
+        padding-bottom: 6.6666666%; /* aspect ratio */
+        vertical-align: top;
+        overflow: hidden;
+    }
+    .svg-content-responsive-legend {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+    }
+
+</style>
+
+<script src="http://d3js.org/d3.v4.min.js"></script>
+<script type="text/javascript" src="ext/jq.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vizu Parlament Clusters</title>
+</head>
+
+<h1>Visualisation on the Swiss Parliament</h1>
+<d>Another visualization is available <a href="parl/parliament.html">here</a></d>
+<h2>Information:</h2>
+<d>If you <b>pass the mouse over a point</b>, you'll be able to see more information on the councilor.</d><br>
+<d>If you <b>click on a point</b>, you will select a councilor and you will be able to follow him in the different cluster.</d><br>
+<d>If you <b>drag-and-drop</b> a point, it will stay at his place.</d><br>
+<d>If you <b>double-click</b>, the points will move again to there cluster.</d><br>
+<d>If you <b>triple-click</b>, the points will move a bit from their positions. It helps when a point is blocked.</d>
+<br><br>
+
+<div id="visualisation">
+    <div id="choices">
+        <b>Clustering</b>
+        <form name="Clustering">
+            <input type="radio" name="buttons" value="none" checked="True"> None<br>
+            <input type="radio" name="buttons" value="council"> Council<br>
+            <input type="radio" name="buttons" value="party" > Parties<br>
+            <input type="radio" name="buttons" value="gender"> Gender<br>
+            <input type="radio" name="buttons" value="language"> Language<br>
+            <input type="radio" name="buttons" value="age"> Age<br>
+            <input type="radio" name="buttons" value="canton"> Canton
+        </form>
+        <b>Colors</b>
+        <form name="Colors">
+            <input type="radio" name="buttons" value="none"> None<br>
+            <input type="radio" name="buttons" value="council"> Council<br>
+            <input type="radio" name="buttons" value="party" checked="True"> Parties<br>
+            <input type="radio" name="buttons" value="gender"> Gender<br>
+            <input type="radio" name="buttons" value="language"> Language<br>
+            <input type="radio" name="buttons" value="age"> Age<br>
+        </form>
+    </div>
+
+    <div id="viz">
+    </div>
+
+    <div id="councilor">
+        <div><b>Name: </b> <d id="councilorName"> NAME </d></div>
+        <div><b>Party: </b> <d id="councilorParty"> PARTY </d></div>
+        <div><b>Council: </b> <d id="councilorCouncil"> COUNCIL </d></div>
+        <div><b>Birthday: </b> <d id="councilorBirthday"> BIRTHDAY </d></div>
+        <div><b>Age: </b> <d id="councilorAge"> AGE </d> y.o.</div>
+        <div><b>Canton: </b> <d id="councilorCanton"> CANTON </d></div>
+        <div><b>Native Language: </b> <d id="councilorLanguage"> LANGUAGE </d></div>
+        <img id="councilorImage" width="100%" height="100%" src="data/portraits/person-260.jpg" alt="FIRSTNAME LASTNAME">
+    </div>
+</div>
+
+<div>
+    <div id="legend">
+
+    </div>
+</div>
+
+<script src="main.js"></script>
