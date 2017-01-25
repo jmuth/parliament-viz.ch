@@ -26,13 +26,13 @@ body {
 
 #viz {
 	display: inline-block;
-	width: 60%;
+	width: 50%;
 	#background:black;
 }
 
 #legend {
 	display: inline-block;
-	width: 60%;
+	width: 50%;
 	#background:black;
 	margin-left: 10%;
 	#height: 30px;

@@ -438,8 +438,10 @@ function emphasisAndShowInfo(d) {
 
         } else {
             var div = $('#tag');
-            var top = event.clientY,
-                left = event.clientX;
+            var top = event.y - 5,
+                left = event.x + 15;
+
+            console.log(event.x);
 
             div.css('display', 'block')
                 .css('top', top + 'px')
