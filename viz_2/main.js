@@ -2,7 +2,7 @@
 var rad_cluster = document.Clustering.buttons;
 var prev_cluster = null;
 var cluster = "none";
-var cluster_changed = false;
+var cluster_changed = true;
 for(var i = 0; i < rad_cluster.length; i++) {
     rad_cluster[i].onclick = function() {
         (prev_cluster)? console.log(prev_cluster.value):null;
@@ -36,7 +36,7 @@ var radius = 7,
 
 // We consider that the size of the box is 960x600
 var width = 737,
-    height = 595.3,
+    height = 600,
     height_l = 64;
 
 // Variable for node selection
@@ -115,6 +115,9 @@ var simulation = d3.forceSimulation().alphaDecay(0)
     //.force("center", d3.forceCenter(width / 2, height / 2));
     ;
 
+// Define different functions used to import
+// useful stuff
+
 var pos;
 function importPositions(json) {
     $.getJSON(json, function(d) {
@@ -122,7 +125,56 @@ function importPositions(json) {
     })
 }
 
+var adj;
+function importAdj(json) {
+    $.getJSON(json, function(d) {
+        adj =  d;
+    });
+};
+
+
+var adj_cosign;
+function importAdjCosign(json) {
+    $.getJSON(json, function(d) {
+        adjCosign = d;
+    })
+}
+
+var ints;
+function importInts(json) {
+    $.getJSON(json, function(d) {
+        ints = d;
+    });
+}
+
+var people;
+function importPeople(json) {
+    $.getJSON(json, function(d) {
+        people = d;
+    });
+}
+
+var friends;
+function importFriends(json) {
+    $.getJSON(json, function(d) {
+        friends = d;
+    });
+}
+
+var friends_cosign;
+function importFriendsCosign(json) {
+    $.getJSON(json, function(d) {
+        friendsCosign = d;
+    });
+}
+
 importPositions('data/positions.json');
+importAdj('data/adj.json');
+importInts('data/year_ints2.json');
+importPeople('data/people_jonas2.json');
+importFriends('data/friends.json');
+importAdjCosign('data/adj_cosign.json');
+importFriendsCosign('data/friends_cosign.json');
 
 // Read the Nodes and do stuff!
 d3.json("data/active.json", function(error, graph) {
@@ -363,14 +415,14 @@ d3.json("data/active.json", function(error, graph) {
                     if (d.dragged == true) {
                         return color(colorType, getValForColor(colorType, d));
                     } else {
-                        return "#83878D"
+                        return "#000000"
                     }
                 })
                 .style("fill", function(d) {
                     if (d.dragged == false) {
                         return color(colorType, getValForColor(colorType, d));
                     } else {
-                        return "#83878D"
+                        return "#000000"
                     }
                 })
                 .style("stroke-width", 3);
@@ -437,7 +489,7 @@ d3.json("data/active.json", function(error, graph) {
                 if(nodes[i].selected == false) {
                     return null;
                 } else {
-                    return "#83878D";
+                    return "#000000";
                 }
             })
             .style("stroke-width", function(o,i) {
@@ -467,7 +519,7 @@ d3.json("data/active.json", function(error, graph) {
             d3.selectAll(".dataNodes")
                 .style("fill", function(d) {
                     if (d.dragged == true && d.selected == true) {
-                        return "#83878D";
+                        return "#000000";
                     } else if (d.dragged == true && d.selected == false) {
                         return "#FFFFFF";
                     } else if (d.dragged == false && d.selected == true) {
@@ -482,7 +534,7 @@ d3.json("data/active.json", function(error, graph) {
                     } else if (d.dragged == true && d.selected == false) {
                         return color(colorType, getValForColor(colorType, d));
                     } else if (d.dragged == false && d.selected == true) {
-                        return "#83878D";
+                        return "#000000";
                     } else {
                         return null;
                     }
@@ -492,83 +544,81 @@ d3.json("data/active.json", function(error, graph) {
             legend.selectAll(".circleLegend").remove();
             legend.selectAll(".textLegend").remove();
 
-            if(colorType != "none") {
 
-                var start = 20;
-                var dx_text = 10;
+            var start = 20;
+            var dx_text = 10;
 
-                console.log(variables["party"].length);
+            console.log(variables["party"].length);
 
-                legend.selectAll("circle")
-                    .data(variables[colorType])
-                    .enter().append("circle")
-                    .attr("class", "circleLegend")
-                    .attr("cx", function (o, i) {
-                        if(colorType == "party") {
-                            var half = Math.round(variables[colorType].length/2);
-                            var incr = (width-start)/(half);
-                            if(i<half) {
-                                return incr * (i) + start;
-                            } else {
-                                return incr * (i-half) + start;
-                            }
-                        } else {
-                            var incr = (width-start)/(variables[colorType].length);
+            legend.selectAll("circle")
+                .data(variables[colorType])
+                .enter().append("circle")
+                .attr("class", "circleLegend")
+                .attr("cx", function (o, i) {
+                    if(colorType == "party") {
+                        var half = Math.round(variables[colorType].length/2);
+                        var incr = (width-start)/(half);
+                        if(i<half) {
                             return incr * (i) + start;
-                        }
-                    })
-                    .attr("cy", function(o,i) {
-                        if(colorType == "party") {
-                            if(i<variables[colorType].length/2) {
-                                return height_l / 4;
-                            } else {
-                                return 3*height_l / 4;
-                            }
                         } else {
-                            return height_l / 4;
+                            return incr * (i-half) + start;
                         }
-                    })
-                    .attr("r", radius)
-                    .attr("fill", function (o, i) {
-                        return color(colorType, variables[colorType][i]);
-                    })
+                    } else {
+                        var incr = (width-start)/(variables[colorType].length);
+                        return incr * (i) + start;
+                    }
+                })
+                .attr("cy", function(o,i) {
+                    if(colorType == "party") {
+                        if(i<variables[colorType].length/2) {
+                            return height_l / 4;
+                        } else {
+                            return 3*height_l / 4;
+                        }
+                    } else {
+                        return height_l / 4;
+                    }
+                })
+                .attr("r", radius)
+                .attr("fill", function (o, i) {
+                    return color(colorType, variables[colorType][i]);
+                })
 
-                legend.selectAll("text")
-                    .data(variables[colorType])
-                    .enter().append("text")
-                    .attr("class", "textLegend")
-                    .attr("x", function(o,i) {
-                        if(colorType == "party") {
-                            var half = Math.round(variables[colorType].length/2);
-                            var incr = (width-start)/(half);
-                            if(i<half) {
-                                return incr * (i) + start + dx_text;
-                            } else {
-                                return incr * (i-half) + start + dx_text;
-                            }
-                        } else {
-                            var incr = (width-start)/(variables[colorType].length);
+            legend.selectAll("text")
+                .data(variables[colorType])
+                .enter().append("text")
+                .attr("class", "textLegend")
+                .attr("x", function(o,i) {
+                    if(colorType == "party") {
+                        var half = Math.round(variables[colorType].length/2);
+                        var incr = (width-start)/(half);
+                        if(i<half) {
                             return incr * (i) + start + dx_text;
-                        }
-                    })
-                    .attr("y", function(o,i) {
-                        if(colorType == "party") {
-                            if(i<variables[colorType].length/2) {
-                                return height_l / 4;
-                            } else {
-                                return 3*height_l / 4;
-                            }
                         } else {
-                            return height_l / 4;
+                            return incr * (i-half) + start + dx_text;
                         }
-                    })
-                    .text(function (o, i) {
-                        return texts[colorType][variables[colorType][i]] + " (" + nbr[colorType][variables[colorType][i]] + ")";
-                    })
-                    .attr("font-weight", "bold")
-                    .attr("fill", "#000000")
-                    .attr("dominant-baseline", "central");
-            }
+                    } else {
+                        var incr = (width-start)/(variables[colorType].length);
+                        return incr * (i) + start + dx_text;
+                    }
+                })
+                .attr("y", function(o,i) {
+                    if(colorType == "party") {
+                        if(i<variables[colorType].length/2) {
+                            return height_l / 4;
+                        } else {
+                            return 3*height_l / 4;
+                        }
+                    } else {
+                        return height_l / 4;
+                    }
+                })
+                .text(function (o, i) {
+                    return texts[colorType][variables[colorType][i]] + " (" + nbr[colorType][variables[colorType][i]] + ")";
+                })
+                .attr("font-weight", "bold")
+                .attr("fill", "#808080")
+                .attr("dominant-baseline", "central");
             color_changed = false;
         }
     }
@@ -596,12 +646,64 @@ d3.json("data/active.json", function(error, graph) {
                     .attr("font-size", "18px")
                     .attr("font-weight", "bold")
                     .attr("text-anchor", "middle")
-                    .attr("fill", "#000000")
+                    .attr("fill", "#808080")
                     .attr("dominant-baseline", "central");
 
-                cluster_changed = false;
+            } else {
+                svg.append("text")
+                    .attr("class", "textFoci")
+                    .attr("x", function() {return 425;})
+                    .attr("y", function() {return 16.6219;})
+                    .text("National")
+                    .attr("font-family", "serif")
+                    .attr("font-size", "18px")
+                    .attr("font-weight", "bold")
+                    .attr("text-anchor", "end")
+                    .attr("fill", "#808080")
+                    .attr("dominant-baseline", "central");
+
+                svg.append("text")
+                    .attr("class", "textFoci")
+                    .attr("x", function() {return 476.9;})
+                    .attr("y", function() {return 16.6219;})
+                    .text("Federal")
+                    .attr("font-family", "serif")
+                    .attr("font-size", "18px")
+                    .attr("font-weight", "bold")
+                    .attr("text-anchor", "middle")
+                    .attr("fill", "#808080")
+                    .attr("dominant-baseline", "central");
+
+                svg.append("text")
+                    .attr("class", "textFoci")
+                    .attr("x", function() {return 528;})
+                    .attr("y", function() {return 16.6219;})
+                    .text("States")
+                    .attr("font-family", "serif")
+                    .attr("font-size", "18px")
+                    .attr("font-weight", "bold")
+                    .attr("text-anchor", "start")
+                    .attr("fill", "#808080")
+                    .attr("dominant-baseline", "central");
+
+                svg.append("line")
+                    .attr("class", "textFoci")
+                    .style("stroke", "#808080")
+                    .attr("x1", 430.9)
+                    .attr("y1", 6.5)
+                    .attr("x2", 430.9)
+                    .attr("y2", 590.3);
+
+                svg.append("line")
+                    .attr("class", "textFoci")
+                    .style("stroke", "#808080")
+                    .attr("x1", 522.9)
+                    .attr("y1", 6.5)
+                    .attr("x2", 522.9)
+                    .attr("y2", 590.3);
             }
 
+            cluster_changed = false;
         }
     }
 
@@ -761,7 +863,7 @@ function dragged(d) {
     d3.select(this)
         .style("fill", function(d) {
             if (d.selected == true) {
-                return "#83878D";
+                return "#000000";
             } else {
                 return "#FFFFFF";
             }
