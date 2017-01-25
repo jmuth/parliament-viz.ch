@@ -210,6 +210,9 @@ importFriends('data/friends.json');
 importAdjCosign('data/adj_cosign.json');
 importFriendsCosign('data/friends_cosign.json');
 
+var nodes;
+var node;
+var array_foci;
 // Read the Nodes and do stuff!
 d3.json("data/active.json", function(error, graph) {
     if (error) throw error;
@@ -220,7 +223,7 @@ d3.json("data/active.json", function(error, graph) {
 
     }
 
-    var nodes = graph.nodes;
+    nodes = graph.nodes;
 
     var list_parties = [];
     var list_languages = [];
@@ -349,7 +352,7 @@ d3.json("data/active.json", function(error, graph) {
     }
 
     // Create array of foci
-    var array_foci = {};
+    array_foci = {};
     for(var key1 in foci) {
         if(key1 != "none") {
             array_foci[key1] = []
@@ -364,7 +367,7 @@ d3.json("data/active.json", function(error, graph) {
         }
     }
 
-    var node = svg.append("g")
+    node = svg.append("g")
             .attr("class", "nodes")
             .selectAll("circle")
             .data(nodes)
@@ -390,78 +393,32 @@ d3.json("data/active.json", function(error, graph) {
 
     svg.on("dblclick", dbclick);
 
-    function ticked() {
-        /*link
-         .attr("x1", function(d) { return d.source.x; })
-         .attr("y1", function(d) { return d.source.y; })
-         .attr("x2", function(d) { return d.target.x; })
-         .attr("y2", function(d) { return d.target.y; });*/
+});
 
-        update_cluster();
+function ticked() {
+    /*link
+     .attr("x1", function(d) { return d.source.x; })
+     .attr("y1", function(d) { return d.source.y; })
+     .attr("x2", function(d) { return d.target.x; })
+     .attr("y2", function(d) { return d.target.y; });*/
 
-        update_color();
+    update_cluster();
 
-        update_friendship();
+    update_color();
 
-        node
-            .each(gravity())
-            .attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; });
-    }
+    update_friendship();
 
-    function emphasisAndShowInfo(d) {
+    node
+        .each(gravity())
+        .attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+}
 
-        if(dragging == false) {
+function emphasisAndShowInfo(d) {
 
-            if (node_selected == false) {
-                d3.selectAll(".dataNodes").style("r", radius);
-                d3.select(this).style("r", 1.5 * radius);
-                document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
-                document.getElementById("councilorParty").innerHTML = d.PartyName;
-                //document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
-                //document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
-                //document.getElementById("councilorAge").innerHTML = d.age;
-                document.getElementById("councilorCanton").innerHTML = d.CantonName;
-                //document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
-                document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
-                document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
+    if(dragging == false) {
 
-                showTimeline(d.PersonIdCode);
-                changeOpac(d.PersonIdCode);
-                showFriends(d.PersonIdCode);
-
-            } else {
-                var div = $('#tag');
-                var top = event.clientY,
-                    left = event.clientX;
-
-                div.css('display', 'block')
-                    .css('top', top + 'px')
-                    .css('left', left + 'px')
-                    .text(d.FirstName + ' ' + d.LastName);
-            }
-        }
-    }
-
-    // Simple click on node
-    function clicked(d) {
-        var node = d3.select(this);
-
-        if(d.selected == false) {
-            d3.selectAll(".dataNodes")
-                .style("r", radius)
-                .style("stroke", function(o,i) {
-                    return color(colorType, getValForColor(colorType, nodes[i]));
-                })
-                .style("stroke-width", 1);
-                ;
-
-            node.style("r", 1.5*radius)
-                .style("stroke", function(d) {
-                    return "#000000"
-                })
-                .style("stroke-width", 3);
-
+        if (node_selected == false) {
             d3.selectAll(".dataNodes").style("r", radius);
             d3.select(this).style("r", 1.5 * radius);
             document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
@@ -477,225 +434,320 @@ d3.json("data/active.json", function(error, graph) {
             showTimeline(d.PersonIdCode);
             changeOpac(d.PersonIdCode);
             showFriends(d.PersonIdCode);
-
-            for(var i=0; i<nodes.length; i++) {
-                nodes[i].selected = false;
-            }
-
-            d.selected = true;
-            node_selected = true;
             node_id = d.PersonIdCode;
 
         } else {
-            node.style("r", 1.5*radius)
-                .style("stroke", function(d) {
-                    return color(colorType, getValForColor(colorType, d));
-                })
-                .style("stroke-width", 1);
-            d.selected = false;
-            node_selected = false;
-            node_id = null;
+            var div = $('#tag');
+            var top = event.clientY,
+                left = event.clientX;
+
+            div.css('display', 'block')
+                .css('top', top + 'px')
+                .css('left', left + 'px')
+                .text(d.FirstName + ' ' + d.LastName);
+        }
+    }
+}
+
+// Simple click on node
+function clicked(d) {
+    var node = d3.select(this);
+
+    if(d.selected == false) {
+        d3.selectAll(".dataNodes")
+            .style("r", radius)
+            .style("stroke", function(o,i) {
+                return color(colorType, getValForColor(colorType, nodes[i]));
+            })
+            .style("stroke-width", 1);
+        ;
+
+        node.style("r", 1.5*radius)
+            .style("stroke", function(d) {
+                return "#000000"
+            })
+            .style("stroke-width", 3);
+
+        d3.selectAll(".dataNodes").style("r", radius);
+        d3.select(this).style("r", 1.5 * radius);
+        document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
+        document.getElementById("councilorParty").innerHTML = d.PartyName;
+        //document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
+        //document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
+        //document.getElementById("councilorAge").innerHTML = d.age;
+        document.getElementById("councilorCanton").innerHTML = d.CantonName;
+        //document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
+        document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
+        document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
+
+        showTimeline(d.PersonIdCode);
+        changeOpac(d.PersonIdCode);
+        showFriends(d.PersonIdCode);
+
+        for(var i=0; i<nodes.length; i++) {
+            nodes[i].selected = false;
         }
 
+        d.selected = true;
+        node_selected = true;
+        node_id = d.PersonIdCode;
+
+    } else {
+        node.style("r", 1.5*radius)
+            .style("stroke", function(d) {
+                return color(colorType, getValForColor(colorType, d));
+            })
+            .style("stroke-width", 1);
+        d.selected = false;
+        node_selected = false;
+        node_id = d.PersonIdCode;
     }
 
-    // Double click on window
-    function dbclick() {
-        nodes.forEach(function(o, i) {
-            o.x = get_foci(o).x;
-            o.y = get_foci(o).y;
+}
+
+function clickedBox(o) {
+    d3.selectAll(".dataNodes")
+        .style("r", function(d) {
+            if(d.PersonIdCode == o.PersonIdCode) {
+                return 1.5*radius;
+            } else {
+                return radius;
+            }
+        })
+        .style("stroke", function(d,i) {
+            if(d.PersonIdCode == o.PersonIdCode) {
+                return "#000000"
+            } else {
+                return color(colorType, getValForColor(colorType, nodes[i]));
+            }
+        })
+        .style("stroke-width", function(d) {
+            if(d.PersonIdCode == o.PersonIdCode) {
+                return 3;
+            } else {
+                return 1;
+            }
         });
+    ;
+
+    document.getElementById("councilorName").innerHTML = o.FirstName + " " + o.LastName;
+    document.getElementById("councilorParty").innerHTML = o.PartyName;
+    //document.getElementById("councilorCouncil").innerHTML = o.CouncilName;
+    //document.getElementById("councilorBirthday").innerHTML = o.DateOfBirth;
+    //document.getElementById("councilorAge").innerHTML = o.age;
+    document.getElementById("councilorCanton").innerHTML = o.CantonName;
+    //document.getElementById("councilorLanguage").innerHTML = o.NativeLanguage;
+    document.getElementById("councilorImage").src = "data/portraits/" + o.PersonIdCode + ".jpg";
+    document.getElementById("councilorImage").alt = o.FirstName + " " + o.LastName;
+
+    showTimeline(o.PersonIdCode);
+    changeOpac(o.PersonIdCode);
+    showFriends(o.PersonIdCode);
+
+    for(var i=0; i<nodes.length; i++) {
+        nodes[i].selected = false;
     }
 
-    function update_color() {
-        if (color_changed) {
+    o.selected = true;
+    node_selected = true;
+    node_id = o.PersonIdCode;
+}
 
-            // Change the color
-            d3.selectAll(".dataNodes")
-                .style("fill", function(d) {
+// Double click on window
+function dbclick() {
+    nodes.forEach(function(o, i) {
+        o.x = get_foci(o).x;
+        o.y = get_foci(o).y;
+    });
+}
+
+function update_color() {
+    if (color_changed) {
+
+        // Change the color
+        d3.selectAll(".dataNodes")
+            .style("fill", function(d) {
+                return color(colorType, getValForColor(colorType, d));
+            })
+            .style("stroke", function(d) {
+                if (d.selected == true) {
+                    return "#000000";
+                } else {
                     return color(colorType, getValForColor(colorType, d));
-                })
-                .style("stroke", function(d) {
-                    if (d.selected == true) {
-                        return "#000000";
-                    } else {
-                        return color(colorType, getValForColor(colorType, d));
-                    }
-                });
+                }
+            });
 
-            // Change the legend
-            legend.selectAll(".circleLegend").remove();
-            legend.selectAll(".textLegend").remove();
+        // Change the legend
+        legend.selectAll(".circleLegend").remove();
+        legend.selectAll(".textLegend").remove();
 
 
-            var start = 20;
-            var dx_text = 10;
+        var start = 20;
+        var dx_text = 10;
 
-            console.log(variables["party"].length);
+        console.log(variables["party"].length);
 
-            legend.selectAll("circle")
-                .data(variables[colorType])
-                .enter().append("circle")
-                .attr("class", "circleLegend")
-                .attr("cx", function (o, i) {
-                    if(colorType == "party") {
-                        var half = Math.round(variables[colorType].length/2);
-                        var incr = (width-start)/(half);
-                        if(i<half) {
-                            return incr * (i) + start;
-                        } else {
-                            return incr * (i-half) + start;
-                        }
-                    } else {
-                        var incr = (width-start)/(variables[colorType].length);
+        legend.selectAll("circle")
+            .data(variables[colorType])
+            .enter().append("circle")
+            .attr("class", "circleLegend")
+            .attr("cx", function (o, i) {
+                if(colorType == "party") {
+                    var half = Math.round(variables[colorType].length/2);
+                    var incr = (width-start)/(half);
+                    if(i<half) {
                         return incr * (i) + start;
-                    }
-                })
-                .attr("cy", function(o,i) {
-                    if(colorType == "party") {
-                        if(i<variables[colorType].length/2) {
-                            return height_l / 4;
-                        } else {
-                            return 3*height_l / 4;
-                        }
                     } else {
-                        return height_l / 4;
+                        return incr * (i-half) + start;
                     }
-                })
-                .attr("r", radius)
-                .attr("fill", function (o, i) {
-                    return color(colorType, variables[colorType][i]);
-                })
+                } else {
+                    var incr = (width-start)/(variables[colorType].length);
+                    return incr * (i) + start;
+                }
+            })
+            .attr("cy", function(o,i) {
+                if(colorType == "party") {
+                    if(i<variables[colorType].length/2) {
+                        return height_l / 4;
+                    } else {
+                        return 3*height_l / 4;
+                    }
+                } else {
+                    return height_l / 4;
+                }
+            })
+            .attr("r", radius)
+            .attr("fill", function (o, i) {
+                return color(colorType, variables[colorType][i]);
+            })
 
-            legend.selectAll("text")
-                .data(variables[colorType])
-                .enter().append("text")
-                .attr("class", "textLegend")
-                .attr("x", function(o,i) {
-                    if(colorType == "party") {
-                        var half = Math.round(variables[colorType].length/2);
-                        var incr = (width-start)/(half);
-                        if(i<half) {
-                            return incr * (i) + start + dx_text;
-                        } else {
-                            return incr * (i-half) + start + dx_text;
-                        }
-                    } else {
-                        var incr = (width-start)/(variables[colorType].length);
+        legend.selectAll("text")
+            .data(variables[colorType])
+            .enter().append("text")
+            .attr("class", "textLegend")
+            .attr("x", function(o,i) {
+                if(colorType == "party") {
+                    var half = Math.round(variables[colorType].length/2);
+                    var incr = (width-start)/(half);
+                    if(i<half) {
                         return incr * (i) + start + dx_text;
-                    }
-                })
-                .attr("y", function(o,i) {
-                    if(colorType == "party") {
-                        if(i<variables[colorType].length/2) {
-                            return height_l / 4;
-                        } else {
-                            return 3*height_l / 4;
-                        }
                     } else {
-                        return height_l / 4;
+                        return incr * (i-half) + start + dx_text;
                     }
+                } else {
+                    var incr = (width-start)/(variables[colorType].length);
+                    return incr * (i) + start + dx_text;
+                }
+            })
+            .attr("y", function(o,i) {
+                if(colorType == "party") {
+                    if(i<variables[colorType].length/2) {
+                        return height_l / 4;
+                    } else {
+                        return 3*height_l / 4;
+                    }
+                } else {
+                    return height_l / 4;
+                }
+            })
+            .text(function (o, i) {
+                return texts[colorType][variables[colorType][i]] + " (" + nbr[colorType][variables[colorType][i]] + ")";
+            })
+            .attr("font-weight", "bold")
+            .attr("font-size", "14px")
+            .attr("fill", "#808080")
+            .attr("dominant-baseline", "central");
+
+        if(node_selected) {
+            showFriends(node_id);
+        }
+        color_changed = false;
+    }
+}
+
+function update_cluster() {
+    if (cluster_changed) {
+        svg.selectAll(".textFoci").remove();
+
+        if(cluster != "none") {
+
+            svg.selectAll("text")
+                .data(array_foci[cluster])
+                .enter().append("text")
+                .attr("class", "textFoci")
+                .attr("x", function (d) {
+                    return d.cx;
                 })
-                .text(function (o, i) {
-                    return texts[colorType][variables[colorType][i]] + " (" + nbr[colorType][variables[colorType][i]] + ")";
+                .attr("y", function (d) {
+                    return d.cy-radius_foci(radius, nbr[cluster][d.key]);
                 })
+                .text(function (d) {
+                    return texts[cluster][d.key] + " (" + nbr[cluster][d.key] + ")";
+                })
+                .attr("font-family", "serif")
+                .attr("font-size", "16px")
                 .attr("font-weight", "bold")
-                .attr("font-size", "14px")
+                .attr("text-anchor", "middle")
                 .attr("fill", "#808080")
                 .attr("dominant-baseline", "central");
 
-            if(node_selected) {
-                showFriends(node_id);
-            }
-            color_changed = false;
+        } else {
+            svg.append("text")
+                .attr("class", "textFoci")
+                .attr("x", function() {return 425;})
+                .attr("y", function() {return 16.6219;})
+                .text("National")
+                .attr("font-family", "serif")
+                .attr("font-size", "16px")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "end")
+                .attr("fill", "#808080")
+                .attr("dominant-baseline", "central");
+
+            svg.append("text")
+                .attr("class", "textFoci")
+                .attr("x", function() {return 476.9;})
+                .attr("y", function() {return 16.6219;})
+                .text("Federal")
+                .attr("font-family", "serif")
+                .attr("font-size", "16px")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "middle")
+                .attr("fill", "#808080")
+                .attr("dominant-baseline", "central");
+
+            svg.append("text")
+                .attr("class", "textFoci")
+                .attr("x", function() {return 528;})
+                .attr("y", function() {return 16.6219;})
+                .text("States")
+                .attr("font-family", "serif")
+                .attr("font-size", "16px")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "start")
+                .attr("fill", "#808080")
+                .attr("dominant-baseline", "central");
+
+            svg.append("line")
+                .attr("class", "textFoci")
+                .style("stroke", "#808080")
+                .attr("x1", 430.9)
+                .attr("y1", 6.5)
+                .attr("x2", 430.9)
+                .attr("y2", 590.3);
+
+            svg.append("line")
+                .attr("class", "textFoci")
+                .style("stroke", "#808080")
+                .attr("x1", 522.9)
+                .attr("y1", 6.5)
+                .attr("x2", 522.9)
+                .attr("y2", 590.3);
         }
+
+        cluster_changed = false;
     }
-
-    function update_cluster() {
-        if (cluster_changed) {
-            svg.selectAll(".textFoci").remove();
-
-            if(cluster != "none") {
-
-                svg.selectAll("text")
-                    .data(array_foci[cluster])
-                    .enter().append("text")
-                    .attr("class", "textFoci")
-                    .attr("x", function (d) {
-                        return d.cx;
-                    })
-                    .attr("y", function (d) {
-                        return d.cy-radius_foci(radius, nbr[cluster][d.key]);
-                    })
-                    .text(function (d) {
-                        return texts[cluster][d.key] + " (" + nbr[cluster][d.key] + ")";
-                    })
-                    .attr("font-family", "serif")
-                    .attr("font-size", "16px")
-                    .attr("font-weight", "bold")
-                    .attr("text-anchor", "middle")
-                    .attr("fill", "#808080")
-                    .attr("dominant-baseline", "central");
-
-            } else {
-                svg.append("text")
-                    .attr("class", "textFoci")
-                    .attr("x", function() {return 425;})
-                    .attr("y", function() {return 16.6219;})
-                    .text("National")
-                    .attr("font-family", "serif")
-                    .attr("font-size", "16px")
-                    .attr("font-weight", "bold")
-                    .attr("text-anchor", "end")
-                    .attr("fill", "#808080")
-                    .attr("dominant-baseline", "central");
-
-                svg.append("text")
-                    .attr("class", "textFoci")
-                    .attr("x", function() {return 476.9;})
-                    .attr("y", function() {return 16.6219;})
-                    .text("Federal")
-                    .attr("font-family", "serif")
-                    .attr("font-size", "16px")
-                    .attr("font-weight", "bold")
-                    .attr("text-anchor", "middle")
-                    .attr("fill", "#808080")
-                    .attr("dominant-baseline", "central");
-
-                svg.append("text")
-                    .attr("class", "textFoci")
-                    .attr("x", function() {return 528;})
-                    .attr("y", function() {return 16.6219;})
-                    .text("States")
-                    .attr("font-family", "serif")
-                    .attr("font-size", "16px")
-                    .attr("font-weight", "bold")
-                    .attr("text-anchor", "start")
-                    .attr("fill", "#808080")
-                    .attr("dominant-baseline", "central");
-
-                svg.append("line")
-                    .attr("class", "textFoci")
-                    .style("stroke", "#808080")
-                    .attr("x1", 430.9)
-                    .attr("y1", 6.5)
-                    .attr("x2", 430.9)
-                    .attr("y2", 590.3);
-
-                svg.append("line")
-                    .attr("class", "textFoci")
-                    .style("stroke", "#808080")
-                    .attr("x1", 522.9)
-                    .attr("y1", 6.5)
-                    .attr("x2", 522.9)
-                    .attr("y2", 590.3);
-            }
-
-            cluster_changed = false;
-        }
-    }
-
-});
+}
 
 function update_friendship() {
     if (friendship_changed) {
@@ -703,6 +755,9 @@ function update_friendship() {
 
         if(node_selected) {
             changeOpac(node_id);
+        }
+
+        if(node_id != null) {
             showFriends(node_id);
         }
 
@@ -1046,8 +1101,7 @@ function showFriends(id) {
             d3.selectAll(".dataNodes").each(function(o,i)
                 {
                     if(o.PersonIdCode == d.friend) {
-                        console.log(o.FirstName + " " + o.LastName);
-                        d3.apply(clicked(o));
+                        clickedBox(o);
                     }
                 }
                 );
