@@ -30,6 +30,21 @@ for(var i = 0; i < rad_color.length; i++) {
     };
 }
 
+var rad_friendship = document.Friendship.buttons;
+var prev_friendship = null;
+var friendship = "intervention";
+var friendship_changed = true;
+for(var i = 0; i < rad_friendship.length; i++) {
+    rad_friendship[i].onclick = function() {
+        (prev_friendship)? console.log(prev_friendship.value):null;
+        if(this !== prev_friendship) {
+            prev_friendship = this;
+            friendship = this.value;
+        }
+        friendship_changed = true;
+    };
+}
+
 // Define some variables
 var radius = 7,
     padding = 1;
@@ -41,6 +56,9 @@ var width = 737,
 
 // Variable for node selection
 var node_selected = false;
+var node_id = null;
+
+var dragging = false;
 
 // Foci
 var foci = {
@@ -91,7 +109,7 @@ var svg = d3.select("div#viz")
         .append("svg")
         //responsive SVG needs these 2 attributes and no width and height attr
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 960 600")
+        .attr("viewBox", "0 0 737 600")
         //class to make it responsive
         .classed("svg-content-responsive", true);
 
@@ -102,9 +120,25 @@ var legend = d3.select("div#legend")
     .append("svg")
     //responsive SVG needs these 2 attributes and no width and height attr
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 960 64")
+    .attr("viewBox", "0 0 737 64")
     //class to make it responsive
     .classed("svg-content-responsive-legend", true);
+
+
+// Prepare the Bar Graph
+var bGMargin = {top: 10, right: 10, bottom: 10, left: 30};
+
+var barGraph = d3.select("#int_graph")
+    .append("g")
+    .attr("transform", "translate(" + bGMargin.left + "," + bGMargin.top + ")");
+
+var barWidth = 390 - bGMargin.left - bGMargin.right,
+    barHeight = 105 - bGMargin.top - bGMargin.bottom;
+
+// Prepare the Friends
+var svgFriends = d3.select('#friends'),
+    gFriends = svgFriends.append('g');
+
 
 // Simulation
 var simulation = d3.forceSimulation().alphaDecay(0)
@@ -171,7 +205,7 @@ function importFriendsCosign(json) {
 importPositions('data/positions.json');
 importAdj('data/adj.json');
 importInts('data/year_ints2.json');
-importPeople('data/people_jonas2.json');
+importPeople('data/people.json');
 importFriends('data/friends.json');
 importAdjCosign('data/adj_cosign.json');
 importFriendsCosign('data/friends_cosign.json');
@@ -339,11 +373,13 @@ d3.json("data/active.json", function(error, graph) {
             .attr("r", radius)
             .attr("fill", function(d) { return color(colorType, d);})
             .attr("desc", false)
+            .attr("id", function(d) { return d.PersonIdCode;})
             .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended))
-            .on("mouseover", emphasis)
+            .on("mouseover", emphasisAndShowInfo)
+            .on('mouseleave', resetOp)
             .on("click", clicked)
         ;
 
@@ -365,25 +401,45 @@ d3.json("data/active.json", function(error, graph) {
 
         update_color();
 
+        update_friendship();
+
         node
             .each(gravity())
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; });
     }
 
-    function emphasis(d) {
-        if (node_selected == false) {
-            d3.selectAll(".dataNodes").style("r", radius);
-            d3.select(this).style("r", 1.5 * radius);
-            document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
-            document.getElementById("councilorParty").innerHTML = d.PartyName;
-            document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
-            document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
-            document.getElementById("councilorAge").innerHTML = d.age;
-            document.getElementById("councilorCanton").innerHTML = d.CantonName;
-            document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
-            document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
-            document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
+    function emphasisAndShowInfo(d) {
+
+        if(dragging == false) {
+
+            if (node_selected == false) {
+                d3.selectAll(".dataNodes").style("r", radius);
+                d3.select(this).style("r", 1.5 * radius);
+                document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
+                document.getElementById("councilorParty").innerHTML = d.PartyName;
+                //document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
+                //document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
+                //document.getElementById("councilorAge").innerHTML = d.age;
+                document.getElementById("councilorCanton").innerHTML = d.CantonName;
+                //document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
+                document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
+                document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
+
+                showTimeline(d.PersonIdCode);
+                changeOpac(d.PersonIdCode);
+                showFriends(d.PersonIdCode);
+
+            } else {
+                var div = $('#tag');
+                var top = event.clientY,
+                    left = event.clientX;
+
+                div.css('display', 'block')
+                    .css('top', top + 'px')
+                    .css('left', left + 'px')
+                    .text(d.FirstName + ' ' + d.LastName);
+            }
         }
     }
 
@@ -395,35 +451,14 @@ d3.json("data/active.json", function(error, graph) {
             d3.selectAll(".dataNodes")
                 .style("r", radius)
                 .style("stroke", function(o,i) {
-                    if(nodes[i].dragged == false) {
-                        return null;
-                    } else {
-                        return color(colorType, getValForColor(colorType, nodes[i]));
-                    }
+                    return color(colorType, getValForColor(colorType, nodes[i]));
                 })
-                .style("fill", function(o,i) {
-                    if(nodes[i].dragged == false) {
-                        return color(colorType, getValForColor(colorType, nodes[i]));
-                    } else {
-                        return "#FFFFFF";
-                    }
-                })
+                .style("stroke-width", 1);
                 ;
 
             node.style("r", 1.5*radius)
                 .style("stroke", function(d) {
-                    if (d.dragged == true) {
-                        return color(colorType, getValForColor(colorType, d));
-                    } else {
-                        return "#000000"
-                    }
-                })
-                .style("fill", function(d) {
-                    if (d.dragged == false) {
-                        return color(colorType, getValForColor(colorType, d));
-                    } else {
-                        return "#000000"
-                    }
+                    return "#000000"
                 })
                 .style("stroke-width", 3);
 
@@ -431,13 +466,17 @@ d3.json("data/active.json", function(error, graph) {
             d3.select(this).style("r", 1.5 * radius);
             document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
             document.getElementById("councilorParty").innerHTML = d.PartyName;
-            document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
-            document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
-            document.getElementById("councilorAge").innerHTML = d.age;
+            //document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
+            //document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
+            //document.getElementById("councilorAge").innerHTML = d.age;
             document.getElementById("councilorCanton").innerHTML = d.CantonName;
-            document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
+            //document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
             document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
             document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
+
+            showTimeline(d.PersonIdCode);
+            changeOpac(d.PersonIdCode);
+            showFriends(d.PersonIdCode);
 
             for(var i=0; i<nodes.length; i++) {
                 nodes[i].selected = false;
@@ -445,72 +484,28 @@ d3.json("data/active.json", function(error, graph) {
 
             d.selected = true;
             node_selected = true;
+            node_id = d.PersonIdCode;
 
         } else {
-            node.style("r", radius)
+            node.style("r", 1.5*radius)
                 .style("stroke", function(d) {
-                    if(d.dragged == true) {
-                        return color(colorType, getValForColor(colorType, d));
-                    } else {
-                        return null;
-                    }
+                    return color(colorType, getValForColor(colorType, d));
                 })
-                .style("fill", function(d) {
-                    if(d.dragged == true) {
-                        return "#FFFFFF";
-                    } else {
-                        return color(colorType, getValForColor(colorType, d));
-                    }
-                });
-
+                .style("stroke-width", 1);
             d.selected = false;
             node_selected = false;
+            node_id = null;
         }
 
     }
 
     // Double click on window
     function dbclick() {
-
-        var nslctd = -1;
-        // Put force back to null
-        nodes.forEach(function(o,i) {
-            o.fx = null;
-            o.fy = null;
-            o.dragged = false;
+        nodes.forEach(function(o, i) {
+            o.x = get_foci(o).x;
+            o.y = get_foci(o).y;
         });
-
-        // Change stroke back to white
-        node
-            .style("fill", function(o,i) {
-                return color(colorType, getValForColor(colorType, nodes[i]));
-            })
-            .style("stroke", function(o,i) {
-                if(nodes[i].selected == false) {
-                    return null;
-                } else {
-                    return "#000000";
-                }
-            })
-            .style("stroke-width", function(o,i) {
-                if(nodes[i].selected == false) {
-                    return 0;
-                } else {
-                    return 3;
-                }
-            })
-            ;
     }
-
-    // Triple click on window
-    window.addEventListener('click', function (evt) {
-        if (evt.detail === 3) {
-            nodes.forEach(function(o, i) {
-                o.x = get_foci(o).x;
-                o.y = get_foci(o).y;
-            });
-        }
-    });
 
     function update_color() {
         if (color_changed) {
@@ -518,25 +513,13 @@ d3.json("data/active.json", function(error, graph) {
             // Change the color
             d3.selectAll(".dataNodes")
                 .style("fill", function(d) {
-                    if (d.dragged == true && d.selected == true) {
-                        return "#000000";
-                    } else if (d.dragged == true && d.selected == false) {
-                        return "#FFFFFF";
-                    } else if (d.dragged == false && d.selected == true) {
-                        return color(colorType, getValForColor(colorType, d));
-                    } else {
-                        return color(colorType, getValForColor(colorType, d));
-                    }
+                    return color(colorType, getValForColor(colorType, d));
                 })
                 .style("stroke", function(d) {
-                    if (d.dragged == true && d.selected == true) {
-                        return color(colorType, getValForColor(colorType, d));
-                    } else if (d.dragged == true && d.selected == false) {
-                        return color(colorType, getValForColor(colorType, d));
-                    } else if (d.dragged == false && d.selected == true) {
+                    if (d.selected == true) {
                         return "#000000";
                     } else {
-                        return null;
+                        return color(colorType, getValForColor(colorType, d));
                     }
                 });
 
@@ -617,8 +600,13 @@ d3.json("data/active.json", function(error, graph) {
                     return texts[colorType][variables[colorType][i]] + " (" + nbr[colorType][variables[colorType][i]] + ")";
                 })
                 .attr("font-weight", "bold")
+                .attr("font-size", "14px")
                 .attr("fill", "#808080")
                 .attr("dominant-baseline", "central");
+
+            if(node_selected) {
+                showFriends(node_id);
+            }
             color_changed = false;
         }
     }
@@ -643,7 +631,7 @@ d3.json("data/active.json", function(error, graph) {
                         return texts[cluster][d.key] + " (" + nbr[cluster][d.key] + ")";
                     })
                     .attr("font-family", "serif")
-                    .attr("font-size", "18px")
+                    .attr("font-size", "16px")
                     .attr("font-weight", "bold")
                     .attr("text-anchor", "middle")
                     .attr("fill", "#808080")
@@ -656,7 +644,7 @@ d3.json("data/active.json", function(error, graph) {
                     .attr("y", function() {return 16.6219;})
                     .text("National")
                     .attr("font-family", "serif")
-                    .attr("font-size", "18px")
+                    .attr("font-size", "16px")
                     .attr("font-weight", "bold")
                     .attr("text-anchor", "end")
                     .attr("fill", "#808080")
@@ -668,7 +656,7 @@ d3.json("data/active.json", function(error, graph) {
                     .attr("y", function() {return 16.6219;})
                     .text("Federal")
                     .attr("font-family", "serif")
-                    .attr("font-size", "18px")
+                    .attr("font-size", "16px")
                     .attr("font-weight", "bold")
                     .attr("text-anchor", "middle")
                     .attr("fill", "#808080")
@@ -680,7 +668,7 @@ d3.json("data/active.json", function(error, graph) {
                     .attr("y", function() {return 16.6219;})
                     .text("States")
                     .attr("font-family", "serif")
-                    .attr("font-size", "18px")
+                    .attr("font-size", "16px")
                     .attr("font-weight", "bold")
                     .attr("text-anchor", "start")
                     .attr("fill", "#808080")
@@ -708,6 +696,20 @@ d3.json("data/active.json", function(error, graph) {
     }
 
 });
+
+function update_friendship() {
+    if (friendship_changed) {
+        resetOp();
+
+        if(node_selected) {
+            changeOpac(node_id);
+            showFriends(node_id);
+        }
+
+        friendship_changed = false;
+
+    }
+}
 
 function getValForColor(colorType, node) {
     if (colorType == "none") {
@@ -860,23 +862,15 @@ function dragstarted(d) {
 }
 
 function dragged(d) {
-    d3.select(this)
-        .style("fill", function(d) {
-            if (d.selected == true) {
-                return "#000000";
-            } else {
-                return "#FFFFFF";
-            }
-        })
-        .style("stroke", color(colorType,getValForColor(colorType, d)))
-        .style("stroke-width", 3)
-    ;
-    d.dragged = true;
+    dragging = true;
     d.fx = d3.event.x;
     d.fy = d3.event.y;
 }
 
 function dragended(d) {
+    d.fx = null;
+    d.fy = null;
+    dragging = false;
     if (!d3.event.active) simulation.alphaTarget(0);
 }
 
@@ -913,4 +907,197 @@ function radius_foci(radius, n) {
     }
 
     return radius*ratio;
+}
+
+///////////////////////////////
+//// BAR GRAPH FUNCTIONS //////
+///////////////////////////////
+function showTimeline(id) {
+    // declaring the bar graph according to id
+
+    // remove what was previously there
+    barGraph.selectAll('*').remove();
+
+    data = ints[id];
+
+    var x = d3.scaleBand()
+        .rangeRound([0, barWidth]).padding(0.1);
+
+    var y = d3.scaleLinear()
+        .rangeRound([barHeight, 0]);
+
+    x.domain(data.map(function(d) { return d.year; }));
+    y.domain([0, Math.max(d3.max(data, function(d) { return d.int; }), d3.max(data, function(d) { return d.median; }))]);
+
+    barGraph.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + barHeight + ")")
+        .call(d3.axisBottom(x).ticks(3))
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", 9)
+        .attr("dy", ".35em")
+        .attr("transform", "rotate(90)")
+        .style("text-anchor", "start");
+
+    barGraph.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(y).ticks(3))
+
+    barGraph.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.year); })
+        .attr("y", function(d) { return y(d.int); })
+        .attr('fill', 'steelblue')
+        .attr("width", x.bandwidth())
+        .attr("height", function(d) { return barHeight - y(d.int); });
+
+    barGraph.selectAll(".barmedian")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr('fill', 'red')
+        .attr('stroke', 'none')
+        .attr('opacity', 1)
+        .attr("x", function(d) { return x(d.year); })
+        .attr("y", function(d) { return y(d.median); })
+        .attr("width", x.bandwidth())
+        //.attr("height", function(d) { return barHeight - y(d.median); });
+        .attr('height', 1);
+
+}
+
+function changeOpac(id) {
+    if (friendship == 'intervention') {
+        var line = adj[id];
+    } else if (friendship == 'cosign') {
+        var line = adjCosign[id];
+    }
+
+    var max = findMax(line);
+    if (max == 0) {
+        max = 1;
+    }
+
+    // Change the opacity
+    d3.selectAll(".dataNodes")
+        .style("fill-opacity", function(d) {
+            var thisId = d.PersonIdCode;
+            if (thisId != id) {
+                var value = line[thisId] / max;
+                return Math.max(value, 0.03)
+            }
+        })
+        .style("stroke-opacity", function(d) {
+            var thisId = d.PersonIdCode;
+            if (thisId != id) {
+                var value = line[thisId] / max;
+                return Math.max(value, .1)
+            }
+        })
+        .style("bitch", function(d) {
+            return line[d.PersonIdCode]
+        });
+}
+
+function findMax(line) {
+    var max = 0;
+    for (var key in line) {
+        var val = line[key];
+        if (val > max) {
+            max = val;
+        }
+    }
+    return max;
+}
+
+function resetOp() {
+    $('#tag').css('display', 'none');
+    if (node_selected == false && dragging == false) {
+        d3.selectAll(".dataNodes")
+            .style("fill-opacity", 1)
+            .style("stroke-opacity", 1);
+    }
+}
+
+// some height values hardcoded, bad
+function showFriends(id) {
+    // removing the previous ones
+    gFriends.selectAll('*').remove();
+    // slicing the data
+    if (friendship == 'intervention') {
+        var data = friends[id];
+    } else if (friendship == 'cosign') {
+        var data = friendsCosign[id];
+    }
+
+    gFriends.selectAll('.friend')
+        .data(data)
+        .enter().append('g')
+        .attr('personIdCode', id)
+        .attr('class', 'grect')
+        // mouse events on the g element
+        .on('mouseover', function(d) { friendOver(d.friend);})
+        .on('mouseleave', function(d) { friendOut(d.friend);})
+        // friendclick
+        .on('click', function(d) {
+            d3.selectAll(".dataNodes").each(function(o,i)
+                {
+                    if(o.PersonIdCode == d.friend) {
+                        console.log(o.FirstName + " " + o.LastName);
+                        d3.apply(clicked(o));
+                    }
+                }
+                );
+        })
+        // rectangle
+        .append('rect')
+        .attr('rx', 2)
+        .attr('ry', 2)
+        .attr('id', function(d) { return 'rect'+d.friend; })
+        .attr('x', 5)
+        .attr('y', function(d, i) {return 5+i*(223/5);})
+        .attr('width', 175)
+        .attr('height', (223/5)-3)
+        .attr('fill', function(d) {
+            return color(colorType, getValForColor(colorType, people[d.friend]));
+        })
+        .attr('opacity', .7)
+
+    // mini photo
+    d3.selectAll('.grect')
+        .append('image')
+        .attr('xlink:href', function(d) { return 'data/portraits/'+d.friend+'.jpg'; })
+        .attr('x', 9)
+        .attr('y', function(d, i) {return 9+i*(223/5);})
+        .attr('height', '34px')
+        .attr('width', '34px');
+
+    // names
+    d3.selectAll('.grect')
+        .append('text')
+        .attr('x', 48)
+        .attr('y', function(d, i){ return 21+i*(223/5)})
+        .text(function(d) { return people[d.friend].FirstName+' '+people[d.friend].LastName; });
+
+    // # of common interventions
+    d3.selectAll('.grect')
+        .append('text')
+        .attr('x', 48)
+        .attr('y', function(d, i){ return 38+i*(223/5)})
+        .text(function(d) { return '# together: '+d.number; });
+}
+
+function friendOver(id) {
+    $('#rect'+id).attr('opacity', 1);
+    $('#'+id).attr('stroke', 'red')
+        .attr('stroke-width', 4);
+}
+
+function friendOut(id) {
+    $('#rect'+id).attr('opacity', .7);
+    $('#'+id).attr('stroke', '#555555')
+        .attr('stroke-width', 1);
 }

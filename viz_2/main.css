@@ -26,13 +26,13 @@ body {
 
 #viz {
 	display: inline-block;
-	width: 70%;
+	width: 60%;
 	#background:black;
 }
 
 #legend {
 	display: inline-block;
-	width: 70%;
+	width: 60%;
 	#background:black;
 	margin-left: 10%;
 	#height: 30px;
@@ -42,7 +42,7 @@ body {
 	display: inline-block;
 	position: relative;
 	width: 100%;
-	padding-bottom: 81.4111%; /* aspect ratio */
+	padding-bottom: 85%; /* aspect ratio */
 	vertical-align: top;
 	overflow: hidden;
 }
@@ -56,11 +56,26 @@ body {
 	display: inline-block;
 	position: relative;
 	width: 100%;
-	padding-bottom: 6.6666666%; /* aspect ratio */
+	padding-bottom: 10%; /* aspect ratio */
 	vertical-align: top;
 	overflow: hidden;
 }
 .svg-content-responsive-legend {
+	display: inline-block;
+	position: absolute;
+	left: 0;
+}
+
+.svg-container-barGraph {
+	display: inline-block;
+	position: relative;
+	width: 100%;
+	padding-bottom: 50%; /* aspect ratio */
+	vertical-align: top;
+	overflow: hidden;
+}
+
+.svg-content-responsive-barGraph {
 	display: inline-block;
 	position: absolute;
 	left: 0;
@@ -85,6 +100,19 @@ body {
 .bio {
 	float: left;
 	background-color: #fefefe;
+	width: 185px;
+	height: 205px;
+	position: relative;
+	border-radius: 1px;
+	padding: 5px;
+	font-family: sans-serif;
+	font-size: 10pt;
+	line-height: 1.5;
+}
+
+.choice {
+	float: right;
+	#background-color: #fefefe;
 	width: 185px;
 	height: 190px;
 	position: relative;
@@ -128,9 +156,9 @@ circle {
 }
 
 .line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
+	fill: none;
+	stroke: steelblue;
+	stroke-width: 1.5px;
 }
 
 .barmedian {
@@ -177,4 +205,9 @@ circle {
 #search {
 	width: 90px;
 	color: grey;
+}
+
+#choice{
+	font-family: sans-serif;
+	font-size: 12pt;
 }
