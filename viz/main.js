@@ -75,7 +75,9 @@ var foci = {
     },
     "language": {},                                         // Foci are created later
     "age": {},                                              // Foci are created later
-    "canton": {}                                            // Foci are created later
+    "canton": {},                                           // Foci are created later
+    "parl_gr": {}                                           // Foci are created later
+
 };
 
 var nbr = {};
@@ -85,6 +87,7 @@ nbr["gender"] = {};
 nbr["language"] = {};
 nbr["age"] = {};
 nbr["canton"] = {};
+nbr["parl_gr"] = {};
 
 var texts = {};
 texts["council"] = {'CN': 'National Council', 'CE': 'Council of States', 'CF': 'Federal Council'};
@@ -93,6 +96,7 @@ texts["gender"] = {'m': 'Men', 'f': 'Women'};
 texts["language"] = {};
 texts["age"] = {};
 texts["canton"] = {};
+texts["parl_gr"] = {};
 
 var variables = {};
 variables["council"] = [];
@@ -101,6 +105,7 @@ variables["gender"] = [];
 variables["language"] = [];
 variables["age"] = [];
 variables["canton"] = [];
+variables["parl_gr"] = [];
 
 // SVG for the main Viz
 var svg = d3.select("div#viz")
@@ -226,6 +231,7 @@ d3.json("data/active.json", function(error, graph) {
     nodes = graph.nodes;
 
     var list_parties = [];
+    var list_parl_gr = [];
     var list_languages = [];
     var list_ages = [];
     var list_cantons = [];
@@ -253,6 +259,20 @@ d3.json("data/active.json", function(error, graph) {
             variables["party"].push(nodes[i]["PartyAbbreviation"]);
         } else {
             nbr["party"][nodes[i]["PartyAbbreviation"]] += 1;
+        }
+
+        // Get nbr by parl group
+        if(!(nodes[i]["ParlGroupAbbreviation"] in nbr["parl_gr"])) {
+            nbr["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = 1;
+            list_parl_gr.push(nodes[i]["ParlGroupAbbreviation"]);
+            if(nodes[i]["ParlGroupName"] == "NaN") {
+                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Fed. Council";
+            } else {
+                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = nodes[i]["ParlGroupName"];
+            }
+            variables["parl_gr"].push(nodes[i]["ParlGroupAbbreviation"]);
+        } else {
+            nbr["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] += 1;
         }
 
         // Get nbr by gender
@@ -313,6 +333,13 @@ d3.json("data/active.json", function(error, graph) {
 
     for(var i=0; i<list_parties.length; i++) {
         foci["party"][list_parties[i]] = {"x": (i+1)/(list_parties.length+1)*width, "y": (Math.pow(-1, i)*0.2 + 0.6)*height};
+    }
+
+    // Create Foci for parl gp
+    shuffle(list_parl_gr);
+
+    for(var i=0; i<list_parl_gr.length; i++) {
+        foci["parl_gr"][list_parl_gr[i]] = {"x": (i+1)/(list_parl_gr.length+1)*width, "y": (Math.pow(-1, i)*0.2 + 0.6)*height};
     }
 
     // Create Foci for languages
@@ -657,7 +684,7 @@ function update_color() {
             .attr("fill", "#808080")
             .attr("dominant-baseline", "central");
 
-        if(node_selected) {
+        if(node_id != null) {
             showFriends(node_id);
         }
         color_changed = false;
@@ -766,10 +793,10 @@ function update_friendship() {
 }
 
 function getValForColor(colorType, node) {
-    if (colorType == "none") {
-        return "0";
-    } else if(colorType == "party") {
+    if(colorType == "party") {
         return node.PartyAbbreviation;
+    } else if(colorType == "parl_gr") {
+        return node.ParlGroupAbbreviation;
     } else if(colorType == "gender") {
         return node.GenderAsString;
     } else if(colorType == "council") {
@@ -784,9 +811,7 @@ function getValForColor(colorType, node) {
 }
 
 function color(colorType, val) {
-    if (colorType == "none") {
-        return "#000000";
-    } else if(colorType == "party") {
+    if(colorType == "party") {
         if (val == 'PLD') {
             return '#3131BD'
         } else if (val == 'UDC') {
@@ -817,6 +842,24 @@ function color(colorType, val) {
             return '#DFDE00'
         }  else if (val == 'PdT') {
             return '#FF0000'
+        }
+    } else if(colorType == "parl_gr") {
+        if(val == "NaN") {
+            return '#CCCCCC'
+        } else if (val == "GL") {
+            return '#9AFE2E'
+        } else if (val == "BD") {
+            return '#FFFF00'
+        } else if (val == "C") {
+            return '#FE9A2E'
+        } else if (val == "S") {
+            return '#FA1360'
+        } else if (val == "G") {
+            return '#01DF01'
+        } else if (val == "RL") {
+            return '#0174DF'
+        } else if (val == "V") {
+            return '#088A4B'
         }
     } else if(colorType == "council") {
         if (val == "CN") {
@@ -874,6 +917,8 @@ function get_foci(d) {
         foci_spec = pos[d.PersonIdCode];
     } else if (cluster == "party") {
         foci_spec = foci[cluster][d.PartyAbbreviation];
+    } else if (cluster == "parl_gr") {
+        foci_spec = foci[cluster][d.ParlGroupAbbreviation];
     } else if (cluster == "gender") {
         foci_spec = foci[cluster][d.GenderAsString];
     } else if (cluster == "language") {
