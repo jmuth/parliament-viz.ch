@@ -406,7 +406,6 @@ d3.json("data/active.json", function(error, graph) {
     // Awesomplete
     new Awesomplete(compCounc, {list: list_councilors});
 
-*/
     list_ages.sort();
     variables["age"].sort();
 
