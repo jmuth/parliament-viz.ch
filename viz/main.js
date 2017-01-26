@@ -87,7 +87,7 @@ nbr["age"] = {};
 nbr["canton"] = {};
 
 var texts = {};
-texts["council"] = {'CN': 'National Council', 'CE': 'States Council', 'CF': 'Federal Council'};
+texts["council"] = {'CN': 'National Council', 'CE': 'Council of States', 'CF': 'Federal Council'};
 texts["party"] = {};
 texts["gender"] = {'m': 'Men', 'f': 'Women'};
 texts["language"] = {};
@@ -422,12 +422,11 @@ function emphasisAndShowInfo(d) {
             d3.selectAll(".dataNodes").style("r", radius);
             d3.select(this).style("r", 1.5 * radius);
             document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
+            document.getElementById("councilorName").href = "https://www.parlament.ch/en/biografie?CouncillorId=" + d.PersonNumber;
             document.getElementById("councilorParty").innerHTML = d.PartyName;
-            //document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
-            //document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
-            //document.getElementById("councilorAge").innerHTML = d.age;
+            document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
+            document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth + " (" + d.age + " y.o.)";
             document.getElementById("councilorCanton").innerHTML = d.CantonName;
-            //document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
             document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
             document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
 
@@ -473,12 +472,11 @@ function clicked(d) {
         d3.selectAll(".dataNodes").style("r", radius);
         d3.select(this).style("r", 1.5 * radius);
         document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
+        document.getElementById("councilorName").href = "https://www.parlament.ch/en/biografie?CouncillorId=" + d.PersonNumber;
         document.getElementById("councilorParty").innerHTML = d.PartyName;
-        //document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
-        //document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
-        //document.getElementById("councilorAge").innerHTML = d.age;
+        document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
+        document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth + " (" + d.age + " y.o.)";
         document.getElementById("councilorCanton").innerHTML = d.CantonName;
-        //document.getElementById("councilorLanguage").innerHTML = d.NativeLanguage;
         document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
         document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
 
@@ -533,12 +531,11 @@ function clickedBox(o) {
     ;
 
     document.getElementById("councilorName").innerHTML = o.FirstName + " " + o.LastName;
+    document.getElementById("councilorName").href = "https://www.parlament.ch/en/biografie?CouncillorId=" + o.PersonNumber;
     document.getElementById("councilorParty").innerHTML = o.PartyName;
-    //document.getElementById("councilorCouncil").innerHTML = o.CouncilName;
-    //document.getElementById("councilorBirthday").innerHTML = o.DateOfBirth;
-    //document.getElementById("councilorAge").innerHTML = o.age;
+    document.getElementById("councilorCouncil").innerHTML = o.CouncilName;
+    document.getElementById("councilorBirthday").innerHTML = o.DateOfBirth + " (" + o.age + " y.o.)";
     document.getElementById("councilorCanton").innerHTML = o.CantonName;
-    //document.getElementById("councilorLanguage").innerHTML = o.NativeLanguage;
     document.getElementById("councilorImage").src = "data/portraits/" + o.PersonIdCode + ".jpg";
     document.getElementById("councilorImage").alt = o.FirstName + " " + o.LastName;
 
@@ -1081,6 +1078,7 @@ function resetOp() {
 
 // some height values hardcoded, bad
 function showFriends(id) {
+
     // removing the previous ones
     gFriends.selectAll('*').remove();
     // slicing the data
@@ -1089,6 +1087,11 @@ function showFriends(id) {
     } else if (friendship == 'cosign') {
         var data = friendsCosign[id];
     }
+
+    var length = (223/5)*(data.length);
+
+    document.getElementById('friends').setAttribute("height", length + "px");
+
 
     gFriends.selectAll('.friend')
         .data(data)
@@ -1136,7 +1139,13 @@ function showFriends(id) {
         .append('text')
         .attr('x', 48)
         .attr('y', function(d, i){ return 21+i*(223/5)})
-        .text(function(d) { return people[d.friend].FirstName+' '+people[d.friend].LastName; });
+        .text(function(d) {
+            if (people[d.friend].GenderAsString == "m") {
+                return "M. " + people[d.friend].LastName;
+            } else {
+                return "Mme. " + people[d.friend].LastName;
+            }
+        });
 
     // # of common interventions
     d3.selectAll('.grect')
