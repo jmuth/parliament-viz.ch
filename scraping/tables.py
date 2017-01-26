@@ -90,7 +90,7 @@ class Tables:
         df_business_tags = df_business_tags.dropna(axis=0)
 
         # create a DataFrame business->tag filled with zero
-        topics = pd.DataFrame(df_business_tags.index)
+        topics = pd.DataFrame(index=df_business_tags.index)
         for i in temp.ID:
             topics[i] = 0
 
@@ -104,7 +104,7 @@ class Tables:
                 previous_val = topics.get_value(int(business_number), int(tag))
                 topics.set_value(int(business_number), int(tag), int(previous_val + 1))
 
-        for i, tags in zip(df_business_tags.ID, df_business_tags.Tags):
+        for i, tags in zip(df_business_tags.index, df_business_tags.Tags):
             fill_cell(i, tags)
 
         # ensure topics has type integer
