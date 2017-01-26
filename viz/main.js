@@ -67,17 +67,74 @@ var foci = {
         "CE": {"x": 0.6 * width, "y": 0.2 * height},        // Foci CE
         "CF": {"x": 0.8 * width, "y": 0.6 * height}         // Foci CF
     },
-    "none": {},                                             // No Foci
-    "party": {},                                            // Foci are created later
+    "party": {
+        "PDC": {"x": 0.1 * width, "y": 0.5 * height},
+        "PLR": {"x": 0.367 * width, "y": 0.3 * height},
+        "UDC": {"x": 0.633 * width, "y": 0.5 * height},
+        "PSS": {"x": 0.9 * width, "y": 0.3 * height},
+        "MCG": {"x": 0.05 * width, "y": 0.8 * height},
+        "PEV": {"x": 0.14 * width, "y": 0.8 * height},
+        "BastA": {"x": 0.23 * width, "y": 0.8 * height},
+        "PBD": {"x": 0.32 * width, "y": 0.8 * height},
+        "-": {"x": 0.41 * width, "y": 0.8 * height},
+        "Lega": {"x": 0.5 * width, "y": 0.8 * height},
+        "csp-ow": {"x": 0.59 * width, "y": 0.8 * height},
+        "pvl": {"x": 0.68 * width, "y": 0.8 * height},
+        "PdT": {"x": 0.77 * width, "y": 0.8 * height},
+        "PES": {"x": 0.86 * width, "y": 0.8 * height},
+        "PLD": {"x": 0.95 * width, "y": 0.8 * height}
+    },
     "gender": {
         "m": {"x": 0.3*width, "y": 0.5*height},             // Foci Male
         "f": {"x": 0.7*width, "y": 0.5*height}              // Foci Female
     },
-    "language": {},                                         // Foci are created later
+    "language": {
+        "I": {"x": 0.2 * width, "y": 0.8 * height},
+        "D": {"x": 0.5 * width, "y": 0.3 * height},
+        "F": {"x": 0.8 * width, "y": 0.8 * height},
+        "Tr": {"x": 0.2 * width, "y": 0.3 * height},
+        "Sk": {"x": 0.8 * width, "y": 0.3 * height},
+        "RM": {"x": 0.5 * width, "y": 0.8 * height}
+    },
     "age": {},                                              // Foci are created later
-    "canton": {},                                           // Foci are created later
-    "parl_gr": {}                                           // Foci are created later
-
+    "canton": {
+        "ZH": {"x": 0.1 * width, "y": 0.2 * height},
+        "BE": {"x": 0.3 * width, "y": 0.2 * height},
+        "VD": {"x": 0.5 * width, "y": 0.2 * height},
+        "AG": {"x": 0.7 * width, "y": 0.2 * height},
+        "SG": {"x": 0.9 * width, "y": 0.2 * height},
+        "GE": {"x": 0.1 * width, "y": 0.5 * height},
+        "LU": {"x": 0.233 * width, "y": 0.5 * height},
+        "VS": {"x": 0.366 * width, "y": 0.5 * height},
+        "TI": {"x": 0.5 * width, "y": 0.5 * height},
+        "FR": {"x": 0.633 * width, "y": 0.5 * height},
+        "TG": {"x": 0.766 * width, "y": 0.5 * height},
+        "BL": {"x": 0.9 * width, "y": 0.5 * height},
+        "SO": {"x": 0.1 * width, "y": 0.7 * height},
+        "GR": {"x": 0.233 * width, "y": 0.7 * height},
+        "NE": {"x": 0.366 * width, "y": 0.7 * height},
+        "BS": {"x": 0.5 * width, "y": 0.7 * height},
+        "SZ": {"x": 0.633 * width, "y": 0.7 * height},
+        "ZG": {"x": 0.766 * width, "y": 0.7 * height},
+        "JU": {"x": 0.9 * width, "y": 0.7 * height},
+        "SH": {"x": 0.1 * width, "y": 0.9 * height},
+        "GL": {"x": 0.233 * width, "y": 0.9 * height},
+        "UR": {"x": 0.366 * width, "y": 0.9 * height},
+        "OW": {"x": 0.5 * width, "y": 0.9 * height},
+        "NW": {"x": 0.633 * width, "y": 0.9 * height},
+        "AI": {"x": 0.766 * width, "y": 0.9 * height},
+        "AR": {"x": 0.9 * width, "y": 0.9 * height}
+    },
+    "parl_gr": {
+        "NaN": {"x": 0.5 * width, "y": 0.5 * height},
+        "RL": {"x": 0.5 * width, "y": 0.2 * height},
+        "BD": {"x": 0.7 * width, "y": 0.3 * height},
+        "C": {"x": 0.8 * width, "y": 0.5 * height},
+        "S": {"x": 0.7 * width, "y": 0.8 * height},
+        "G": {"x": 0.3 * width, "y": 0.3 * height},
+        "GL": {"x": 0.2 * width, "y": 0.5 * height},
+        "V": {"x": 0.35 * width, "y": 0.8 * height}
+    }
 };
 
 var nbr = {};
@@ -270,10 +327,23 @@ d3.json("data/active.json", function(error, graph) {
         if(!(nodes[i]["ParlGroupAbbreviation"] in nbr["parl_gr"])) {
             nbr["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = 1;
             list_parl_gr.push(nodes[i]["ParlGroupAbbreviation"]);
-            if(nodes[i]["ParlGroupName"] == "NaN") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Fed. Council";
-            } else {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = nodes[i]["ParlGroupName"];
+            var gr = nodes[i]["ParlGroupAbbreviation"];
+            if(gr == "NaN") {
+                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Federal Council";
+            } else if (gr == "GL") {
+                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. Vert'Libéral";
+            } else if (gr == "BD") {
+                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. BD";
+            } else if (gr == "C") {
+                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. PDC";
+            } else if (gr == "S") {
+                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp Socialiste";
+            } else if (gr == "G") {
+                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. des Verts";
+            } else if (gr == "RL") {
+                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. LR";
+            } else if (gr == "V") {
+                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. UDC";
             }
             variables["parl_gr"].push(nodes[i]["ParlGroupAbbreviation"]);
         } else {
@@ -336,54 +406,13 @@ d3.json("data/active.json", function(error, graph) {
     // Awesomplete
     new Awesomplete(compCounc, {list: list_councilors});
 
-    // Create Foci for parties
-    shuffle(list_parties);
-
-    for(var i=0; i<list_parties.length; i++) {
-        foci["party"][list_parties[i]] = {"x": (i+1)/(list_parties.length+1)*width, "y": (Math.pow(-1, i)*0.2 + 0.6)*height};
-    }
-
-    // Create Foci for parl gp
-    shuffle(list_parl_gr);
-
-    for(var i=0; i<list_parl_gr.length; i++) {
-        foci["parl_gr"][list_parl_gr[i]] = {"x": (i+1)/(list_parl_gr.length+1)*width, "y": (Math.pow(-1, i)*0.2 + 0.6)*height};
-    }
-
-    // Create Foci for languages
-    shuffle(list_languages);
-
-    for(var i=0; i<list_languages.length; i++) {
-        foci["language"][list_languages[i]] = {"x": (i+1)/(list_languages.length+1)*width, "y": (Math.pow(-1, i)*0.25 + 0.5)*height};
-    }
-
+*/
     list_ages.sort();
     variables["age"].sort();
 
     // Create Foci for age
     for(var i=0; i<list_ages.length; i++) {
         foci["age"][list_ages[i]] = {"x": (i+1)/(list_ages.length+1)*width, "y": (Math.pow(-1, i)*0.2 + 0.6)*height};
-    }
-
-    // Create Foci for canton
-    shuffle(list_cantons);
-
-    for(var i=0; i<list_cantons.length; i++) {
-        var yy = 0;
-        var xx = 0;
-
-        if (i<9) {
-            yy = 1/4*height;
-            xx = (i+1)/10*width;
-        } else if (i<17) {
-            yy = 1/2*height;
-            xx = (i-8)/9*width;
-        } else {
-            yy = 3/4*height;
-            xx = (i-16)/10*width;
-        }
-
-        foci["canton"][list_cantons[i]] = {"x": xx, "y": yy};
     }
 
     // Create array of foci
@@ -628,7 +657,7 @@ function update_color() {
             .enter().append("circle")
             .attr("class", "circleLegend")
             .attr("cx", function (o, i) {
-                if(colorType == "party") {
+                if(colorType == "party" || colorType == "parl_gr") {
                     var half = Math.round(variables[colorType].length/2);
                     var incr = (width-start)/(half);
                     if(i<half) {
@@ -642,7 +671,7 @@ function update_color() {
                 }
             })
             .attr("cy", function(o,i) {
-                if(colorType == "party") {
+                if(colorType == "party"|| colorType == "parl_gr") {
                     if(i<variables[colorType].length/2) {
                         return height_l / 4;
                     } else {
@@ -662,7 +691,7 @@ function update_color() {
             .enter().append("text")
             .attr("class", "textLegend")
             .attr("x", function(o,i) {
-                if(colorType == "party") {
+                if(colorType == "party" || colorType == "parl_gr") {
                     var half = Math.round(variables[colorType].length/2);
                     var incr = (width-start)/(half);
                     if(i<half) {
@@ -676,7 +705,7 @@ function update_color() {
                 }
             })
             .attr("y", function(o,i) {
-                if(colorType == "party") {
+                if(colorType == "party" || colorType == "parl_gr") {
                     if(i<variables[colorType].length/2) {
                         return height_l / 4;
                     } else {
@@ -1139,13 +1168,24 @@ function showFriends(id) {
     // slicing the data
     if (friendship == 'intervention') {
         var data = friends[id];
+        if(data.length > 1) {
+            document.getElementById('friends_info').innerHTML = data.length + " co-speakers";
+        } else {
+            document.getElementById('friends_info').innerHTML = data.length + " co-speaker";
+        }
     } else if (friendship == 'cosign') {
         var data = friendsCosign[id];
+        if(data.length > 1) {
+            document.getElementById('friends_info').innerHTML = data.length + " co-signatories";
+        } else {
+            document.getElementById('friends_info').innerHTML = data.length + " co-signatory";
+        }
     }
 
     var length = (223/5)*(data.length);
 
     document.getElementById('friends').setAttribute("height", length + "px");
+
 
 
     gFriends.selectAll('.friend')

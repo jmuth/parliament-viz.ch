@@ -101,7 +101,7 @@ body {
 	float: left;
 	background-color: #fefefe;
 	width: 190px;
-	height: 205px;
+	height: 190px;
 	position: relative;
 	border-radius: 1px;
 	padding: 5px;
@@ -124,8 +124,9 @@ body {
 }
 
 #div_img {
-	float: right;
+	float: left;
 	position: relative;
+    vertical-align: middle;
 }
 
 #int_timeline {
@@ -210,5 +211,5 @@ circle {
 
 #choice{
 	font-family: sans-serif;
-	font-size: 12pt;
+	font-size: 9pt;
 }
