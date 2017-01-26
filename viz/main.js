@@ -144,6 +144,8 @@ var barWidth = 390 - bGMargin.left - bGMargin.right,
 var svgFriends = d3.select('#friends'),
     gFriends = svgFriends.append('g');
 
+// Prepare the autocomplete
+var compCounc = document.getElementById("compCouncilors");
 
 // Simulation
 var simulation = d3.forceSimulation().alphaDecay(0)
@@ -235,6 +237,7 @@ d3.json("data/active.json", function(error, graph) {
     var list_languages = [];
     var list_ages = [];
     var list_cantons = [];
+    var list_councilors = [];
 
     for(var i=0; i<nodes.length; i++) {
         nodes[i]["x"] = pos[nodes[i]["PersonIdCode"]]["x"];
@@ -242,6 +245,8 @@ d3.json("data/active.json", function(error, graph) {
         nodes[i]["radius"] = radius;
         nodes[i]["selected"] = false;
         nodes[i]["dragged"] = false;
+
+        list_councilors.push(nodes[i]["FirstName"] + " " + nodes[i]["LastName"]);
 
         // Get nbr by council
         if(!(nodes[i]["CouncilAbbreviation"] in nbr["council"])) {
@@ -327,6 +332,9 @@ d3.json("data/active.json", function(error, graph) {
             nbr["canton"][nodes[i]["CantonAbbreviation"]] += 1;
         }
     }
+
+    // Awesomplete
+    new Awesomplete(compCounc, {list: list_councilors});
 
     // Create Foci for parties
     shuffle(list_parties);
@@ -565,6 +573,8 @@ function clickedBox(o) {
     document.getElementById("councilorCanton").innerHTML = o.CantonName;
     document.getElementById("councilorImage").src = "data/portraits/" + o.PersonIdCode + ".jpg";
     document.getElementById("councilorImage").alt = o.FirstName + " " + o.LastName;
+
+    document.getElementById('compCouncilors').input = o.FirstName + " " + o.LastName;
 
     showTimeline(o.PersonIdCode);
     changeOpac(o.PersonIdCode);
@@ -1211,3 +1221,14 @@ function friendOut(id) {
     $('#'+id).attr('stroke', '#555555')
         .attr('stroke-width', 1);
 }
+
+document.getElementById('compCouncilors').addEventListener('awesomplete-selectcomplete',function(){
+    var val = this.value;
+    d3.selectAll(".dataNodes").each(function(o,i)
+        {
+            if((o.FirstName + " " + o.LastName) == val) {
+                clickedBox(o);
+            }
+        }
+    );
+});

@@ -11,7 +11,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Vizu Parlament Clusters</title>
-    <link rel="stylesheet" type="text/css" href="main.css"></link>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="stylesheet" href="ext/awesomplete.css"/>
+    <script src="ext/awesomplete.min.js" async></script>
 </head>
 
 <h1>Visualisation on the Swiss Parliament</h1>
@@ -22,6 +24,9 @@
 <br><br>
 
 <div id="visualisation">
+    <b>Find a Councilor</b> <br>
+    <input id="compCouncilors" class="awesomplete" placeholder="E.g.: Doris Leuthard "/>
+    <br><br>
     <div id="choices">
         <b>Clustering</b>
         <form name="Clustering">
