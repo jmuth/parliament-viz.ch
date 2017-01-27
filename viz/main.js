@@ -1170,14 +1170,29 @@ function showInterests(id) {
         data_int.pop();
     }
 
-    // To put in percentage (Not really good I think)
-    /*var total = 0;
+    var total = 0;
 
-    for (var i = 0; i < data.length; i++) {
-        total += data[i].int;
-        console.log(data[i].int);
+    for (var i = 0; i < data_int.length; i++) {
+        total += data_int[i].int;
     }
 
+    // Change text
+    if (interest_type == 'all') {
+        if(total > 1) {
+            document.getElementById('interest_info').innerHTML = "Interests (" + total + " motions signed)";
+        } else {
+            document.getElementById('interest_info').innerHTML = "Interests (" + total + " motion signed)";
+        }
+    } else if (interest_type == 'author') {
+        if(total > 1) {
+            document.getElementById('interest_info').innerHTML = "Interests (" + total + " motions as author)";
+        } else {
+            document.getElementById('interest_info').innerHTML = "Interests (" + total + " motion as author)";
+        }
+    }
+
+    // To put in percentage (Not really good I think)
+    /*
     for (var i = 0; i < data.length; i++) {
         data[i].int = data[i].int / total;
     }*/
@@ -1276,7 +1291,8 @@ function showFriends(id) {
 
     // removing the previous ones
     gFriends.selectAll('*').remove();
-    // slicing the data
+
+    // Change text
     if (friendship == 'intervention') {
         var data = friends[id];
         if(data.length > 1) {
