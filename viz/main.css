@@ -14,7 +14,7 @@ body {
 
 #choices {
 	float:left;
-	width:10%;
+	width:15%;
 	#background:blue;
 }
 
@@ -91,7 +91,7 @@ body {
 #content {
 	background-color: #eeeeee;
 	width: 400px;
-	height: 650px;
+	height: 870px;
 	float: right;
 	padding: 5px;
 
@@ -134,6 +134,19 @@ body {
 	margin-top: 0px;
 	width: 98%;
 	height: 145px;
+	background-color: white;
+	border-radius: 1px;
+	font-family: sans-serif;
+	font-size: 10pt;
+	padding-top: 5px;
+	padding-left: 5px;
+}
+
+#div_theme {
+	float: left;
+	margin-top: 0px;
+	width: 98%;
+	height: 215px;
 	background-color: white;
 	border-radius: 1px;
 	font-family: sans-serif;

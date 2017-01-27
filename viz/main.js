@@ -45,6 +45,21 @@ for(var i = 0; i < rad_friendship.length; i++) {
     };
 }
 
+var rad_interest = document.Interest.buttons;
+var prev_interest = null;
+var interest_type = "all";
+var interest_changed = true;
+for(var i = 0; i < rad_interest.length; i++) {
+    rad_interest[i].onclick = function() {
+        (prev_interest)? console.log(prev_interest.value):null;
+        if(this !== prev_interest) {
+            prev_interest = this;
+            interest_type = this.value;
+        }
+        interest_changed = true;
+    };
+}
+
 // Define some variables
 var radius = 7,
     padding = 1;
@@ -194,6 +209,11 @@ var barGraph = d3.select("#int_graph")
     .append("g")
     .attr("transform", "translate(" + bGMargin.left + "," + bGMargin.top + ")");
 
+// Prepare the Bar Graph for the interests
+var interestsBarGraph = d3.select('#themes')
+    .append("g")
+    .attr("transform", "translate(" + bGMargin.left + "," + bGMargin.top + ")");
+
 var barWidth = 390 - bGMargin.left - bGMargin.right,
     barHeight = 105 - bGMargin.top - bGMargin.bottom;
 
@@ -230,11 +250,24 @@ function importAdj(json) {
     });
 };
 
+var interests;
+function importInterests(json) {
+    $.getJSON(json, function(d) {
+        interests =  d;
+    });
+};
+
+var authors;
+function importAuthors(json) {
+    $.getJSON(json, function(d) {
+        authors =  d;
+    });
+};
 
 var adj_cosign;
 function importAdjCosign(json) {
     $.getJSON(json, function(d) {
-        adjCosign = d;
+        adj_cosign = d;
     })
 }
 
@@ -262,7 +295,7 @@ function importFriends(json) {
 var friends_cosign;
 function importFriendsCosign(json) {
     $.getJSON(json, function(d) {
-        friendsCosign = d;
+        friends_cosign = d;
     });
 }
 
@@ -273,6 +306,8 @@ importPeople('data/people.json');
 importFriends('data/friends.json');
 importAdjCosign('data/adj_cosign.json');
 importFriendsCosign('data/friends_cosign.json');
+importInterests('data/interests.json');
+importAuthors('data/authors.json');
 
 var nodes;
 var node;
@@ -471,6 +506,8 @@ function ticked() {
 
     update_friendship();
 
+    update_interest();
+
     node
         .each(gravity())
         .attr("cx", function(d) { return d.x; })
@@ -494,6 +531,7 @@ function emphasisAndShowInfo(d) {
             document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
 
             showTimeline(d.PersonIdCode);
+            showInterests(d.PersonIdCode);
             changeOpac(d.PersonIdCode);
             showFriends(d.PersonIdCode);
             node_id = d.PersonIdCode;
@@ -544,6 +582,7 @@ function clicked(d) {
         document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
 
         showTimeline(d.PersonIdCode);
+        showInterests(d.PersonIdCode);
         changeOpac(d.PersonIdCode);
         showFriends(d.PersonIdCode);
 
@@ -605,6 +644,7 @@ function clickedBox(o) {
     document.getElementById('compCouncilors').input = o.FirstName + " " + o.LastName;
 
     showTimeline(o.PersonIdCode);
+    showInterests(o.PersonIdCode);
     changeOpac(o.PersonIdCode);
     showFriends(o.PersonIdCode);
 
@@ -830,6 +870,16 @@ function update_friendship() {
     }
 }
 
+function update_interest() {
+    if (interest_changed) {
+        if(node_id != null) {
+            showInterests(node_id);
+        }
+
+        interest_changed = false;
+    }
+}
+
 function getValForColor(colorType, node) {
     if(colorType == "party") {
         return node.PartyAbbreviation;
@@ -1011,13 +1061,6 @@ function dragended(d) {
     if (!d3.event.active) simulation.alphaTarget(0);
 }
 
-function shuffle(a) {
-    for (var i = a.length; i; i--) {
-        var j = Math.floor(Math.random() * i);
-        [a[i - 1], a[j]] = [a[j], a[i - 1]];
-    }
-}
-
 function radius_foci(radius, n) {
     var ratio = 0;
 
@@ -1106,11 +1149,80 @@ function showTimeline(id) {
 
 }
 
+function showInterests(id) {
+
+    // Remove what was previously there
+    interestsBarGraph.selectAll('*').remove();
+
+    var data_int;
+    if(interest_type == "all") {
+        data_int = interests[id];
+    } else if (interest_type == "author") {
+        data_int = authors[id];
+    }
+
+    data_int.sort(function(a, b) {
+        return a.idx - b.idx;
+    });
+
+    // Remove Unknown field
+    if(data_int[data_int.length-1].theme == "Unknown") {
+        data_int.pop();
+    }
+
+    // To put in percentage (Not really good I think)
+    /*var total = 0;
+
+    for (var i = 0; i < data.length; i++) {
+        total += data[i].int;
+        console.log(data[i].int);
+    }
+
+    for (var i = 0; i < data.length; i++) {
+        data[i].int = data[i].int / total;
+    }*/
+
+    var x = d3.scaleBand()
+        .rangeRound([0, barWidth]).padding(0.05);
+
+    var y = d3.scaleLinear()
+        .rangeRound([barHeight, 0]);
+
+    x.domain(data_int.map(function(d) { return d.theme; }));
+    y.domain([0, d3.max(data_int, function(d) { return d.int; })]);
+
+    interestsBarGraph.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + barHeight + ")")
+        .call(d3.axisBottom(x).ticks(3))
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", 9)
+        .attr("dy", ".40em")
+        .attr("transform", "rotate(90)")
+        .style("text-anchor", "start");
+
+    interestsBarGraph.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(y).ticks(3));
+
+    interestsBarGraph.selectAll(".bar")
+        .data(data_int)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.theme); })
+        .attr("y", function(d) { return y(d.int); })
+        .attr('fill', 'steelblue')
+        .attr("width", x.bandwidth())
+        .attr("height", function(d) { return barHeight - y(d.int); });
+
+}
+
 function changeOpac(id) {
     if (friendship == 'intervention') {
         var line = adj[id];
     } else if (friendship == 'cosign') {
-        var line = adjCosign[id];
+        var line = adj_cosign[id];
     }
 
     var max = findMax(line);
@@ -1173,7 +1285,7 @@ function showFriends(id) {
             document.getElementById('friends_info').innerHTML = data.length + " co-speaker";
         }
     } else if (friendship == 'cosign') {
-        var data = friendsCosign[id];
+        var data = friends_cosign[id];
         if(data.length > 1) {
             document.getElementById('friends_info').innerHTML = data.length + " co-signatories";
         } else {
