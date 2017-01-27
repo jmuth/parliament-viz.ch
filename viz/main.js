@@ -1363,9 +1363,9 @@ function showFriends(id) {
         .attr('y', function(d, i){ return 21+i*(223/5)})
         .text(function(d) {
             if (people[d.friend].GenderAsString == "m") {
-                return "M. " + people[d.friend].LastName;
+                return people[d.friend].FirstName[0] + ". " + people[d.friend].LastName;
             } else {
-                return "Mme. " + people[d.friend].LastName;
+                return people[d.friend].FirstName[0] + ". " + people[d.friend].LastName;
             }
         });
 
