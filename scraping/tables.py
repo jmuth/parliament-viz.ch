@@ -23,7 +23,7 @@ class Tables:
                 sys.exit('[ERROR] Needed table ' + table_name)
 
     def __init__(self):
-        self.needed_tables = ['Business', 'MemberCouncil', 'Tags', 'BusinessRole']
+        self.needed_tables = ['Business', 'MemberCouncil', 'Tags', 'BusinessRole', 'ActivePeople']
         self.check_data_exists()
         self.df = {}
         for table in self.needed_tables:
@@ -79,7 +79,7 @@ class Tables:
         number_initiative = number_initiative.reset_index().astype(int)
         return number_initiative
 
-    def interest(self):
+    def interest(self, cosign=True, auth=True):
         """ Most frequent tags in redacted or signed initiative """
         df_business = self.df['Business']
         df_role = self.df['BusinessRole']
@@ -87,6 +87,7 @@ class Tables:
 
         # get tag for each business
         df_business_tags = df_business[['ID', 'Tags']].set_index('ID')
+        df_business_tags['Tags'].fillna("2500", inplace=True)
         df_business_tags = df_business_tags.dropna(axis=0)
 
         # create a DataFrame business->tag filled with zero
@@ -98,7 +99,6 @@ class Tables:
         df_business_tags['Tags'] = df_business_tags['Tags'].apply(lambda x: x.split('|'))
 
         # fill the cell of topics table
-        # (je sais, y'a pas besoin de faire une boucle, mais j'en ai marre et la table est petite)
         def fill_cell(business_number, tags_array):
             for tag in tags_array:
                 previous_val = topics.get_value(int(business_number), int(tag))
@@ -111,9 +111,13 @@ class Tables:
         topics = topics.astype(int)
 
         # Get a table with (author, co-signer) and the related business
-        # TODO: do we want only author or cosigner too ?
         authors = df_role.loc[(df_role.MemberCouncilNumber.notnull())]
-        authors = authors.loc[(authors.RoleName == 'Auteur') | (authors.RoleName == 'Cosignataire')]
+        if cosign == True and auth == True:
+            authors = authors.loc[(authors.RoleName == 'Auteur') | (authors.RoleName == 'Cosignataire')]
+        elif cosign == True and auth == False:
+            authors = authors.loc[(authors.RoleName == 'Cosignataire')]
+        else:
+            authors = authors.loc[(authors.RoleName == 'Auteur')]
         authors = authors[['MemberCouncilNumber', 'BusinessNumber']]
         authors = authors.astype(int)
 
@@ -127,3 +131,30 @@ class Tables:
         interest.columns = temp.TagName
         interest = interest.reset_index()
         return interest
+
+    def active_interest(self, cosign=True, auth=True):
+        df_interest = self.interest(cosign, auth)
+        df_active = self.df['ActivePeople'] 
+        
+        df_interest = df_interest[df_interest.MemberCouncilNumber.isin(df_active.PersonNumber)]
+        missing = np.array(df_active.PersonNumber[~df_active.PersonNumber.isin(df_interest.MemberCouncilNumber)])
+        
+        if len(missing) > 0:
+            n = len(df_interest.columns)
+            
+            for i in missing:
+                arr = np.zeros(n)
+                arr[0] = i
+                df_interest.loc[-1] = arr
+                df_interest.index = df_interest.index + 1
+       
+        df_active = df_active.sort_values(by='PersonNumber')
+        df_interest = df_interest.sort_values(by='MemberCouncilNumber')
+        df_interest = df_interest.reset_index()
+        df_interest['PersonIdCode'] = df_active.PersonIdCode
+        df_interest = df_interest.drop(['index', 'MemberCouncilNumber'], axis=1)
+        
+        return df_interest
+
+            
+
