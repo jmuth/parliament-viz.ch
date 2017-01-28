@@ -5,11 +5,13 @@
 #
 # Distributed under terms of the MIT license.
 
+import json
 import pandas as pd
 import numpy as np
 import scipy.sparse as sp
 import os.path
 import sys
+from collections import defaultdict
 
 
 def symmetrize(a):
@@ -23,7 +25,14 @@ class Tables:
                 sys.exit('[ERROR] Needed table ' + table_name)
 
     def __init__(self):
-        self.needed_tables = ['Business', 'MemberCouncil', 'Tags', 'BusinessRole', 'ActivePeople']
+        self.needed_tables = ['Business',
+                              'MemberCouncil',
+                              'Tags',
+                              'BusinessRole',
+                              'Active_People',
+                              'Transcript',
+                              'Session',
+                              'Person']
         self.check_data_exists()
         self.df = {}
         for table in self.needed_tables:
@@ -134,27 +143,97 @@ class Tables:
 
     def active_interest(self, cosign=True, auth=True):
         df_interest = self.interest(cosign, auth)
-        df_active = self.df['ActivePeople'] 
-        
+        df_active = self.df['Active_People']
+
         df_interest = df_interest[df_interest.MemberCouncilNumber.isin(df_active.PersonNumber)]
         missing = np.array(df_active.PersonNumber[~df_active.PersonNumber.isin(df_interest.MemberCouncilNumber)])
-        
+
         if len(missing) > 0:
             n = len(df_interest.columns)
-            
+
             for i in missing:
                 arr = np.zeros(n)
                 arr[0] = i
                 df_interest.loc[-1] = arr
                 df_interest.index = df_interest.index + 1
-       
+
         df_active = df_active.sort_values(by='PersonNumber')
         df_interest = df_interest.sort_values(by='MemberCouncilNumber')
         df_interest = df_interest.reset_index()
         df_interest['PersonIdCode'] = df_active.PersonIdCode
         df_interest = df_interest.drop(['index', 'MemberCouncilNumber'], axis=1)
-        
+
         return df_interest
 
-            
+    def interventions(self, filename=None):
+        transcripts = self.df['Transcript']
+        sessions = self.df['Session']
+        persons = self.df['Person']
 
+        if filename is None:
+            filename = 'interventions'
+
+        def word_counter(df):
+            if type(df['Text']) == float:
+                return 0
+            else:
+                return len(df['Text'].split())
+
+        def define_year(df):
+            return year_dict[df['IdSession']]
+
+        def get_year(df):
+            return int(df.StartDate[:4])
+
+        # filter transcription with PersonIdField
+        transcripts = transcripts[np.isfinite(transcripts['PersonNumber'])]
+        transcripts['PersonNumber'] = transcripts['PersonNumber'].astype(int)
+
+        # filter long intervention
+        transcripts['NumberWord'] = transcripts.apply(word_counter, axis=1)
+        df_long = transcripts.loc[transcripts.NumberWord > 30]
+
+        # link session number to year
+        sessions['StartYear'] = sessions.apply(get_year, axis=1)
+        year_dict = sessions['StartYear'].to_dict()
+        year_dict = defaultdict(lambda: 0, year_dict)
+
+        # add year field
+        df_long['year'] = df_long.apply(define_year, axis=1)
+
+        # table : PersonNumber, year, interventions
+        interventions = pd.DataFrame(df_long.groupby(['PersonNumber', 'year']).size().rename('Counts'))
+        interventions = interventions.reset_index()
+
+        # table : year, median intervention per person
+        median = interventions.groupby('year').agg('median')
+        median = median['Counts'].rename('median').astype(int)
+
+        # table personNumber, PersonIdCode
+        persons = persons.dropna(axis=0, subset=['PersonNumber', 'PersonIdCode'])
+        persons.PersonIdCode = persons.PersonIdCode.astype(int)
+        persons = persons.set_index('PersonNumber')
+        persons = persons['PersonIdCode']
+
+        # in main table, link to PersonIdCode and median per year
+        interventions = interventions.join(persons, how='inner', on='PersonNumber')
+        interventions = interventions.join(median, how='inner', on='year')
+
+        # create the dictionnary for Json
+        interventions.sort_values(by='PersonIdCode', inplace=True)
+        persons_id = interventions.PersonIdCode.unique()
+
+        dic = {}
+        for person_id in persons_id:
+            arr = list()
+            for row in interventions.loc[interventions.PersonIdCode == person_id].values:
+                internal_dic = {'year': int(row[1]), 'int': int(row[2]), 'median': int(row[4])}
+                arr.append(internal_dic)
+            dic[str(person_id)] = arr
+
+        filepath = 'data/' + filename + '.json'
+        with open(filepath, 'w') as fp:
+            json.dump(dic, fp)
+            print("[INFO] JSON created in file ", filepath)
+
+        return interventions
