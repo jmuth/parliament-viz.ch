@@ -17,11 +17,11 @@
 </head>
 
 <h1>Visualisation on the Swiss Parliament</h1>
-<!--<h2>Information:</h2>-->
-<!--<d>If you <b>pass the mouse over a point</b>, you'll be able to see more information on the councilor.</d><br>-->
-<!--<d>If you <b>click on a point</b>, you will select a councilor and you will be able to follow him in the different cluster.</d><br>-->
-<!--<d>If you <b>double-click</b>, the points will move a bit from their positions. It helps when a point is blocked.</d>-->
-<!--<br><br>-->
+<h2>Information:</h2>
+<d>If you <b>pass the mouse over a point</b>, you'll be able to see more information on the councilor.</d><br>
+<d>If you <b>click on a point</b>, you will select a councilor and you will be able to follow him in the different cluster.</d><br>
+<d>If you <b>double-click</b>, the points will move a bit from their positions. It helps when a point is blocked.</d>
+<br><br>
 
 <div id="visualisation">
     <b>Find a Councilor</b> <br>
@@ -30,24 +30,56 @@
     <div id="choices">
         <b>Clustering</b>
         <form name="Clustering">
-            <input type="radio" name="buttons" value="none" checked="True"> None<br>
-            <input type="radio" name="buttons" value="council"> Council<br>
-            <input type="radio" name="buttons" value="party" > Parties<br>
-            <input type="radio" name="buttons" value="parl_gr" > Parl. Group<br>
-            <input type="radio" name="buttons" value="gender"> Gender<br>
-            <input type="radio" name="buttons" value="language"> Language<br>
-            <input type="radio" name="buttons" value="age"> Age<br>
-            <input type="radio" name="buttons" value="canton"> Canton
+            <input type="checkbox" name="button" value="cluster"> Activate Cluster <br>
         </form>
+
+        <div id="cluster_type">
+            <b>Clusters</b>
+            <form name="ClusterType">
+                <input type="checkbox" name="btn_council" id="btn_council" value="council" disabled="disabled"> Council<br>
+                <input type="checkbox" name="btn_party" id="btn_party" value="party" disabled="disabled"> Parties<br>
+                <input type="checkbox" name="btn_parl_gr" id="btn_parl_gr" value="parl_gr" disabled="disabled"> Parl. Group<br>
+                <input type="checkbox" name="btn_gender" id="btn_gender" value="gender" disabled="disabled"> Gender<br>
+                <input type="checkbox" name="btn_language" id="btn_language" value="language" disabled="disabled"> Language<br>
+                <input type="checkbox" name="btn_age" id="btn_age" value="age" disabled="disabled"> Age<br>
+                <input type="checkbox" name="btn_canton"id="btn_canton" value="canton" disabled="disabled"> Canton
+            </form>
+        </div>
         <b>Colors</b>
         <form name="Colors">
-            <input type="radio" name="buttons" value="party" checked="True"> Parties<br>
-            <input type="radio" name="buttons" value="parl_gr" > Parl. Group<br>
-            <input type="radio" name="buttons" value="council"> Council<br>
-            <input type="radio" name="buttons" value="gender"> Gender<br>
-            <input type="radio" name="buttons" value="language"> Language<br>
-            <input type="radio" name="buttons" value="age"> Age<br>
+            <input type="radio" name="buttons" value="PartyAbbreviation" checked="True"> Parties<br>
+            <input type="radio" name="buttons" value="ParlGroupAbbreviation" > Parl. Group<br>
+            <input type="radio" name="buttons" value="CouncilAbbreviation"> Council<br>
+            <input type="radio" name="buttons" value="GenderAsString"> Gender<br>
+            <input type="radio" name="buttons" value="NativeLanguage"> Language<br>
+            <input type="radio" name="buttons" value="AgeCategory"> Age<br>
         </form>
+        <br>
+        <div id="add_info_cluster">
+            <b>Cluster information</b>
+            <br>
+            <span id='cluster_info'></span>
+            <br>
+            <span id='cluster_nbr'></span>
+        </div>
+        <br>
+        <div id="add_info_counc">
+            <b>Councilor information</b>
+            <div id="other_counc">
+                <span id='councilorName_add'></span>
+                <br>
+                <span id='councilorParty_add'></span>
+                <br>
+                <span id='councilorCanton_add'></span>
+                <br>
+                <span id='councilorCouncil_add'></span>
+                <br>
+                <span id='councilorBirthday_add'></span>
+            </div>
+            <div id='div_img'>
+                <img id='councilorImage_add' src="data/portraits/person-260.jpg" height="200px">
+            </div>
+        </div>
     </div>
 
     <div id="viz">
@@ -104,7 +136,6 @@
         </div>
     </div>
 </div>
-<div id="tag"></div>
 
 <div>
     <div id="legend">
@@ -115,3 +146,7 @@
 <br>
 
 <script src="main.js"></script>
+<script src="functions.js"></script>
+<script src="sidebar.js"></script>
+<script src="clusters.js"></script>
+<script src="colors.js"></script>

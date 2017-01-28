@@ -18,6 +18,18 @@ body {
 	#background:blue;
 }
 
+#cluster_type{
+	margin-left: 30px;
+}
+
+#add_info_counc{
+    display: none;
+}
+
+#add_info_cluster{
+    display: none;
+}
+
 #councilor {
 	float:right;
 	width:20%;
@@ -27,7 +39,7 @@ body {
 #viz {
 	display: inline-block;
 	width: 50%;
-	#background:black;
+	#background:palevioletred;
 }
 
 #legend {
@@ -123,6 +135,17 @@ body {
 	line-height: 1.5;
 }
 
+.add_info {
+    float: right;
+    width: 180px;
+    height: 190px;
+    position: relative;
+    border-radius: 1px;
+    padding: 5px;
+    font-family: sans-serif;
+    font-size: 10pt;
+}
+
 #div_img {
 	float: left;
 	position: relative;
@@ -200,21 +223,6 @@ circle {
 .grect {
 	font-size: 9pt;
 	cursor: pointer;
-}
-
-#tag {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	display: none;
-	width: auto;
-	height: auto;
-	background-color: grey;
-	padding: 5px;
-	border-radius: 2px;
-	font-family: sans-serif;
-	font-size: 9pt;
-	color: white;
 }
 
 #search {

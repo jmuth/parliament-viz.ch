@@ -1,23 +1,100 @@
 // Get the clustering
-var rad_cluster = document.Clustering.buttons;
-var prev_cluster = null;
-var cluster = "none";
-var cluster_changed = true;
-for(var i = 0; i < rad_cluster.length; i++) {
-    rad_cluster[i].onclick = function() {
-        (prev_cluster)? console.log(prev_cluster.value):null;
-        if(this !== prev_cluster) {
-            prev_cluster = this;
-            cluster = this.value;
-        }
-        cluster_changed = true;
-    };
-}
+var rad_cluster = document.Clustering.button;
+var cluster_active = false;
+var cluster_activation_changed = true;
+rad_cluster.onclick = function() {
+    cluster_active  = this.checked;
+    cluster_activation_changed = true;
+};
+
+
+var clusters_changed = false;
+var deleted = false;
+var added = false;
+var ftype = null;
+var focis_order = [];
+
+var rad_council = document.ClusterType.btn_council;
+rad_council.onclick = function() {
+    if(this.checked) {
+        added = true;
+    } else {
+        deleted = true;
+    }
+    ftype = "CouncilAbbreviation";
+    clusters_changed = true;
+};
+
+var rad_party = document.ClusterType.btn_party;
+rad_party.onclick = function() {
+    if(this.checked) {
+        added = true;
+    } else {
+        deleted = true;
+    }
+    ftype = "PartyAbbreviation";
+    clusters_changed = true;
+};
+
+var rad_parl_gr = document.ClusterType.btn_parl_gr;
+rad_parl_gr.onclick = function() {
+    if(this.checked) {
+        added = true;
+    } else {
+        deleted = true;
+    }
+    ftype = "ParlGroupAbbreviation";
+    clusters_changed = true;
+};
+
+var rad_gender = document.ClusterType.btn_gender;
+rad_gender.onclick = function() {
+    if(this.checked) {
+        added = true;
+    } else {
+        deleted = true;
+    }
+    ftype = "GenderAsString";
+    clusters_changed = true;
+};
+
+var rad_language = document.ClusterType.btn_language;
+rad_language.onclick = function() {
+    if(this.checked) {
+        added = true;
+    } else {
+        deleted = true;
+    }
+    ftype = "NativeLanguage";
+    clusters_changed = true;
+};
+
+var rad_age = document.ClusterType.btn_age;
+rad_age.onclick = function() {
+    if(this.checked) {
+        added = true;
+    } else {
+        deleted = true;
+    }
+    ftype = "AgeCategory";
+    clusters_changed = true;
+};
+
+var rad_canton = document.ClusterType.btn_canton;
+rad_canton.onclick = function() {
+    if(this.checked) {
+        added = true;
+    } else {
+        deleted = true;
+    }
+    ftype = "CantonAbbreviation";
+    clusters_changed = true;
+};
 
 // Get the color
 var rad_color = document.Colors.buttons;
 var prev_color = null;
-var colorType = "party";
+var colorType = "PartyAbbreviation";
 var color_changed = true;
 for(var i = 0; i < rad_color.length; i++) {
     rad_color[i].onclick = function() {
@@ -61,7 +138,7 @@ for(var i = 0; i < rad_interest.length; i++) {
 }
 
 // Define some variables
-var radius = 7,
+var radius = 6,
     padding = 1;
 
 // We consider that the size of the box is 960x600
@@ -75,109 +152,32 @@ var node_id = null;
 
 var dragging = false;
 
-// Foci
-var foci = {
-    "council": {
-        "CN": {"x": 0.2 * width, "y": 0.6 * height},        // Foci CN
-        "CE": {"x": 0.6 * width, "y": 0.2 * height},        // Foci CE
-        "CF": {"x": 0.8 * width, "y": 0.6 * height}         // Foci CF
-    },
-    "party": {
-        "PDC": {"x": 0.1 * width, "y": 0.5 * height},
-        "PLR": {"x": 0.367 * width, "y": 0.3 * height},
-        "UDC": {"x": 0.633 * width, "y": 0.5 * height},
-        "PSS": {"x": 0.9 * width, "y": 0.3 * height},
-        "MCG": {"x": 0.05 * width, "y": 0.8 * height},
-        "PEV": {"x": 0.14 * width, "y": 0.8 * height},
-        "BastA": {"x": 0.23 * width, "y": 0.8 * height},
-        "PBD": {"x": 0.32 * width, "y": 0.8 * height},
-        "-": {"x": 0.41 * width, "y": 0.8 * height},
-        "Lega": {"x": 0.5 * width, "y": 0.8 * height},
-        "csp-ow": {"x": 0.59 * width, "y": 0.8 * height},
-        "pvl": {"x": 0.68 * width, "y": 0.8 * height},
-        "PdT": {"x": 0.77 * width, "y": 0.8 * height},
-        "PES": {"x": 0.86 * width, "y": 0.8 * height},
-        "PLD": {"x": 0.95 * width, "y": 0.8 * height}
-    },
-    "gender": {
-        "m": {"x": 0.3*width, "y": 0.5*height},             // Foci Male
-        "f": {"x": 0.7*width, "y": 0.5*height}              // Foci Female
-    },
-    "language": {
-        "I": {"x": 0.2 * width, "y": 0.8 * height},
-        "D": {"x": 0.5 * width, "y": 0.3 * height},
-        "F": {"x": 0.8 * width, "y": 0.8 * height},
-        "Tr": {"x": 0.2 * width, "y": 0.3 * height},
-        "Sk": {"x": 0.8 * width, "y": 0.3 * height},
-        "RM": {"x": 0.5 * width, "y": 0.8 * height}
-    },
-    "age": {},                                              // Foci are created later
-    "canton": {
-        "ZH": {"x": 0.1 * width, "y": 0.2 * height},
-        "BE": {"x": 0.3 * width, "y": 0.2 * height},
-        "VD": {"x": 0.5 * width, "y": 0.2 * height},
-        "AG": {"x": 0.7 * width, "y": 0.2 * height},
-        "SG": {"x": 0.9 * width, "y": 0.2 * height},
-        "GE": {"x": 0.1 * width, "y": 0.5 * height},
-        "LU": {"x": 0.233 * width, "y": 0.5 * height},
-        "VS": {"x": 0.366 * width, "y": 0.5 * height},
-        "TI": {"x": 0.5 * width, "y": 0.5 * height},
-        "FR": {"x": 0.633 * width, "y": 0.5 * height},
-        "TG": {"x": 0.766 * width, "y": 0.5 * height},
-        "BL": {"x": 0.9 * width, "y": 0.5 * height},
-        "SO": {"x": 0.1 * width, "y": 0.7 * height},
-        "GR": {"x": 0.233 * width, "y": 0.7 * height},
-        "NE": {"x": 0.366 * width, "y": 0.7 * height},
-        "BS": {"x": 0.5 * width, "y": 0.7 * height},
-        "SZ": {"x": 0.633 * width, "y": 0.7 * height},
-        "ZG": {"x": 0.766 * width, "y": 0.7 * height},
-        "JU": {"x": 0.9 * width, "y": 0.7 * height},
-        "SH": {"x": 0.1 * width, "y": 0.9 * height},
-        "GL": {"x": 0.233 * width, "y": 0.9 * height},
-        "UR": {"x": 0.366 * width, "y": 0.9 * height},
-        "OW": {"x": 0.5 * width, "y": 0.9 * height},
-        "NW": {"x": 0.633 * width, "y": 0.9 * height},
-        "AI": {"x": 0.766 * width, "y": 0.9 * height},
-        "AR": {"x": 0.9 * width, "y": 0.9 * height}
-    },
-    "parl_gr": {
-        "NaN": {"x": 0.5 * width, "y": 0.5 * height},
-        "RL": {"x": 0.5 * width, "y": 0.2 * height},
-        "BD": {"x": 0.7 * width, "y": 0.3 * height},
-        "C": {"x": 0.8 * width, "y": 0.5 * height},
-        "S": {"x": 0.7 * width, "y": 0.8 * height},
-        "G": {"x": 0.3 * width, "y": 0.3 * height},
-        "GL": {"x": 0.2 * width, "y": 0.5 * height},
-        "V": {"x": 0.35 * width, "y": 0.8 * height}
-    }
-};
+var texts = {};
+texts["CouncilAbbreviation"] = {'CN': 'National Council', 'CE': 'Council of States', 'CF': 'Federal Council'};
+texts["PartyAbbreviation"] = {};
+texts["ParlGroupAbbreviation"] = {'NaN': 'Federal Council', "GL": "Grp. Vert'Libéral", "BD": "Grp. BD", "C": "Grp. PDC", "S": "Grp. Socialiste", "G": "Grp. des Verts", "RL": "Grp. LR", "V": "Grp. UDC"};
+texts["GenderAsString"] = {'m': 'Men', 'f': 'Women'};
+texts["NativeLanguage"] = {"F": "French", "I": "Italian", "Sk": "Slovak", "RM": "Romansh", "D": "German", "Tr": "Turkish"};
+texts["AgeCategory"] = {};
+texts["CantonAbbreviation"] = {};
 
 var nbr = {};
-nbr["council"] = {};
-nbr["party"] = {};
-nbr["gender"] = {};
-nbr["language"] = {};
-nbr["age"] = {};
-nbr["canton"] = {};
-nbr["parl_gr"] = {};
-
-var texts = {};
-texts["council"] = {'CN': 'National Council', 'CE': 'Council of States', 'CF': 'Federal Council'};
-texts["party"] = {};
-texts["gender"] = {'m': 'Men', 'f': 'Women'};
-texts["language"] = {};
-texts["age"] = {};
-texts["canton"] = {};
-texts["parl_gr"] = {};
+nbr["CouncilAbbreviation"] = {};
+nbr["PartyAbbreviation"] = {};
+nbr["ParlGroupAbbreviation"] = {};
+nbr["GenderAsString"] = {};
+nbr["NativeLanguage"] = {};
+nbr["AgeCategory"] = {};
+nbr["CantonAbbreviation"] = {};
 
 var variables = {};
-variables["council"] = [];
-variables["party"] = [];
-variables["gender"] = [];
-variables["language"] = [];
-variables["age"] = [];
-variables["canton"] = [];
-variables["parl_gr"] = [];
+variables["CouncilAbbreviation"] = [];
+variables["PartyAbbreviation"] = [];
+variables["ParlGroupAbbreviation"] = [];
+variables["GenderAsString"] = [];
+variables["NativeLanguage"] = [];
+variables["AgeCategory"] = [];
+variables["CantonAbbreviation"] = [];
 
 // SVG for the main Viz
 var svg = d3.select("div#viz")
@@ -316,7 +316,6 @@ importAuthors('data/authors.json');
 
 var nodes;
 var node;
-var array_foci;
 // Read the Nodes and do stuff!
 d3.json("data/active.json", function(error, graph) {
     if (error) throw error;
@@ -329,11 +328,6 @@ d3.json("data/active.json", function(error, graph) {
 
     nodes = graph.nodes;
 
-    var list_parties = [];
-    var list_parl_gr = [];
-    var list_languages = [];
-    var list_ages = [];
-    var list_cantons = [];
     var list_councilors = [];
 
     for(var i=0; i<nodes.length; i++) {
@@ -346,129 +340,68 @@ d3.json("data/active.json", function(error, graph) {
         list_councilors.push(nodes[i]["FirstName"] + " " + nodes[i]["LastName"]);
 
         // Get nbr by council
-        if(!(nodes[i]["CouncilAbbreviation"] in nbr["council"])) {
-            nbr["council"][nodes[i]["CouncilAbbreviation"]] = 1;
-            variables["council"].push(nodes[i]["CouncilAbbreviation"]);
+        if(!(nodes[i]["CouncilAbbreviation"] in nbr["CouncilAbbreviation"])) {
+            nbr["CouncilAbbreviation"][nodes[i]["CouncilAbbreviation"]] = 1;
+            variables["CouncilAbbreviation"].push(nodes[i]["CouncilAbbreviation"]);
         } else {
-            nbr["council"][nodes[i]["CouncilAbbreviation"]] += 1;
-        }
+            nbr["CouncilAbbreviation"][nodes[i]["CouncilAbbreviation"]] += 1;
+        };
 
         // Get nbr by party
-        if(!(nodes[i]["PartyAbbreviation"] in nbr["party"])) {
-            nbr["party"][nodes[i]["PartyAbbreviation"]] = 1;
-            list_parties.push(nodes[i]["PartyAbbreviation"]);
-            texts["party"][nodes[i]["PartyAbbreviation"]] = nodes[i]["PartyAbbreviation"];
-            variables["party"].push(nodes[i]["PartyAbbreviation"]);
+        if(!(nodes[i]["PartyAbbreviation"] in nbr["PartyAbbreviation"])) {
+            nbr["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] = 1;
+            texts["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] = nodes[i]["PartyAbbreviation"];
+            variables["PartyAbbreviation"].push(nodes[i]["PartyAbbreviation"]);
+
         } else {
-            nbr["party"][nodes[i]["PartyAbbreviation"]] += 1;
+            nbr["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] += 1;
         }
 
         // Get nbr by parl group
-        if(!(nodes[i]["ParlGroupAbbreviation"] in nbr["parl_gr"])) {
-            nbr["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = 1;
-            list_parl_gr.push(nodes[i]["ParlGroupAbbreviation"]);
-            var gr = nodes[i]["ParlGroupAbbreviation"];
-            if(gr == "NaN") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Federal Council";
-            } else if (gr == "GL") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. Vert'Libéral";
-            } else if (gr == "BD") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. BD";
-            } else if (gr == "C") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. PDC";
-            } else if (gr == "S") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp Socialiste";
-            } else if (gr == "G") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. des Verts";
-            } else if (gr == "RL") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. LR";
-            } else if (gr == "V") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. UDC";
-            }
-            variables["parl_gr"].push(nodes[i]["ParlGroupAbbreviation"]);
+        if(!(nodes[i]["ParlGroupAbbreviation"] in nbr["ParlGroupAbbreviation"])) {
+            nbr["ParlGroupAbbreviation"][nodes[i]["ParlGroupAbbreviation"]] = 1;
+            variables["ParlGroupAbbreviation"].push(nodes[i]["ParlGroupAbbreviation"]);
         } else {
-            nbr["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] += 1;
+            nbr["ParlGroupAbbreviation"][nodes[i]["ParlGroupAbbreviation"]] += 1;
         }
 
         // Get nbr by gender
-        if(!(nodes[i]["GenderAsString"] in nbr["gender"])) {
-            nbr["gender"][nodes[i]["GenderAsString"]] = 1;
-            variables["gender"].push(nodes[i]["GenderAsString"]);
+        if(!(nodes[i]["GenderAsString"] in nbr["GenderAsString"])) {
+            nbr["GenderAsString"][nodes[i]["GenderAsString"]] = 1;
+            variables["GenderAsString"].push(nodes[i]["GenderAsString"]);
         } else {
-            nbr["gender"][nodes[i]["GenderAsString"]] += 1;
+            nbr["GenderAsString"][nodes[i]["GenderAsString"]] += 1;
         }
 
         // Get nbr by language
-        if(!(nodes[i]["NativeLanguage"] in nbr["language"])) {
-            nbr["language"][nodes[i]["NativeLanguage"]] = 1;
-            list_languages.push(nodes[i]["NativeLanguage"]);
-            var lng = nodes[i]["NativeLanguage"];
-            if(lng == "F") {
-                texts["language"][lng] = "French";
-            } else if(lng == "I") {
-                texts["language"][lng] = "Italian";
-            } else if(lng == "Sk") {
-                texts["language"][lng] = "Slovak";
-            } else if(lng == "RM") {
-                texts["language"][lng] = "Romansh";
-            } else if(lng == "D") {
-                texts["language"][lng] = "German";
-            } else if(lng == "Tr") {
-                texts["language"][lng] = "Turkish";
-            }
-            variables["language"].push(nodes[i]["NativeLanguage"]);
-
+        if(!(nodes[i]["NativeLanguage"] in nbr["NativeLanguage"])) {
+            nbr["NativeLanguage"][nodes[i]["NativeLanguage"]] = 1;
+            variables["NativeLanguage"].push(nodes[i]["NativeLanguage"]);
         } else {
-            nbr["language"][nodes[i]["NativeLanguage"]] += 1;
+            nbr["NativeLanguage"][nodes[i]["NativeLanguage"]] += 1;
         }
 
         // Get nbr by age
-        if(!(nodes[i]["AgeCategory"] in nbr["age"])) {
-            nbr["age"][nodes[i]["AgeCategory"]] = 1;
-            texts["age"][nodes[i]["AgeCategory"]] = nodes[i]["AgeCategoryText"];
-            variables["age"].push(nodes[i]["AgeCategory"]);
-            list_ages.push(nodes[i]["AgeCategory"]);
+        if(!(nodes[i]["AgeCategory"] in nbr["AgeCategory"])) {
+            nbr["AgeCategory"][nodes[i]["AgeCategory"]] = 1;
+            texts["AgeCategory"][nodes[i]["AgeCategory"]] = nodes[i]["AgeCategoryText"];
+            variables["AgeCategory"].push(nodes[i]["AgeCategory"]);
         } else {
-            nbr["age"][nodes[i]["AgeCategory"]] += 1;
+            nbr["AgeCategory"][nodes[i]["AgeCategory"]] += 1;
         }
 
         // Get nbr by cantons
-        if(!(nodes[i]["CantonAbbreviation"] in nbr["canton"])) {
-            nbr["canton"][nodes[i]["CantonAbbreviation"]] = 1;
-            texts["canton"][nodes[i]["CantonAbbreviation"]] = nodes[i]["CantonAbbreviation"];
-            variables["canton"].push(nodes[i]["CantonAbbreviation"]);
-            list_cantons.push(nodes[i]["CantonAbbreviation"]);
+        if(!(nodes[i]["CantonAbbreviation"] in nbr["CantonAbbreviation"])) {
+            nbr["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]] = 1;
+            variables["CantonAbbreviation"].push(nodes[i]["CantonAbbreviation"]);
         } else {
-            nbr["canton"][nodes[i]["CantonAbbreviation"]] += 1;
+            nbr["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]] += 1;
         }
     }
 
     // Awesomplete
     new Awesomplete(compCounc, {list: list_councilors});
 
-    list_ages.sort();
-    variables["age"].sort();
-
-    // Create Foci for age
-    for(var i=0; i<list_ages.length; i++) {
-        foci["age"][list_ages[i]] = {"x": (i+1)/(list_ages.length+1)*width, "y": (Math.pow(-1, i)*0.2 + 0.6)*height};
-    }
-
-    // Create array of foci
-    array_foci = {};
-    for(var key1 in foci) {
-        if(key1 != "none") {
-            array_foci[key1] = []
-            for (var key in foci[key1]) {
-                var json = {}
-                json["cx"] = foci[key1][key]["x"];
-                json["cy"] = foci[key1][key]["y"];
-                json["key"] = key;
-
-                array_foci[key1].push(json);
-            }
-        }
-    }
 
     node = svg.append("g")
             .attr("class", "nodes")
@@ -505,7 +438,7 @@ function ticked() {
      .attr("x2", function(d) { return d.target.x; })
      .attr("y2", function(d) { return d.target.y; });*/
 
-    update_cluster();
+    clusters();
 
     update_color();
 
@@ -518,916 +451,3 @@ function ticked() {
         .attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
 }
-
-function emphasisAndShowInfo(d) {
-
-    if(dragging == false) {
-
-        if (node_selected == false) {
-            d3.selectAll(".dataNodes").style("r", radius);
-            d3.select(this).style("r", 1.5 * radius);
-            document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
-            document.getElementById("councilorName").href = "https://www.parlament.ch/en/biografie?CouncillorId=" + d.PersonNumber;
-            document.getElementById("councilorParty").innerHTML = d.PartyName;
-            document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
-            document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth + " (" + d.age + " y.o.)";
-            document.getElementById("councilorCanton").innerHTML = d.CantonName;
-            document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
-            document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
-
-            showTimeline(d.PersonIdCode);
-            showInterests(d.PersonIdCode);
-            changeOpac(d.PersonIdCode);
-            showFriends(d.PersonIdCode);
-            node_id = d.PersonIdCode;
-
-        } else {
-            var div = $('#tag');
-            var top = event.y - 5,
-                left = event.x + 15;
-
-            console.log(event.x);
-
-            div.css('display', 'block')
-                .css('top', top + 'px')
-                .css('left', left + 'px')
-                .text(d.FirstName + ' ' + d.LastName);
-        }
-    }
-}
-
-// Simple click on node
-function clicked(d) {
-    var node = d3.select(this);
-
-    if(d.selected == false) {
-        d3.selectAll(".dataNodes")
-            .style("r", radius)
-            .style("stroke", function(o,i) {
-                return color(colorType, getValForColor(colorType, nodes[i]));
-            })
-            .style("stroke-width", 1);
-        ;
-
-        node.style("r", 1.5*radius)
-            .style("stroke", function(d) {
-                return "#000000"
-            })
-            .style("stroke-width", 3);
-
-        d3.selectAll(".dataNodes").style("r", radius);
-        d3.select(this).style("r", 1.5 * radius);
-        document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
-        document.getElementById("councilorName").href = "https://www.parlament.ch/en/biografie?CouncillorId=" + d.PersonNumber;
-        document.getElementById("councilorParty").innerHTML = d.PartyName;
-        document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
-        document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth + " (" + d.age + " y.o.)";
-        document.getElementById("councilorCanton").innerHTML = d.CantonName;
-        document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
-        document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
-
-        showTimeline(d.PersonIdCode);
-        showInterests(d.PersonIdCode);
-        changeOpac(d.PersonIdCode);
-        showFriends(d.PersonIdCode);
-
-        for(var i=0; i<nodes.length; i++) {
-            nodes[i].selected = false;
-        }
-
-        d.selected = true;
-        node_selected = true;
-        node_id = d.PersonIdCode;
-
-    } else {
-        node.style("r", 1.5*radius)
-            .style("stroke", function(d) {
-                return color(colorType, getValForColor(colorType, d));
-            })
-            .style("stroke-width", 1);
-        d.selected = false;
-        node_selected = false;
-        node_id = d.PersonIdCode;
-    }
-
-}
-
-function clickedBox(o) {
-    d3.selectAll(".dataNodes")
-        .style("r", function(d) {
-            if(d.PersonIdCode == o.PersonIdCode) {
-                return 1.5*radius;
-            } else {
-                return radius;
-            }
-        })
-        .style("stroke", function(d,i) {
-            if(d.PersonIdCode == o.PersonIdCode) {
-                return "#000000"
-            } else {
-                return color(colorType, getValForColor(colorType, nodes[i]));
-            }
-        })
-        .style("stroke-width", function(d) {
-            if(d.PersonIdCode == o.PersonIdCode) {
-                return 3;
-            } else {
-                return 1;
-            }
-        });
-    ;
-
-    document.getElementById("councilorName").innerHTML = o.FirstName + " " + o.LastName;
-    document.getElementById("councilorName").href = "https://www.parlament.ch/en/biografie?CouncillorId=" + o.PersonNumber;
-    document.getElementById("councilorParty").innerHTML = o.PartyName;
-    document.getElementById("councilorCouncil").innerHTML = o.CouncilName;
-    document.getElementById("councilorBirthday").innerHTML = o.DateOfBirth + " (" + o.age + " y.o.)";
-    document.getElementById("councilorCanton").innerHTML = o.CantonName;
-    document.getElementById("councilorImage").src = "data/portraits/" + o.PersonIdCode + ".jpg";
-    document.getElementById("councilorImage").alt = o.FirstName + " " + o.LastName;
-
-    document.getElementById('compCouncilors').input = o.FirstName + " " + o.LastName;
-
-    showTimeline(o.PersonIdCode);
-    showInterests(o.PersonIdCode);
-    changeOpac(o.PersonIdCode);
-    showFriends(o.PersonIdCode);
-
-    for(var i=0; i<nodes.length; i++) {
-        nodes[i].selected = false;
-    }
-
-    o.selected = true;
-    node_selected = true;
-    node_id = o.PersonIdCode;
-}
-
-// Double click on window
-function dbclick() {
-    nodes.forEach(function(o, i) {
-        o.x = get_foci(o).x;
-        o.y = get_foci(o).y;
-    });
-}
-
-function update_color() {
-    if (color_changed) {
-
-        // Change the color
-        d3.selectAll(".dataNodes")
-            .style("fill", function(d) {
-                return color(colorType, getValForColor(colorType, d));
-            })
-            .style("stroke", function(d) {
-                if (d.selected == true) {
-                    return "#000000";
-                } else {
-                    return color(colorType, getValForColor(colorType, d));
-                }
-            });
-
-        // Change the legend
-        legend.selectAll(".circleLegend").remove();
-        legend.selectAll(".textLegend").remove();
-
-
-        var start = 20;
-        var dx_text = 10;
-
-        console.log(variables["party"].length);
-
-        legend.selectAll("circle")
-            .data(variables[colorType])
-            .enter().append("circle")
-            .attr("class", "circleLegend")
-            .attr("cx", function (o, i) {
-                if(colorType == "party" || colorType == "parl_gr") {
-                    var half = Math.round(variables[colorType].length/2);
-                    var incr = (width-start)/(half);
-                    if(i<half) {
-                        return incr * (i) + start;
-                    } else {
-                        return incr * (i-half) + start;
-                    }
-                } else {
-                    var incr = (width-start)/(variables[colorType].length);
-                    return incr * (i) + start;
-                }
-            })
-            .attr("cy", function(o,i) {
-                if(colorType == "party"|| colorType == "parl_gr") {
-                    if(i<variables[colorType].length/2) {
-                        return height_l / 4;
-                    } else {
-                        return 3*height_l / 4;
-                    }
-                } else {
-                    return height_l / 4;
-                }
-            })
-            .attr("r", radius)
-            .attr("fill", function (o, i) {
-                return color(colorType, variables[colorType][i]);
-            })
-
-        legend.selectAll("text")
-            .data(variables[colorType])
-            .enter().append("text")
-            .attr("class", "textLegend")
-            .attr("x", function(o,i) {
-                if(colorType == "party" || colorType == "parl_gr") {
-                    var half = Math.round(variables[colorType].length/2);
-                    var incr = (width-start)/(half);
-                    if(i<half) {
-                        return incr * (i) + start + dx_text;
-                    } else {
-                        return incr * (i-half) + start + dx_text;
-                    }
-                } else {
-                    var incr = (width-start)/(variables[colorType].length);
-                    return incr * (i) + start + dx_text;
-                }
-            })
-            .attr("y", function(o,i) {
-                if(colorType == "party" || colorType == "parl_gr") {
-                    if(i<variables[colorType].length/2) {
-                        return height_l / 4;
-                    } else {
-                        return 3*height_l / 4;
-                    }
-                } else {
-                    return height_l / 4;
-                }
-            })
-            .text(function (o, i) {
-                return texts[colorType][variables[colorType][i]] + " (" + nbr[colorType][variables[colorType][i]] + ")";
-            })
-            .attr("font-weight", "bold")
-            .attr("font-size", "14px")
-            .attr("fill", "#808080")
-            .attr("dominant-baseline", "central");
-
-        if(node_id != null) {
-            showFriends(node_id);
-        }
-        color_changed = false;
-    }
-}
-
-function update_cluster() {
-    if (cluster_changed) {
-        svg.selectAll(".textFoci").remove();
-
-        if(cluster != "none") {
-
-            svg.selectAll("text")
-                .data(array_foci[cluster])
-                .enter().append("text")
-                .attr("class", "textFoci")
-                .attr("x", function (d) {
-                    return d.cx;
-                })
-                .attr("y", function (d) {
-                    return d.cy-radius_foci(radius, nbr[cluster][d.key]);
-                })
-                .text(function (d) {
-                    return texts[cluster][d.key] + " (" + nbr[cluster][d.key] + ")";
-                })
-                .attr("font-family", "serif")
-                .attr("font-size", "16px")
-                .attr("font-weight", "bold")
-                .attr("text-anchor", "middle")
-                .attr("fill", "#808080")
-                .attr("dominant-baseline", "central");
-
-        } else {
-            svg.append("text")
-                .attr("class", "textFoci")
-                .attr("x", function() {return 425;})
-                .attr("y", function() {return 16.6219;})
-                .text("National")
-                .attr("font-family", "serif")
-                .attr("font-size", "16px")
-                .attr("font-weight", "bold")
-                .attr("text-anchor", "end")
-                .attr("fill", "#808080")
-                .attr("dominant-baseline", "central");
-
-            svg.append("text")
-                .attr("class", "textFoci")
-                .attr("x", function() {return 476.9;})
-                .attr("y", function() {return 16.6219;})
-                .text("Federal")
-                .attr("font-family", "serif")
-                .attr("font-size", "16px")
-                .attr("font-weight", "bold")
-                .attr("text-anchor", "middle")
-                .attr("fill", "#808080")
-                .attr("dominant-baseline", "central");
-
-            svg.append("text")
-                .attr("class", "textFoci")
-                .attr("x", function() {return 528;})
-                .attr("y", function() {return 16.6219;})
-                .text("States")
-                .attr("font-family", "serif")
-                .attr("font-size", "16px")
-                .attr("font-weight", "bold")
-                .attr("text-anchor", "start")
-                .attr("fill", "#808080")
-                .attr("dominant-baseline", "central");
-
-            svg.append("line")
-                .attr("class", "textFoci")
-                .style("stroke", "#808080")
-                .attr("x1", 430.9)
-                .attr("y1", 6.5)
-                .attr("x2", 430.9)
-                .attr("y2", 590.3);
-
-            svg.append("line")
-                .attr("class", "textFoci")
-                .style("stroke", "#808080")
-                .attr("x1", 522.9)
-                .attr("y1", 6.5)
-                .attr("x2", 522.9)
-                .attr("y2", 590.3);
-        }
-
-        cluster_changed = false;
-    }
-}
-
-function update_friendship() {
-    if (friendship_changed) {
-        resetOp();
-
-        if(node_selected) {
-            changeOpac(node_id);
-        }
-
-        if(node_id != null) {
-            showFriends(node_id);
-        }
-
-        friendship_changed = false;
-
-    }
-}
-
-function update_interest() {
-    if (interest_changed) {
-        if(node_id != null) {
-            showInterests(node_id);
-        }
-
-        interest_changed = false;
-    }
-}
-
-function getValForColor(colorType, node) {
-    if(colorType == "party") {
-        return node.PartyAbbreviation;
-    } else if(colorType == "parl_gr") {
-        return node.ParlGroupAbbreviation;
-    } else if(colorType == "gender") {
-        return node.GenderAsString;
-    } else if(colorType == "council") {
-        return node.CouncilAbbreviation;
-    } else if(colorType == "language") {
-        return node.NativeLanguage;
-    } else if(colorType == "age") {
-        return node.AgeCategoryText;
-    } else if(colorType == "canton") {
-        return node.cantonAbbreviation;
-    }
-}
-
-function color(colorType, val) {
-    if(colorType == "party") {
-        if (val == 'PLD') {
-            return '#3131BD'
-        } else if (val == 'UDC') {
-            return '#088A4B'
-        } else if (val == 'PSS') {
-            return '#FA1360'
-        } else if (val == 'PDC') {
-            return '#FE9A2E'
-        } else if (val == 'PLR') {
-            return '#0174DF'
-        } else if (val == 'PES') {
-            return '#01DF01'
-        } else if (val == 'pvl') {
-            return '#9AFE2E'
-        } else if (val == 'PBD') {
-            return '#FFFF00'
-        } else if (val == 'PEV') {
-            return '#FFD735'
-        } else if (val == 'Lega') {
-            return '#0B3861'
-        } else if (val == 'csp-ow') {
-            return '#E2563B'
-        } else if (val == '-') {
-            return '#CCCCCC'
-        } else if (val == 'MCG') {
-            return '#FECC01'
-        } else if (val == 'BastA') {
-            return '#DFDE00'
-        }  else if (val == 'PdT') {
-            return '#FF0000'
-        }
-    } else if(colorType == "parl_gr") {
-        if(val == "NaN") {
-            return '#CCCCCC'
-        } else if (val == "GL") {
-            return '#9AFE2E'
-        } else if (val == "BD") {
-            return '#FFFF00'
-        } else if (val == "C") {
-            return '#FE9A2E'
-        } else if (val == "S") {
-            return '#FA1360'
-        } else if (val == "G") {
-            return '#01DF01'
-        } else if (val == "RL") {
-            return '#0174DF'
-        } else if (val == "V") {
-            return '#088A4B'
-        }
-    } else if(colorType == "council") {
-        if (val == "CN") {
-            return "#ff1c14";
-        } else if (val == "CE") {
-            return "#3b5998";
-        } else if (val == "CF") {
-            return "#2ea52a";
-        }
-    } else if(colorType == "gender") {
-        if (val == "m") {
-            return "#00FFFF";
-        } else if (val == "f") {
-            return "#FF69B4";
-        }
-    } else if(colorType == "language") {
-        if (val == "I") {
-            return "#009246";
-        } else if (val == "D") {
-            return "#FFCC1E";
-        } else if (val == "F") {
-            return "#002395";
-        } else if (val == "Tr") {
-            return "#E30A17";
-        } else if (val == "Sk") {
-            return "#489DD3";
-        } else if (val == "RM") {
-            return "#E2017B";
-        }
-    } else if(colorType == "age") {
-        if (val == 0 || val == "-20") {
-            return "#a65628";
-        } else if (val == 1 || val == "20-29") {
-            return "#b3b000";
-        } else if (val == 2 || val == "30-39") {
-            return "#81b300";
-        } else if (val == 3 || val == "40-49") {
-            return "#00b399";
-        } else if (val == 4 || val == "50-59") {
-            return "#0087b3";
-        } else if (val == 5 || val == "60-69") {
-            return "#0060b3";
-        } else if (val == 6 || val == "70+") {
-            return "#0003ff";
-        }
-    }
-}
-
-function get_foci(d) {
-    var foci_spec;
-
-    if (cluster == "council") {
-        foci_spec = foci[cluster][d.CouncilAbbreviation];
-    } else if (cluster == "none") {
-        foci_spec = pos[d.PersonIdCode];
-    } else if (cluster == "party") {
-        foci_spec = foci[cluster][d.PartyAbbreviation];
-    } else if (cluster == "parl_gr") {
-        foci_spec = foci[cluster][d.ParlGroupAbbreviation];
-    } else if (cluster == "gender") {
-        foci_spec = foci[cluster][d.GenderAsString];
-    } else if (cluster == "language") {
-        foci_spec = foci[cluster][d.NativeLanguage];
-    } else if (cluster == "age") {
-        foci_spec = foci[cluster][d.AgeCategory];
-    } else if (cluster == "canton") {
-        foci_spec = foci[cluster][d.CantonAbbreviation];
-    }
-
-    return foci_spec;
-}
-
-// Move nodes toward cluster focus.
-function gravity() {
-    return function(d) {
-        var alpha,
-            foci_x,
-            foci_y;
-
-        foci_x = get_foci(d).x;
-        foci_y = get_foci(d).y;
-
-        if (cluster == "none") {
-            alpha = 0.1;
-        } else {
-            alpha = 0.05;
-        }
-
-        var dx = foci_x - d.x;
-        var dy = foci_y - d.y;
-
-        d.x += dx*alpha;
-        d.y += dy*alpha;
-    };
-}
-
-function dragstarted(d) {
-    if (!d3.event.active) simulation.alphaTarget(0.1).restart();
-}
-
-function dragged(d) {
-    dragging = true;
-    d.fx = d3.event.x;
-    d.fy = d3.event.y;
-}
-
-function dragended(d) {
-    d.fx = null;
-    d.fy = null;
-    dragging = false;
-    if (!d3.event.active) simulation.alphaTarget(0);
-}
-
-function radius_foci(radius, n) {
-    var ratio = 0;
-
-    if (n==1) {
-        ratio = 3;
-    } else if (n<=7) {
-        ratio = 6;
-    } else if (n<=19) {
-        ratio = 9;
-    } else if (n<=38) {
-        ratio = 12;
-    } else if (n<=61) {
-        ratio = 15;
-    } else if (n<=91) {
-        ratio = 18;
-    } else if (n<=127) {
-        ratio = 21;
-    } else if (n<=169) {
-        ratio = 23;
-    } else if (n<=217) {
-        ratio = 23;
-    } else {
-        ratio = 29;
-    }
-
-    return radius*ratio;
-}
-
-///////////////////////////////
-//// BAR GRAPH FUNCTIONS //////
-///////////////////////////////
-function showTimeline(id) {
-    // declaring the bar graph according to id
-
-    // remove what was previously there
-    barGraph.selectAll('*').remove();
-
-    var data_timeline = ints[id];
-
-    var x = d3.scaleBand()
-        .rangeRound([0, barWidth]).padding(0.1);
-
-    var y = d3.scaleLinear()
-        .rangeRound([barHeight, 0]);
-
-    x.domain(data_timeline.map(function(d) { return d.year; }));
-    y.domain([0, Math.max(d3.max(data_timeline, function(d) { return d.int; }), d3.max(data_timeline, function(d) { return d.median; }))]);
-
-    barGraph.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + barHeight + ")")
-        .call(d3.axisBottom(x).ticks(3))
-        .selectAll("text")
-        .attr("y", 0)
-        .attr("x", 9)
-        .attr("dy", ".35em")
-        .attr("transform", "rotate(90)")
-        .style("text-anchor", "start");
-
-    barGraph.append("g")
-        .attr("class", "axis")
-        .call(d3.axisLeft(y).ticks(3))
-
-    barGraph.selectAll(".bar")
-        .data(data_timeline)
-        .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function(d) { return x(d.year); })
-        .attr("y", function(d) { return y(d.int); })
-        .attr('fill', 'steelblue')
-        .attr("width", x.bandwidth())
-        .attr("height", function(d) { return barHeight - y(d.int); });
-
-    barGraph.selectAll(".barmedian")
-        .data(data_timeline)
-        .enter().append("rect")
-        .attr("class", "bar")
-        .attr('fill', 'red')
-        .attr('stroke', 'none')
-        .attr('opacity', 1)
-        .attr("x", function(d) { return x(d.year); })
-        .attr("y", function(d) { return y(d.median); })
-        .attr("width", x.bandwidth())
-        //.attr("height", function(d) { return barHeight - y(d.median); });
-        .attr('height', 1);
-
-}
-
-function showInterests(id) {
-
-    // Remove what was previously there
-    interestsBarGraph.selectAll('*').remove();
-    interestsBarGraph_second.selectAll('*').remove();
-
-    var data_int_all;
-    var data_int_author;
-    if(interest_type == "all") {
-        data_int_all = interests[id];
-        data_int_author = authors[id];
-    } else if (interest_type == "author") {
-        data_int_all = authors[id];
-    }
-
-    data_int_all.sort(function(a, b) {
-        return a.idx - b.idx;
-    });
-
-    data_int_author.sort(function(a, b) {
-        return a.idx - b.idx;
-    });
-
-    // Remove Unknown field
-    if(data_int_all[data_int_all.length-1].theme == "Unknown") {
-        data_int_all.pop();
-    }
-    if(data_int_author[data_int_author.length-1].theme == "Unknown") {
-        data_int_author.pop();
-    }
-
-    var total = 0;
-    var total_cos = 0;
-
-    for (var i = 0; i < data_int_all.length; i++) {
-        total += data_int_all[i].int;
-    }
-    for (var i = 0; i < data_int_author.length; i++) {
-        total_cos += data_int_author[i].int;
-    }
-
-    // Change text
-    if (interest_type == 'all') {
-        if(total > 1) {
-            document.getElementById('interest_info').innerHTML = "Interests (" + (total-total_cos) + " times co-signatory & " +
-                total_cos + " times author)";
-        } else {
-            document.getElementById('interest_info').innerHTML = "Interests (" + total + " motion signed)";
-        }
-    } else if (interest_type == 'author') {
-        if(total > 1) {
-            document.getElementById('interest_info').innerHTML = "Interests (" + total + " motions as author)";
-        } else {
-            document.getElementById('interest_info').innerHTML = "Interests (" + total + " motion as author)";
-        }
-    }
-
-    // To put in percentage (Not really good I think)
-    /*
-    for (var i = 0; i < data.length; i++) {
-        data[i].int = data[i].int / total;
-    }*/
-
-    var x = d3.scaleBand()
-        .rangeRound([0, barWidth]).padding(0.05);
-
-    var y = d3.scaleLinear()
-        .rangeRound([barHeight, 0]);
-
-    x.domain(data_int_all.map(function(d) { return d.theme; }));
-    y.domain([0, d3.max(data_int_all, function(d) { return d.int; })]);
-
-    interestsBarGraph.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + barHeight + ")")
-        .call(d3.axisBottom(x).ticks(3))
-        .selectAll("text")
-        .attr("y", 0)
-        .attr("x", 9)
-        .attr("dy", ".40em")
-        .attr("transform", "rotate(90)")
-        .style("text-anchor", "start");
-
-    interestsBarGraph.append("g")
-        .attr("class", "axis")
-        .call(d3.axisLeft(y).ticks(3));
-
-    interestsBarGraph.selectAll(".bar")
-        .data(data_int_all)
-        .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function(d) { return x(d.theme); })
-        .attr("y", function(d) { return y(d.int); })
-        .attr('fill', 'steelblue')
-        .attr("width", x.bandwidth())
-        .attr("height", function(d) { return barHeight - y(d.int); });
-
-    interestsBarGraph_second.selectAll(".bar")
-        .data(data_int_author)
-        .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function(d) { return x(d.theme); })
-        .attr("y", function(d) { return y(d.int); })
-        .attr('fill', 'red')
-        .attr("width", x.bandwidth())
-        .attr("height", function(d) { return barHeight - y(d.int); });
-
-
-
-}
-
-function changeOpac(id) {
-    if (friendship == 'intervention') {
-        var line = adj[id];
-    } else if (friendship == 'cosign') {
-        var line = adj_cosign[id];
-    }
-
-    var max = findMax(line);
-    if (max == 0) {
-        max = 1;
-    }
-
-    // Change the opacity
-    d3.selectAll(".dataNodes")
-        .style("fill-opacity", function(d) {
-            var thisId = d.PersonIdCode;
-            if (thisId != id) {
-                var value = line[thisId] / max;
-                return Math.max(value, 0.03)
-            }
-        })
-        .style("stroke-opacity", function(d) {
-            var thisId = d.PersonIdCode;
-            if (thisId != id) {
-                var value = line[thisId] / max;
-                return Math.max(value, .1)
-            }
-        })
-        .style("bitch", function(d) {
-            return line[d.PersonIdCode]
-        });
-}
-
-function findMax(line) {
-    var max = 0;
-    for (var key in line) {
-        var val = line[key];
-        if (val > max) {
-            max = val;
-        }
-    }
-    return max;
-}
-
-function resetOp() {
-    $('#tag').css('display', 'none');
-    if (node_selected == false && dragging == false) {
-        d3.selectAll(".dataNodes")
-            .style("fill-opacity", 1)
-            .style("stroke-opacity", 1);
-    }
-}
-
-// some height values hardcoded, bad
-function showFriends(id) {
-
-    // removing the previous ones
-    gFriends.selectAll('*').remove();
-
-    // Change text
-    if (friendship == 'intervention') {
-        var data = friends[id];
-        if(data.length > 1) {
-            document.getElementById('friends_info').innerHTML = data.length + " co-speakers";
-        } else {
-            document.getElementById('friends_info').innerHTML = data.length + " co-speaker";
-        }
-    } else if (friendship == 'cosign') {
-        var data = friends_cosign[id];
-        if(data.length > 1) {
-            document.getElementById('friends_info').innerHTML = data.length + " co-signatories";
-        } else {
-            document.getElementById('friends_info').innerHTML = data.length + " co-signatory";
-        }
-    }
-
-    var length = (223/5)*(data.length);
-
-    document.getElementById('friends').setAttribute("height", length + "px");
-
-
-
-    gFriends.selectAll('.friend')
-        .data(data)
-        .enter().append('g')
-        .attr('personIdCode', id)
-        .attr('class', 'grect')
-        // mouse events on the g element
-        .on('mouseover', function(d) { friendOver(d.friend);})
-        .on('mouseleave', function(d) { friendOut(d.friend);})
-        // friendclick
-        .on('click', function(d) {
-            d3.selectAll(".dataNodes").each(function(o,i)
-                {
-                    if(o.PersonIdCode == d.friend) {
-                        clickedBox(o);
-                    }
-                }
-                );
-        })
-        // rectangle
-        .append('rect')
-        .attr('rx', 2)
-        .attr('ry', 2)
-        .attr('id', function(d) { return 'rect'+d.friend; })
-        .attr('x', 5)
-        .attr('y', function(d, i) {return 5+i*(223/5);})
-        .attr('width', 175)
-        .attr('height', (223/5)-3)
-        .attr('fill', function(d) {
-            return color(colorType, getValForColor(colorType, people[d.friend]));
-        })
-        .attr('opacity', .7)
-
-    // mini photo
-    d3.selectAll('.grect')
-        .append('image')
-        .attr('xlink:href', function(d) { return 'data/portraits/'+d.friend+'.jpg'; })
-        .attr('x', 9)
-        .attr('y', function(d, i) {return 9+i*(223/5);})
-        .attr('height', '34px')
-        .attr('width', '34px');
-
-    // names
-    d3.selectAll('.grect')
-        .append('text')
-        .attr('x', 48)
-        .attr('y', function(d, i){ return 21+i*(223/5)})
-        .text(function(d) {
-            if (people[d.friend].GenderAsString == "m") {
-                return people[d.friend].FirstName[0] + ". " + people[d.friend].LastName;
-            } else {
-                return people[d.friend].FirstName[0] + ". " + people[d.friend].LastName;
-            }
-        });
-
-    // # of common interventions
-    d3.selectAll('.grect')
-        .append('text')
-        .attr('x', 48)
-        .attr('y', function(d, i){ return 38+i*(223/5)})
-        .text(function(d) { return '# together: '+d.number; });
-}
-
-function friendOver(id) {
-    $('#rect'+id).attr('opacity', 1);
-    $('#'+id).attr('stroke', 'red')
-        .attr('stroke-width', 4);
-}
-
-function friendOut(id) {
-    $('#rect'+id).attr('opacity', .7);
-    $('#'+id).attr('stroke', '#555555')
-        .attr('stroke-width', 1);
-}
-
-document.getElementById('compCouncilors').addEventListener('awesomplete-selectcomplete',function(){
-    var val = this.value;
-    d3.selectAll(".dataNodes").each(function(o,i)
-        {
-            if((o.FirstName + " " + o.LastName) == val) {
-                clickedBox(o);
-            }
-        }
-    );
-});
