@@ -19,9 +19,7 @@ function emphasisAndShowInfo(d) {
             changeOpac(d.PersonIdCode);
             showFriends(d.PersonIdCode);
             node_id = d.PersonIdCode;
-
         } else {
-
             $('#add_info_counc').css('display', 'block');
 
             document.getElementById("councilorName_add").innerHTML = d.FirstName + " " + d.LastName;
@@ -32,6 +30,32 @@ function emphasisAndShowInfo(d) {
             document.getElementById("councilorImage_add").src = "data/portraits/" + d.PersonIdCode + ".jpg";
             document.getElementById("councilorImage_add").alt = d.FirstName + " " + d.LastName;
         }
+    }
+
+    if(cluster_active) {
+
+        $('#add_info_cluster').css('display', 'block');
+
+        var nn = get_elem_foci(d, "nbr");
+        if(nn > 1) {
+            document.getElementById("cluster_nbr").innerHTML = get_elem_foci(d, "nbr") + " councilors";
+        } else {
+            document.getElementById("cluster_nbr").innerHTML = get_elem_foci(d, "nbr") + " councilor";
+        }
+
+        var str = "";//"<b>Clusterisation </b>: <br>";
+
+        if(focis_order.length == 0) {
+            str += "&#8226; All the councilors. <br>"
+        } else {
+            for(var i=0; i<focis_order.length; i++) {
+                str += "&#8226; " + text_info_cluster(focis_order[i]) + ": " + texts[focis_order[i]][d[focis_order[i]]] + "<br>";
+            }
+        }
+
+
+        document.getElementById("cluster_info").innerHTML = str;
+
     }
 }
 
@@ -116,42 +140,6 @@ function dragged(d) {
 
     upd_elem_foci(d, "x", valx);
     upd_elem_foci(d, "y", valy);
-
-    /*
-    if(cluster == "council") {
-        var valx = Math.max(Math.min(d.fx, width), 0);
-        var valy = Math.max(Math.min(d.fy, width), 0);
-        foci[cluster][d.CouncilAbbreviation]["x"] = valx;
-        foci[cluster][d.CouncilAbbreviation]["y"] = valy;
-
-        array_foci[cluster][0]["cx"] = valx;
-        array_foci[cluster][0]["cy"] = valy;
-
-        console.log(String(array_foci[cluster][0]["cx"]));
-
-        svg.selectAll(".textFoci").remove();
-
-        svg.selectAll("text")
-            .data(array_foci[cluster])
-            .enter().append("text")
-            .attr("class", "textFoci")
-            .attr("x", function (d) {
-                return d.cx;
-            })
-            .attr("y", function (d) {
-                return d.cy-radius_foci(radius, nbr[cluster][d.key]);
-            })
-            .text(function (d) {
-                return texts[cluster][d.key] + " (" + nbr[cluster][d.key] + ")";
-            })
-            .attr("font-family", "serif")
-            .attr("font-size", "16px")
-            .attr("font-weight", "bold")
-            .attr("text-anchor", "middle")
-            .attr("fill", "#808080")
-            .attr("dominant-baseline", "central");
-    }*/
-
 }
 
 function dragended(d) {
@@ -210,6 +198,7 @@ function findMax(line) {
 
 function resetOp() {
     $('#add_info_counc').css('display', 'none');
+    $('#add_info_cluster').css('display', 'none');
 
     if (node_selected == false && dragging == false) {
         d3.selectAll(".dataNodes")
@@ -228,6 +217,8 @@ document.getElementById('compCouncilors').addEventListener('awesomplete-selectco
         }
     );
 });
+
+
 
 function upd_elem_foci(d, elem, val) {
     if(focis_order.length == 0) {
@@ -249,7 +240,7 @@ function upd_elem_foci(d, elem, val) {
     }
 }
 
-function get_elem_foci(d, val) {
+function get_elem_foci(d, elem) {
     if(focis_order.length == 0) {
         return foci[elem];
     } else if(focis_order.length == 1) {
@@ -266,5 +257,23 @@ function get_elem_foci(d, val) {
         return foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][d[focis_order[5]]][elem];
     } else if(focis_order.length == 7) {
         return foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][d[focis_order[5]]][d[focis_order[6]]][elem];
+    }
+}
+
+function text_info_cluster(val) {
+    if(val == "CouncilAbbreviation") {
+        return "Council";
+    } else if(val == "PartyAbbreviation") {
+        return "Party";
+    } else if(val == "ParlGroupAbbreviation") {
+        return "Parl. Group";
+    } else if(val == "GenderAsString") {
+        return "Gender";
+    } else if(val == "NativeLanguage") {
+        return "Native Language";
+    } else if(val == "AgeCategory") {
+        return "Age Category"
+    } else if(val == "CantonAbbreviation") {
+        return "Canton"
     }
 }

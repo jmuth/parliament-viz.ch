@@ -154,8 +154,8 @@ var dragging = false;
 
 var texts = {};
 texts["CouncilAbbreviation"] = {'CN': 'National Council', 'CE': 'Council of States', 'CF': 'Federal Council'};
-texts["PartyAbbreviation"] = {'Nan': 'Federal Council', "GL": "Grp. Vert'Libéral", "BD": "Grp. BD", "C": "Grp. PDC", "S": "Grp. Socialiste", "G": "Grp. des Verts", "RL": "Grp. LR", "V": "Grp. UDC"};
-texts["ParlGroupAbbreviation"] = {};
+texts["PartyAbbreviation"] = {};
+texts["ParlGroupAbbreviation"] = {'Nan': 'Federal Council', "GL": "Grp. Vert'Libéral", "BD": "Grp. BD", "C": "Grp. PDC", "S": "Grp. Socialiste", "G": "Grp. des Verts", "RL": "Grp. LR", "V": "Grp. UDC"};
 texts["GenderAsString"] = {'m': 'Men', 'f': 'Women'};
 texts["NativeLanguage"] = {"F": "French", "I": "Italian", "Sk": "Slovak", "RM": "Romansh", "D": "German", "Tr": "Turkish"};
 texts["AgeCategory"] = {};
