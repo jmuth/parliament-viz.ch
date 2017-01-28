@@ -301,7 +301,7 @@ function importFriendsCosign(json) {
 
 importPositions('data/positions.json');
 importAdj('data/adj.json');
-importInts('data/year_ints2.json');
+importInts('data/interventions.json');
 importPeople('data/people.json');
 importFriends('data/friends.json');
 importAdjCosign('data/adj_cosign.json');
