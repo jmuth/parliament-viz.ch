@@ -155,7 +155,7 @@ var dragging = false;
 var texts = {};
 texts["CouncilAbbreviation"] = {'CN': 'National Council', 'CE': 'Council of States', 'CF': 'Federal Council'};
 texts["PartyAbbreviation"] = {};
-texts["ParlGroupAbbreviation"] = {'Nan': 'Federal Council', "GL": "Grp. Vert'Libéral", "BD": "Grp. BD", "C": "Grp. PDC", "S": "Grp. Socialiste", "G": "Grp. des Verts", "RL": "Grp. LR", "V": "Grp. UDC"};
+texts["ParlGroupAbbreviation"] = {'NaN': 'Federal Council', "GL": "Grp. Vert'Libéral", "BD": "Grp. BD", "C": "Grp. PDC", "S": "Grp. Socialiste", "G": "Grp. des Verts", "RL": "Grp. LR", "V": "Grp. UDC"};
 texts["GenderAsString"] = {'m': 'Men', 'f': 'Women'};
 texts["NativeLanguage"] = {"F": "French", "I": "Italian", "Sk": "Slovak", "RM": "Romansh", "D": "German", "Tr": "Turkish"};
 texts["AgeCategory"] = {};
@@ -211,6 +211,11 @@ var barGraph = d3.select("#int_graph")
 
 // Prepare the Bar Graph for the interests
 var interestsBarGraph = d3.select('#themes')
+    .append("g")
+    .attr("transform", "translate(" + bGMargin.left + "," + bGMargin.top + ")");
+
+// Prepare the Bar Graph for the interests
+var interestsBarGraph_second = d3.select('#themes')
     .append("g")
     .attr("transform", "translate(" + bGMargin.left + "," + bGMargin.top + ")");
 
@@ -301,7 +306,7 @@ function importFriendsCosign(json) {
 
 importPositions('data/positions.json');
 importAdj('data/adj.json');
-importInts('data/year_ints2.json');
+importInts('data/interventions.json');
 importPeople('data/people.json');
 importFriends('data/friends.json');
 importAdjCosign('data/adj_cosign.json');
@@ -311,7 +316,6 @@ importAuthors('data/authors.json');
 
 var nodes;
 var node;
-var array_foci;
 // Read the Nodes and do stuff!
 d3.json("data/active.json", function(error, graph) {
     if (error) throw error;

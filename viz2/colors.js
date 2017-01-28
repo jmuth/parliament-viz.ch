@@ -189,17 +189,17 @@ function color(colorType, val) {
         if (val == 0 || val == "-20") {
             return "#a65628";
         } else if (val == 1 || val == "20-29") {
-            return "#e41a1c";
+            return "#b3b000";
         } else if (val == 2 || val == "30-39") {
-            return "#377eb8";
+            return "#81b300";
         } else if (val == 3 || val == "40-49") {
-            return "#4daf4a";
+            return "#00b399";
         } else if (val == 4 || val == "50-59") {
-            return "#984ea3";
+            return "#0087b3";
         } else if (val == 5 || val == "60-69") {
-            return "#ff7f00";
+            return "#0060b3";
         } else if (val == 6 || val == "70+") {
-            return "#ffff33";
+            return "#0003ff";
         }
     }
 }

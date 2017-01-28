@@ -84,7 +84,7 @@ function showTimeline(id) {
     // remove what was previously there
     barGraph.selectAll('*').remove();
 
-    data = ints[id];
+    var data_timeline = ints[id];
 
     var x = d3.scaleBand()
         .rangeRound([0, barWidth]).padding(0.1);
@@ -92,8 +92,8 @@ function showTimeline(id) {
     var y = d3.scaleLinear()
         .rangeRound([barHeight, 0]);
 
-    x.domain(data.map(function(d) { return d.year; }));
-    y.domain([0, Math.max(d3.max(data, function(d) { return d.int; }), d3.max(data, function(d) { return d.median; }))]);
+    x.domain(data_timeline.map(function(d) { return d.year; }));
+    y.domain([0, Math.max(d3.max(data_timeline, function(d) { return d.int; }), d3.max(data_timeline, function(d) { return d.median; }))]);
 
     barGraph.append("g")
         .attr("class", "axis")
@@ -111,7 +111,7 @@ function showTimeline(id) {
         .call(d3.axisLeft(y).ticks(3))
 
     barGraph.selectAll(".bar")
-        .data(data)
+        .data(data_timeline)
         .enter().append("rect")
         .attr("class", "bar")
         .attr("x", function(d) { return x(d.year); })
@@ -121,7 +121,7 @@ function showTimeline(id) {
         .attr("height", function(d) { return barHeight - y(d.int); });
 
     barGraph.selectAll(".barmedian")
-        .data(data)
+        .data(data_timeline)
         .enter().append("rect")
         .attr("class", "bar")
         .attr('fill', 'red')
@@ -139,33 +139,48 @@ function showInterests(id) {
 
     // Remove what was previously there
     interestsBarGraph.selectAll('*').remove();
+    interestsBarGraph_second.selectAll('*').remove();
 
-    var data_int;
+    var data_int_all;
+    var data_int_author;
     if(interest_type == "all") {
-        data_int = interests[id];
+        data_int_all = interests[id];
+        data_int_author = authors[id];
     } else if (interest_type == "author") {
-        data_int = authors[id];
+        data_int_all = authors[id];
     }
 
-    data_int.sort(function(a, b) {
+    data_int_all.sort(function(a, b) {
+        return a.idx - b.idx;
+    });
+
+    data_int_author.sort(function(a, b) {
         return a.idx - b.idx;
     });
 
     // Remove Unknown field
-    if(data_int[data_int.length-1].theme == "Unknown") {
-        data_int.pop();
+    if(data_int_all[data_int_all.length-1].theme == "Unknown") {
+        data_int_all.pop();
+    }
+    if(data_int_author[data_int_author.length-1].theme == "Unknown") {
+        data_int_author.pop();
     }
 
     var total = 0;
+    var total_cos = 0;
 
-    for (var i = 0; i < data_int.length; i++) {
-        total += data_int[i].int;
+    for (var i = 0; i < data_int_all.length; i++) {
+        total += data_int_all[i].int;
+    }
+    for (var i = 0; i < data_int_author.length; i++) {
+        total_cos += data_int_author[i].int;
     }
 
     // Change text
     if (interest_type == 'all') {
         if(total > 1) {
-            document.getElementById('interest_info').innerHTML = "Interests (" + total + " motions signed)";
+            document.getElementById('interest_info').innerHTML = "Interests (" + (total-total_cos) + " times co-signatory & " +
+                total_cos + " times author)";
         } else {
             document.getElementById('interest_info').innerHTML = "Interests (" + total + " motion signed)";
         }
@@ -189,8 +204,8 @@ function showInterests(id) {
     var y = d3.scaleLinear()
         .rangeRound([barHeight, 0]);
 
-    x.domain(data_int.map(function(d) { return d.theme; }));
-    y.domain([0, d3.max(data_int, function(d) { return d.int; })]);
+    x.domain(data_int_all.map(function(d) { return d.theme; }));
+    y.domain([0, d3.max(data_int_all, function(d) { return d.int; })]);
 
     interestsBarGraph.append("g")
         .attr("class", "axis")
@@ -208,12 +223,22 @@ function showInterests(id) {
         .call(d3.axisLeft(y).ticks(3));
 
     interestsBarGraph.selectAll(".bar")
-        .data(data_int)
+        .data(data_int_all)
         .enter().append("rect")
         .attr("class", "bar")
         .attr("x", function(d) { return x(d.theme); })
         .attr("y", function(d) { return y(d.int); })
         .attr('fill', 'steelblue')
+        .attr("width", x.bandwidth())
+        .attr("height", function(d) { return barHeight - y(d.int); });
+
+    interestsBarGraph_second.selectAll(".bar")
+        .data(data_int_author)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.theme); })
+        .attr("y", function(d) { return y(d.int); })
+        .attr('fill', 'red')
         .attr("width", x.bandwidth())
         .attr("height", function(d) { return barHeight - y(d.int); });
 
