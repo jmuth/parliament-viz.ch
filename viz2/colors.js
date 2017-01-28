@@ -22,14 +22,14 @@ function update_color() {
         var start = 20;
         var dx_text = 10;
 
-        console.log(variables["party"].length);
+        console.log(colorType);
 
         legend.selectAll("circle")
             .data(variables[colorType])
             .enter().append("circle")
             .attr("class", "circleLegend")
             .attr("cx", function (o, i) {
-                if(colorType == "party" || colorType == "parl_gr") {
+                if(colorType == "PartyAbbreviation" || colorType == "ParlGroupAbbreviation") {
                     var half = Math.round(variables[colorType].length/2);
                     var incr = (width-start)/(half);
                     if(i<half) {
@@ -43,7 +43,7 @@ function update_color() {
                 }
             })
             .attr("cy", function(o,i) {
-                if(colorType == "party"|| colorType == "parl_gr") {
+                if(colorType == "PartyAbbreviation"|| colorType == "ParlGroupAbbreviation") {
                     if(i<variables[colorType].length/2) {
                         return height_l / 4;
                     } else {
@@ -63,7 +63,7 @@ function update_color() {
             .enter().append("text")
             .attr("class", "textLegend")
             .attr("x", function(o,i) {
-                if(colorType == "party" || colorType == "parl_gr") {
+                if(colorType == "PartyAbbreviation" || colorType == "ParlGroupAbbreviation") {
                     var half = Math.round(variables[colorType].length/2);
                     var incr = (width-start)/(half);
                     if(i<half) {
@@ -77,7 +77,7 @@ function update_color() {
                 }
             })
             .attr("y", function(o,i) {
-                if(colorType == "party" || colorType == "parl_gr") {
+                if(colorType == "PartyAbbreviation" || colorType == "ParlGroupAbbreviation") {
                     if(i<variables[colorType].length/2) {
                         return height_l / 4;
                     } else {
@@ -103,25 +103,11 @@ function update_color() {
 }
 
 function getValForColor(colorType, node) {
-    if(colorType == "party") {
-        return node.PartyAbbreviation;
-    } else if(colorType == "parl_gr") {
-        return node.ParlGroupAbbreviation;
-    } else if(colorType == "gender") {
-        return node.GenderAsString;
-    } else if(colorType == "council") {
-        return node.CouncilAbbreviation;
-    } else if(colorType == "language") {
-        return node.NativeLanguage;
-    } else if(colorType == "age") {
-        return node.AgeCategoryText;
-    } else if(colorType == "canton") {
-        return node.cantonAbbreviation;
-    }
+    return node[colorType];
 }
 
 function color(colorType, val) {
-    if(colorType == "party") {
+    if(colorType == "PartyAbbreviation") {
         if (val == 'PLD') {
             return '#3131BD'
         } else if (val == 'UDC') {
@@ -153,7 +139,7 @@ function color(colorType, val) {
         }  else if (val == 'PdT') {
             return '#FF0000'
         }
-    } else if(colorType == "parl_gr") {
+    } else if(colorType == "ParlGroupAbbreviation") {
         if(val == "NaN") {
             return '#CCCCCC'
         } else if (val == "GL") {
@@ -171,7 +157,7 @@ function color(colorType, val) {
         } else if (val == "V") {
             return '#088A4B'
         }
-    } else if(colorType == "council") {
+    } else if(colorType == "CouncilAbbreviation") {
         if (val == "CN") {
             return "#ff1c14";
         } else if (val == "CE") {
@@ -179,13 +165,13 @@ function color(colorType, val) {
         } else if (val == "CF") {
             return "#2ea52a";
         }
-    } else if(colorType == "gender") {
+    } else if(colorType == "GenderAsString") {
         if (val == "m") {
             return "#00FFFF";
         } else if (val == "f") {
             return "#FF69B4";
         }
-    } else if(colorType == "language") {
+    } else if(colorType == "NativeLanguage") {
         if (val == "I") {
             return "#009246";
         } else if (val == "D") {
@@ -199,7 +185,7 @@ function color(colorType, val) {
         } else if (val == "RM") {
             return "#E2017B";
         }
-    } else if(colorType == "age") {
+    } else if(colorType == "AgeCategory") {
         if (val == 0 || val == "-20") {
             return "#a65628";
         } else if (val == 1 || val == "20-29") {

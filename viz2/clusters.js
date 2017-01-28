@@ -3,9 +3,9 @@ var foci = {"x": 0.5*width, "y": 0.5*height, "nbr": 253};
 // Foci
 var init_foci = {
     "CouncilAbbreviation": {
-        "CN": {"x": 0.2 * width, "y": 0.6 * height},        // Foci CN
-        "CE": {"x": 0.6 * width, "y": 0.2 * height},        // Foci CE
-        "CF": {"x": 0.8 * width, "y": 0.6 * height}         // Foci CF
+        "CN": {"x": 0.2 * width, "y": 0.6 * height},
+        "CE": {"x": 0.6 * width, "y": 0.2 * height},
+        "CF": {"x": 0.8 * width, "y": 0.6 * height}
     },
     "PartyAbbreviation": {
         "PDC": {"x": 0.1 * width, "y": 0.5 * height},
@@ -46,7 +46,14 @@ var init_foci = {
         "Sk": {"x": 0.8 * width, "y": 0.3 * height},
         "RM": {"x": 0.5 * width, "y": 0.8 * height}
     },
-"AgeCategory": {},                                              // Foci are created later
+    "AgeCategory": {
+        1: {"x": 0.2*width, "y": 0.3*height},
+        2: {"x": 0.2*width, "y": 0.8*height},
+        3: {"x": 0.5*width, "y": 0.3*height},
+        4: {"x": 0.5*width, "y": 0.8*height},
+        5: {"x": 0.8*width, "y": 0.3*height},
+        6: {"x": 0.8*width, "y": 0.8*height}
+    },
     "CantonAbbreviation": {
         "ZH": {"x": 0.1 * width, "y": 0.2 * height},
         "BE": {"x": 0.3 * width, "y": 0.2 * height},

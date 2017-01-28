@@ -21,16 +21,16 @@ function emphasisAndShowInfo(d) {
             node_id = d.PersonIdCode;
 
         } else {
-            var div = $('#tag');
-            var top = event.y - 5,
-                left = event.x + 15;
 
-            console.log(event.x);
+            $('#add_info_counc').css('display', 'block');
 
-            div.css('display', 'block')
-                .css('top', top + 'px')
-                .css('left', left + 'px')
-                .text(d.FirstName + ' ' + d.LastName);
+            document.getElementById("councilorName_add").innerHTML = d.FirstName + " " + d.LastName;
+            document.getElementById("councilorParty_add").innerHTML = d.PartyName;
+            document.getElementById("councilorCouncil_add").innerHTML = d.CouncilName;
+            document.getElementById("councilorBirthday_add").innerHTML = d.DateOfBirth + " (" + d.age + " y.o.)";
+            document.getElementById("councilorCanton_add").innerHTML = d.CantonName;
+            document.getElementById("councilorImage_add").src = "data/portraits/" + d.PersonIdCode + ".jpg";
+            document.getElementById("councilorImage_add").alt = d.FirstName + " " + d.LastName;
         }
     }
 }
@@ -46,10 +46,9 @@ function clicked(d) {
                 return color(colorType, getValForColor(colorType, nodes[i]));
             })
             .style("stroke-width", 1);
-        ;
 
         node.style("r", 1.5*radius)
-            .style("stroke", function(d) {
+            .style("stroke", function() {
                 return "#000000"
             })
             .style("stroke-width", 3);
@@ -93,13 +92,13 @@ function clicked(d) {
 
 // Double click on window
 function dbclick() {
-    nodes.forEach(function(o, i) {
+    nodes.forEach(function(o) {
         o.x = get_foci(o).x;
         o.y = get_foci(o).y;
     });
 }
 
-function dragstarted(d) {
+function dragstarted() {
     if (!d3.event.active) simulation.alphaTarget(0.1).restart();
 
     if(cluster_active) {
@@ -210,7 +209,8 @@ function findMax(line) {
 }
 
 function resetOp() {
-    $('#tag').css('display', 'none');
+    $('#add_info_counc').css('display', 'none');
+
     if (node_selected == false && dragging == false) {
         d3.selectAll(".dataNodes")
             .style("fill-opacity", 1)
@@ -244,6 +244,8 @@ function upd_elem_foci(d, elem, val) {
         foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][elem] = val;
     } else if(focis_order.length == 6) {
         foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][d[focis_order[5]]][elem] = val;
+    } else if(focis_order.length == 7) {
+        foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][d[focis_order[5]]][d[focis_order[6]]][elem] = val;
     }
 }
 
@@ -262,5 +264,7 @@ function get_elem_foci(d, val) {
         return foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][elem];
     } else if(focis_order.length == 6) {
         return foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][d[focis_order[5]]][elem];
+    } else if(focis_order.length == 7) {
+        return foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][d[focis_order[5]]][d[focis_order[6]]][elem];
     }
 }

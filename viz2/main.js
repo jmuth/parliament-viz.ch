@@ -94,7 +94,7 @@ rad_canton.onclick = function() {
 // Get the color
 var rad_color = document.Colors.buttons;
 var prev_color = null;
-var colorType = "party";
+var colorType = "PartyAbbreviation";
 var color_changed = true;
 for(var i = 0; i < rad_color.length; i++) {
     rad_color[i].onclick = function() {
@@ -152,32 +152,32 @@ var node_id = null;
 
 var dragging = false;
 
-var nbr = {};
-nbr["council"] = {};
-nbr["party"] = {};
-nbr["gender"] = {};
-nbr["language"] = {};
-nbr["age"] = {};
-nbr["canton"] = {};
-nbr["parl_gr"] = {};
-
 var texts = {};
-texts["council"] = {'CN': 'National Council', 'CE': 'Council of States', 'CF': 'Federal Council'};
-texts["party"] = {};
-texts["gender"] = {'m': 'Men', 'f': 'Women'};
-texts["language"] = {};
-texts["age"] = {};
-texts["canton"] = {};
-texts["parl_gr"] = {};
+texts["CouncilAbbreviation"] = {'CN': 'National Council', 'CE': 'Council of States', 'CF': 'Federal Council'};
+texts["PartyAbbreviation"] = {'Nan': 'Federal Council', "GL": "Grp. Vert'Libéral", "BD": "Grp. BD", "C": "Grp. PDC", "S": "Grp. Socialiste", "G": "Grp. des Verts", "RL": "Grp. LR", "V": "Grp. UDC"};
+texts["ParlGroupAbbreviation"] = {};
+texts["GenderAsString"] = {'m': 'Men', 'f': 'Women'};
+texts["NativeLanguage"] = {"F": "French", "I": "Italian", "Sk": "Slovak", "RM": "Romansh", "D": "German", "Tr": "Turkish"};
+texts["AgeCategory"] = {};
+texts["CantonAbbreviation"] = {};
+
+var nbr = {};
+nbr["CouncilAbbreviation"] = {};
+nbr["PartyAbbreviation"] = {};
+nbr["ParlGroupAbbreviation"] = {};
+nbr["GenderAsString"] = {};
+nbr["NativeLanguage"] = {};
+nbr["AgeCategory"] = {};
+nbr["CantonAbbreviation"] = {};
 
 var variables = {};
-variables["council"] = [];
-variables["party"] = [];
-variables["gender"] = [];
-variables["language"] = [];
-variables["age"] = [];
-variables["canton"] = [];
-variables["parl_gr"] = [];
+variables["CouncilAbbreviation"] = [];
+variables["PartyAbbreviation"] = [];
+variables["ParlGroupAbbreviation"] = [];
+variables["GenderAsString"] = [];
+variables["NativeLanguage"] = [];
+variables["AgeCategory"] = [];
+variables["CantonAbbreviation"] = [];
 
 // SVG for the main Viz
 var svg = d3.select("div#viz")
@@ -324,11 +324,6 @@ d3.json("data/active.json", function(error, graph) {
 
     nodes = graph.nodes;
 
-    var list_parties = [];
-    var list_parl_gr = [];
-    var list_languages = [];
-    var list_ages = [];
-    var list_cantons = [];
     var list_councilors = [];
 
     for(var i=0; i<nodes.length; i++) {
@@ -341,129 +336,68 @@ d3.json("data/active.json", function(error, graph) {
         list_councilors.push(nodes[i]["FirstName"] + " " + nodes[i]["LastName"]);
 
         // Get nbr by council
-        if(!(nodes[i]["CouncilAbbreviation"] in nbr["council"])) {
-            nbr["council"][nodes[i]["CouncilAbbreviation"]] = 1;
-            variables["council"].push(nodes[i]["CouncilAbbreviation"]);
+        if(!(nodes[i]["CouncilAbbreviation"] in nbr["CouncilAbbreviation"])) {
+            nbr["CouncilAbbreviation"][nodes[i]["CouncilAbbreviation"]] = 1;
+            variables["CouncilAbbreviation"].push(nodes[i]["CouncilAbbreviation"]);
         } else {
-            nbr["council"][nodes[i]["CouncilAbbreviation"]] += 1;
-        }
+            nbr["CouncilAbbreviation"][nodes[i]["CouncilAbbreviation"]] += 1;
+        };
 
         // Get nbr by party
-        if(!(nodes[i]["PartyAbbreviation"] in nbr["party"])) {
-            nbr["party"][nodes[i]["PartyAbbreviation"]] = 1;
-            list_parties.push(nodes[i]["PartyAbbreviation"]);
-            texts["party"][nodes[i]["PartyAbbreviation"]] = nodes[i]["PartyAbbreviation"];
-            variables["party"].push(nodes[i]["PartyAbbreviation"]);
+        if(!(nodes[i]["PartyAbbreviation"] in nbr["PartyAbbreviation"])) {
+            nbr["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] = 1;
+            texts["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] = nodes[i]["PartyAbbreviation"];
+            variables["PartyAbbreviation"].push(nodes[i]["PartyAbbreviation"]);
+
         } else {
-            nbr["party"][nodes[i]["PartyAbbreviation"]] += 1;
+            nbr["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] += 1;
         }
 
         // Get nbr by parl group
-        if(!(nodes[i]["ParlGroupAbbreviation"] in nbr["parl_gr"])) {
-            nbr["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = 1;
-            list_parl_gr.push(nodes[i]["ParlGroupAbbreviation"]);
-            var gr = nodes[i]["ParlGroupAbbreviation"];
-            if(gr == "NaN") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Federal Council";
-            } else if (gr == "GL") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. Vert'Libéral";
-            } else if (gr == "BD") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. BD";
-            } else if (gr == "C") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. PDC";
-            } else if (gr == "S") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp Socialiste";
-            } else if (gr == "G") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. des Verts";
-            } else if (gr == "RL") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. LR";
-            } else if (gr == "V") {
-                texts["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] = "Grp. UDC";
-            }
-            variables["parl_gr"].push(nodes[i]["ParlGroupAbbreviation"]);
+        if(!(nodes[i]["ParlGroupAbbreviation"] in nbr["ParlGroupAbbreviation"])) {
+            nbr["ParlGroupAbbreviation"][nodes[i]["ParlGroupAbbreviation"]] = 1;
+            variables["ParlGroupAbbreviation"].push(nodes[i]["ParlGroupAbbreviation"]);
         } else {
-            nbr["parl_gr"][nodes[i]["ParlGroupAbbreviation"]] += 1;
+            nbr["ParlGroupAbbreviation"][nodes[i]["ParlGroupAbbreviation"]] += 1;
         }
 
         // Get nbr by gender
-        if(!(nodes[i]["GenderAsString"] in nbr["gender"])) {
-            nbr["gender"][nodes[i]["GenderAsString"]] = 1;
-            variables["gender"].push(nodes[i]["GenderAsString"]);
+        if(!(nodes[i]["GenderAsString"] in nbr["GenderAsString"])) {
+            nbr["GenderAsString"][nodes[i]["GenderAsString"]] = 1;
+            variables["GenderAsString"].push(nodes[i]["GenderAsString"]);
         } else {
-            nbr["gender"][nodes[i]["GenderAsString"]] += 1;
+            nbr["GenderAsString"][nodes[i]["GenderAsString"]] += 1;
         }
 
         // Get nbr by language
-        if(!(nodes[i]["NativeLanguage"] in nbr["language"])) {
-            nbr["language"][nodes[i]["NativeLanguage"]] = 1;
-            list_languages.push(nodes[i]["NativeLanguage"]);
-            var lng = nodes[i]["NativeLanguage"];
-            if(lng == "F") {
-                texts["language"][lng] = "French";
-            } else if(lng == "I") {
-                texts["language"][lng] = "Italian";
-            } else if(lng == "Sk") {
-                texts["language"][lng] = "Slovak";
-            } else if(lng == "RM") {
-                texts["language"][lng] = "Romansh";
-            } else if(lng == "D") {
-                texts["language"][lng] = "German";
-            } else if(lng == "Tr") {
-                texts["language"][lng] = "Turkish";
-            }
-            variables["language"].push(nodes[i]["NativeLanguage"]);
-
+        if(!(nodes[i]["NativeLanguage"] in nbr["NativeLanguage"])) {
+            nbr["NativeLanguage"][nodes[i]["NativeLanguage"]] = 1;
+            variables["NativeLanguage"].push(nodes[i]["NativeLanguage"]);
         } else {
-            nbr["language"][nodes[i]["NativeLanguage"]] += 1;
+            nbr["NativeLanguage"][nodes[i]["NativeLanguage"]] += 1;
         }
 
         // Get nbr by age
-        if(!(nodes[i]["AgeCategory"] in nbr["age"])) {
-            nbr["age"][nodes[i]["AgeCategory"]] = 1;
-            texts["age"][nodes[i]["AgeCategory"]] = nodes[i]["AgeCategoryText"];
-            variables["age"].push(nodes[i]["AgeCategory"]);
-            list_ages.push(nodes[i]["AgeCategory"]);
+        if(!(nodes[i]["AgeCategory"] in nbr["AgeCategory"])) {
+            nbr["AgeCategory"][nodes[i]["AgeCategory"]] = 1;
+            texts["AgeCategory"][nodes[i]["AgeCategory"]] = nodes[i]["AgeCategoryText"];
+            variables["AgeCategory"].push(nodes[i]["AgeCategory"]);
         } else {
-            nbr["age"][nodes[i]["AgeCategory"]] += 1;
+            nbr["AgeCategory"][nodes[i]["AgeCategory"]] += 1;
         }
 
         // Get nbr by cantons
-        if(!(nodes[i]["CantonAbbreviation"] in nbr["canton"])) {
-            nbr["canton"][nodes[i]["CantonAbbreviation"]] = 1;
-            texts["canton"][nodes[i]["CantonAbbreviation"]] = nodes[i]["CantonAbbreviation"];
-            variables["canton"].push(nodes[i]["CantonAbbreviation"]);
-            list_cantons.push(nodes[i]["CantonAbbreviation"]);
+        if(!(nodes[i]["CantonAbbreviation"] in nbr["CantonAbbreviation"])) {
+            nbr["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]] = 1;
+            variables["CantonAbbreviation"].push(nodes[i]["CantonAbbreviation"]);
         } else {
-            nbr["canton"][nodes[i]["CantonAbbreviation"]] += 1;
+            nbr["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]] += 1;
         }
     }
 
     // Awesomplete
     new Awesomplete(compCounc, {list: list_councilors});
 
-    list_ages.sort();
-    variables["age"].sort();
-
-    // Create Foci for age
-    for(var i=0; i<list_ages.length; i++) {
-        init_foci["AgeCategory"][list_ages[i]] = {"x": (i+1)/(list_ages.length+1)*width, "y": (Math.pow(-1, i)*0.2 + 0.6)*height};
-    }
-
-    // Create array of foci
-    /*array_foci = {};
-    for(var key1 in init_foci) {
-        if(key1 != "none") {
-            array_foci[key1] = []
-            for (var key in init_foci[key1]) {
-                var json = {}
-                json["cx"] = init_foci[key1][key]["x"];
-                json["cy"] = init_foci[key1][key]["y"];
-                json["key"] = key;
-
-                array_foci[key1].push(json);
-            }
-        }
-    }*/
 
     node = svg.append("g")
             .attr("class", "nodes")
