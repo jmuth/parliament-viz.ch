@@ -17,105 +17,77 @@ var focis_order = [];
 var rad_council = document.ClusterType.btn_council;
 rad_council.onclick = function() {
     if(this.checked) {
-        focis_order.push("CouncilAbbreviation");
         added = true;
-        ftype = "CouncilAbbreviation";
     } else {
-        var idx = focis_order.indexOf("CouncilAbbreviation");
-        focis_order.splice(idx, 1);
         deleted = true;
-        ftype = "CouncilAbbreviation";
     }
+    ftype = "CouncilAbbreviation";
     clusters_changed = true;
 };
 
 var rad_party = document.ClusterType.btn_party;
 rad_party.onclick = function() {
     if(this.checked) {
-        focis_order.push("PartyAbbreviation");
         added = true;
-        ftype = "PartyAbbreviation";
     } else {
-        var idx = focis_order.indexOf("PartyAbbreviation");
-        focis_order.splice(idx, 1);
         deleted = true;
-        ftype = "PartyAbbreviation";
     }
+    ftype = "PartyAbbreviation";
     clusters_changed = true;
 };
 
 var rad_parl_gr = document.ClusterType.btn_parl_gr;
 rad_parl_gr.onclick = function() {
     if(this.checked) {
-        focis_order.push("ParlGroupAbbreviation");
         added = true;
-        ftype = "ParlGroupAbbreviation";
     } else {
-        var idx = focis_order.indexOf("ParlGroupAbbreviation");
-        focis_order.splice(idx, 1);
         deleted = true;
-        ftype = "ParlGroupAbbreviation";
     }
+    ftype = "ParlGroupAbbreviation";
     clusters_changed = true;
 };
 
 var rad_gender = document.ClusterType.btn_gender;
 rad_gender.onclick = function() {
     if(this.checked) {
-        focis_order.push("GenderAsString");
         added = true;
-        ftype = "GenderAsString";
     } else {
-        var idx = focis_order.indexOf("GenderAsString");
-        focis_order.splice(idx, 1);
         deleted = true;
-        ftype = "GenderAsString";
     }
+    ftype = "GenderAsString";
     clusters_changed = true;
 };
 
 var rad_language = document.ClusterType.btn_language;
 rad_language.onclick = function() {
     if(this.checked) {
-        focis_order.push("NativeLanguage");
         added = true;
-        ftype = "NativeLanguage";
     } else {
-        var idx = focis_order.indexOf("NativeLanguage");
-        focis_order.splice(idx, 1);
         deleted = true;
-        ftype = "NativeLanguage";
     }
+    ftype = "NativeLanguage";
     clusters_changed = true;
 };
 
 var rad_age = document.ClusterType.btn_age;
 rad_age.onclick = function() {
     if(this.checked) {
-        focis_order.push("AgeCategory");
         added = true;
-        ftype = "AgeCategory";
     } else {
-        var idx = focis_order.indexOf("AgeCategory");
-        focis_order.splice(idx, 1);
         deleted = true;
-        ftype = "AgeCategory";
     }
+    ftype = "AgeCategory";
     clusters_changed = true;
 };
 
 var rad_canton = document.ClusterType.btn_canton;
 rad_canton.onclick = function() {
     if(this.checked) {
-        focis_order.push("CantonAbbreviation");
         added = true;
-        ftype = "CantonAbbreviation";
     } else {
-        var idx = focis_order.indexOf("CantonAbbreviation");
-        focis_order.splice(idx, 1);
         deleted = true;
-        ftype = "CantonAbbreviation"
     }
+    ftype = "CantonAbbreviation";
     clusters_changed = true;
 };
 

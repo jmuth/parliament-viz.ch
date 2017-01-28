@@ -1,14 +1,4 @@
-var foci = {"x": 0.5*width, "y": 0.5*height};
-
-var focis_nbr = {
-    "CouncilAbbreviation": 3,
-    "PartyAbbreviation": 15,
-    "ParlGroupAbbreviation": 8,
-    "GenderAsString": 2,
-    "NativeLanguage": 6,
-    "AgeCategory": 6,
-    "CantonAbbreviation": 26
-}
+var foci = {"x": 0.5*width, "y": 0.5*height, "nbr": 253};
 
 // Foci
 var init_foci = {
@@ -92,6 +82,10 @@ function clusters() {
         svg.selectAll(".textFoci").remove();
 
         if(cluster_activation_changed) {
+            radius = 5;
+            foci = {"x": 0.5*width, "y": 0.5*height};
+            focis_order = [];
+
             enable_checkboxes();
 
             cluster_activation_changed = false;
@@ -107,6 +101,8 @@ function clusters() {
         }
 
     } else if(cluster_activation_changed) {
+
+        radius = 6;
 
         disable_checkboxes();
 
@@ -169,24 +165,108 @@ function clusters() {
 }
 
 function update_foci(){
-    if(focis_order.length == 1) {
+
+    if(added) {
+        focis_order = addition_tree(focis_order, ftype);
+    } else { //deleted
+        var idx = focis_order.indexOf(ftype);
+
+        focis_order.splice(idx, 1);
+
+        foci = {"x": 0.5*width, "y": 0.5*height, "nbr": 253};
+
+        var new_order = [];
+
+        for(var i = 0; i<focis_order.length; i++) {
+            new_order = addition_tree(new_order, focis_order[i]);
+        }
+    }
+}
+function addition_tree(order, addition) {
+
+    if(order.length == 0) {
         delete foci.x;
         delete foci.y;
 
-        foci = init_foci[focis_order[0]];
-    } else if(focis_order.length == 0) {
-        foci = {"x": 0.5*width, "y": 0.5*height};
+        foci = JSON.parse(JSON.stringify(init_foci[addition]));
+
     } else {
-        if(added) {
-            var angle = Math.random() * Math.PI() * 2;
+        var to_update = Object.keys(init_foci[order[order.length - 1]]);
+        var new_keys = Object.keys(init_foci[addition]);
 
-            var to_update = init_foci[focis_order[-2]].key();
+        if (order.length == 1) {
+            foci = add_line(to_update, foci, new_keys)
+        } else if (order.length == 2) {
+            for (var id0 in init_foci[order[0]]) {
+                foci[id0] = add_line(to_update, foci[id0], new_keys);
+            }
+        } else if (order.length == 3) {
+            for (var id0 in init_foci[order[0]]) {
+                for (var id1 in init_foci[order[1]]) {
+                    foci[id0][id1] = add_line(to_update, foci[id0][id1], new_keys);
 
-            for (var i=0; i<to_update.length; i++) {
-                console.log(to_update[i] + ", ");
+                }
+            }
+        } else if (order.length == 4) {
+            for (var id0 in init_foci[order[0]]) {
+                for (var id1 in init_foci[order[1]]) {
+                    for (var id2 in init_foci[order[2]]) {
+                        foci[id0][id1][id2] = add_line(to_update, foci[id0][id1][id2], new_keys);
+                    }
+                }
+            }
+        } else if (order.length == 5) {
+            for (var id0 in init_foci[order[0]]) {
+                for (var id1 in init_foci[order[1]]) {
+                    for (var id2 in init_foci[order[2]]) {
+                        for (var id3 in init_foci[order[3]]) {
+                            foci[id0][id1][id2][id3] = add_line(to_update, foci[id0][id1][id2][id3], new_keys);
+                        }
+                    }
+                }
+            }
+        } else if (order.length == 6) {
+            for (var id0 in init_foci[order[0]]) {
+                for (var id1 in init_foci[order[1]]) {
+                    for (var id2 in init_foci[order[2]]) {
+                        for (var id3 in init_foci[order[3]]) {
+                            for (var id4 in init_foci[order[4]]) {
+                                foci[id0][id1][id2][id3][id4] = add_line(to_update, foci[id0][id1][id2][id3][id4], new_keys);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+    order.push(addition);
+
+    return order;
+}
+
+function add_line(upd, foc, new_keys) {
+    var incr = new_keys.length * 2 * Math.PI;
+
+    for (var i = 0; i < upd.length; i++) {
+        var angle = Math.random() * Math.PI * 2;
+
+        var x = foc[upd[i]].x;
+        var y = foc[upd[i]].y;
+
+        delete foc[upd[i]].x;
+        delete foc[upd[i]].y;
+
+        var radius = 100;
+        for (var j = 0; j < new_keys.length; j++) {
+            var json = {}
+            json["x"] = Math.max(0, Math.min(width, radius * Math.cos(angle * j * incr) + x));
+            json["y"] = Math.max(0, Math.min(height, radius * Math.sin(angle * j * incr) + y));
+
+            foc[upd[i]][new_keys[j]] = json;
+        }
+    }
+
+    return foc;
 }
 
 function get_foci(d) {
@@ -198,9 +278,11 @@ function get_foci(d) {
         if(focis_order.length == 0) {
             foci_spec = foci;
         } else {
-            for(var i=0; i<focis_order.length; i++) {
-                foci_spec = foci[d[focis_order[i]]];
+            foci_spec = foci[d[focis_order[0]]];
+            for(var i=1; i<focis_order.length; i++) {
+                foci_spec = foci_spec[d[focis_order[i]]];
             }
+            //console.log(JSON.stringify((foci_spec)));
         }
     }
 
