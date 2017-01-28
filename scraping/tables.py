@@ -39,6 +39,15 @@ class Tables:
             self.df[table] = pd.read_csv('data/' + table + '.csv')
 
     def cosigner(self):
+        friends = self.relation_between_person('Auteur', 'Cosignataire')
+
+        return friends
+
+    def opponent(self):
+        opponents = self.relation_between_person('Auteur', 'Opposant(e)')
+        return opponents
+
+    def relation_between_person(self, role_1, role_2):
         """ Number of time two person have an author-cosigner relation"""
         # TODO: fill the matrix in a symmetric way (upper right corner first) and then use symmetrize function
 
@@ -46,16 +55,16 @@ class Tables:
         df_member = self.df['MemberCouncil']
 
         # create cosigners table
-        cosigners = df_role.loc[(df_role.MemberCouncilNumber.notnull()) & (df_role.RoleName == 'Cosignataire')]
+        cosigners = df_role.loc[(df_role.MemberCouncilNumber.notnull()) & (df_role.RoleName == role_1)]
         cosigners = cosigners[['BusinessNumber', 'MemberCouncilNumber']]
         cosigners = cosigners.astype(int)
-        print("Cosigners table shape: ", cosigners.shape)
+        print(role_1 + "table shape: ", cosigners.shape)
 
         # create authors table
-        authors = df_role.loc[(df_role.MemberCouncilNumber.notnull()) & (df_role.RoleName == 'Auteur')]
+        authors = df_role.loc[(df_role.MemberCouncilNumber.notnull()) & (df_role.RoleName == role_2)]
         authors = authors[['BusinessNumber', 'MemberCouncilNumber']]
         authors = authors.astype(int)
-        print("Authors table shape: ", authors.shape)
+        print(role_2 + "table shape: ", authors.shape)
 
         # create the sparse matrix of right size
         max_id = df_member.PersonNumber.max()
