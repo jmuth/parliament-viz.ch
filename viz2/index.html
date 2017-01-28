@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+</style>
+
+<script src="http://d3js.org/d3.v4.min.js"></script>
+<script type="text/javascript" src="ext/jq.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vizu Parlament Clusters</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="stylesheet" href="ext/awesomplete.css"/>
+    <script src="ext/awesomplete.min.js" async></script>
+</head>
+
+<h1>Visualisation on the Swiss Parliament</h1>
+<h2>Information:</h2>
+<d>If you <b>pass the mouse over a point</b>, you'll be able to see more information on the councilor.</d><br>
+<d>If you <b>click on a point</b>, you will select a councilor and you will be able to follow him in the different cluster.</d><br>
+<d>If you <b>double-click</b>, the points will move a bit from their positions. It helps when a point is blocked.</d>
+<br><br>
+
+<div id="visualisation">
+    <b>Find a Councilor</b> <br>
+    <input id="compCouncilors" class="awesomplete" placeholder="E.g.: Doris Leuthard "/>
+    <br><br>
+    <div id="choices">
+        <b>Clustering</b>
+        <form name="Clustering">
+            <input type="checkbox" name="button" value="cluster"> Activate Cluster <br>
+        </form>
+
+        <div id="cluster_type">
+            <b>Clusters</b>
+            <form name="ClusterType">
+                <input type="checkbox" name="btn_council" id="btn_council" value="council" disabled="disabled"> Council<br>
+                <input type="checkbox" name="btn_party" id="btn_party" value="party" disabled="disabled"> Parties<br>
+                <input type="checkbox" name="btn_parl_gr" id="btn_parl_gr" value="parl_gr" disabled="disabled"> Parl. Group<br>
+                <input type="checkbox" name="btn_gender" id="btn_gender" value="gender" disabled="disabled"> Gender<br>
+                <input type="checkbox" name="btn_language" id="btn_language" value="language" disabled="disabled"> Language<br>
+                <input type="checkbox" name="btn_age" id="btn_age" value="age" disabled="disabled"> Age<br>
+                <input type="checkbox" name="btn_canton"id="btn_canton" value="canton" disabled="disabled"> Canton
+            </form>
+        </div>
+        <b>Colors</b>
+        <form name="Colors">
+            <input type="radio" name="buttons" value="party" checked="True"> Parties<br>
+            <input type="radio" name="buttons" value="parl_gr" > Parl. Group<br>
+            <input type="radio" name="buttons" value="council"> Council<br>
+            <input type="radio" name="buttons" value="gender"> Gender<br>
+            <input type="radio" name="buttons" value="language"> Language<br>
+            <input type="radio" name="buttons" value="age"> Age<br>
+        </form>
+    </div>
+
+    <div id="viz">
+    </div>
+
+    <div id="content">
+        <div id='bio' class='bio'>
+            <a target="_blank" href="" id='councilorName'></a>
+            <br>
+            <span id='councilorParty'></span>
+            <br>
+            <span id='councilorCanton'></span>
+            <br>
+            <span id='councilorCouncil'></span>
+            <br>
+            <span id='councilorBirthday'></span>
+        </div>
+        <div id='div_img'>
+            <img id='councilorImage' src="data/portraits/person-260.jpg" height="200px">
+        </div>
+        <div class="divline"></div>
+        <div id='int_timeline'>
+            Number of interventions (red line is median)
+            <svg id='int_graph' width="390px" height="130px"></svg>
+        </div>
+        <div class="divline"></div>
+        <div id='div_theme'>
+            <span id='interest_info'></span>
+            <svg id='themes' width="390px" height="200px"></svg>
+        </div>
+        <div class="divline">
+        </div>
+        <div id='div_friends' class='bio'>
+            <span id='friends_info'></span>
+            <svg id='friends' width='175px' height="100%"></svg>
+        </div>
+        <div id="choice" class="choice">
+            <div>
+                Relations
+            </div>
+            <form name="Friendship">
+                <input type="radio" name="buttons" value="intervention" checked="True"> Interventions<br>
+                <input type="radio" name="buttons" value="cosign"> Co-signed motions<br>
+            </form>
+            <br>
+            <div>
+                Interests
+            </div>
+            <form name="Interest">
+                <input type="radio" name="buttons" value="all" checked="True"> Auth. and co-signator<br>
+                <input type="radio" name="buttons" value="author"> Author<br>
+            </form>
+
+        </div>
+    </div>
+</div>
+<div id="tag"></div>
+
+<div>
+    <div id="legend">
+
+    </div>
+</div>
+
+<br>
+
+<script src="main.js"></script>
+<script src="functions.js"></script>
+<script src="sidebar.js"></script>
+<script src="clusters.js"></script>
+<script src="colors.js"></script>
