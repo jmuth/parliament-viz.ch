@@ -3,10 +3,10 @@ function update_color() {
 
         // Change the color
         d3.selectAll(".dataNodes")
-            .style("fill", function(d) {
+            .style("fill", function (d) {
                 return color(colorType, getValForColor(colorType, d));
             })
-            .style("stroke", function(d) {
+            .style("stroke", function (d) {
                 if (d.selected == true) {
                     return "#000000";
                 } else {
@@ -14,15 +14,16 @@ function update_color() {
                 }
             });
 
+    }
+
+    if(color_changed || national_changed || states_changed || federal_changed) {
+
         // Change the legend
         legend.selectAll(".circleLegend").remove();
         legend.selectAll(".textLegend").remove();
 
-
         var start = 20;
         var dx_text = 10;
-
-        console.log(colorType);
 
         legend.selectAll("circle")
             .data(variables[colorType])
@@ -88,7 +89,20 @@ function update_color() {
                 }
             })
             .text(function (o, i) {
-                return texts[colorType][variables[colorType][i]] + " (" + nbr[colorType][variables[colorType][i]] + ")";
+                var nn = 0;
+
+                if(national) {
+                    nn += nbr[colorType][variables[colorType][i]]["CN"];
+                }
+
+                if(states) {
+                    nn += nbr[colorType][variables[colorType][i]]["CE"];
+                }
+
+                if(federal) {
+                    nn += nbr[colorType][variables[colorType][i]]["CF"];
+                }
+                return texts[colorType][variables[colorType][i]] + " (" + nn + ")";
             })
             .attr("font-weight", "bold")
             .attr("font-size", "14px")

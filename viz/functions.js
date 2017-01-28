@@ -36,11 +36,24 @@ function emphasisAndShowInfo(d) {
 
         $('#add_info_cluster').css('display', 'block');
 
-        var nn = get_elem_foci(d, "nbr");
+        var nn = 0;
+
+        if(national) {
+            nn += get_elem_foci(d, "nbr_CN");
+        }
+
+        if(states) {
+            nn += get_elem_foci(d, "nbr_CE");
+        }
+
+        if(federal) {
+            nn += get_elem_foci(d, "nbr_CF");
+        }
+
         if(nn > 1) {
-            document.getElementById("cluster_nbr").innerHTML = get_elem_foci(d, "nbr") + " councilors";
+            document.getElementById("cluster_nbr").innerHTML = nn + " councilors";
         } else {
-            document.getElementById("cluster_nbr").innerHTML = get_elem_foci(d, "nbr") + " councilor";
+            document.getElementById("cluster_nbr").innerHTML = nn + " councilor";
         }
 
         var str = "";//"<b>Clusterisation </b>: <br>";
@@ -275,5 +288,71 @@ function text_info_cluster(val) {
         return "Age Category"
     } else if(val == "CantonAbbreviation") {
         return "Canton"
+    }
+}
+
+function remove_non_wanted_council() {
+
+    var rmin = 600;
+    var dr = 1000;
+
+    if(national_changed) {
+
+        if(national == false) {
+            for(var i=0; i<nodes.length; i++) {
+                if(nodes[i].CouncilAbbreviation == "CN") {
+                    var angle = Math.random()*2*Math.PI;
+                    nodes[i].fx = (rmin+Math.random()*dr)*Math.cos(angle) + width/2;
+                    nodes[i].fy = (rmin+Math.random()*dr)*Math.sin(angle) + height/2;
+                }
+            }
+        } else {
+            for(var i=0; i<nodes.length; i++) {
+                if(nodes[i].CouncilAbbreviation == "CN") {
+                    nodes[i].fx = null;
+                    nodes[i].fy = null;
+                }
+            }
+        }
+
+        national_changed = false;
+    } else if(states_changed) {
+        if(states == false) {
+            for(var i=0; i<nodes.length; i++) {
+                if(nodes[i].CouncilAbbreviation == "CE") {
+                    var angle = Math.random()*2*Math.PI;
+                    nodes[i].fx = (rmin+Math.random()*dr)*Math.cos(angle) + width/2;
+                    nodes[i].fy = (rmin+Math.random()*dr)*Math.sin(angle) + height/2;;
+                }
+            }
+        } else {
+            for(var i=0; i<nodes.length; i++) {
+                if(nodes[i].CouncilAbbreviation == "CE") {
+                    nodes[i].fx = null;
+                    nodes[i].fy = null;
+                }
+            }
+        }
+
+        states_changed = false;
+    } else if(federal_changed) {
+        if(federal == false) {
+            for(var i=0; i<nodes.length; i++) {
+                if(nodes[i].CouncilAbbreviation == "CF") {
+                    var angle = Math.random()*2*Math.PI;
+                    nodes[i].fx = (rmin+Math.random()*dr)*Math.cos(angle) + width/2;
+                    nodes[i].fy = (rmin+Math.random()*dr)*Math.sin(angle) + height/2;
+                }
+            }
+        } else {
+            for(var i=0; i<nodes.length; i++) {
+                if(nodes[i].CouncilAbbreviation == "CF") {
+                    nodes[i].fx = null;
+                    nodes[i].fy = null;
+                }
+            }
+        }
+
+        federal_changed = false;
     }
 }

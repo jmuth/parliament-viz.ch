@@ -28,6 +28,12 @@
     <input id="compCouncilors" class="awesomplete" placeholder="E.g.: Doris Leuthard "/>
     <br><br>
     <div id="choices">
+        <b>Councils</b>
+        <form name="Councils">
+            <input type="checkbox" name="national" id="national" value="national" checked="true"> National<br>
+            <input type="checkbox" name="states" id="states" value="states" checked="true"> States<br>
+            <input type="checkbox" name="federal" id="federal" value="federal" checked="true"> Federal<br>
+        </form>
         <b>Clustering</b>
         <form name="Clustering">
             <input type="checkbox" name="button" value="cluster"> Activate Cluster <br>
@@ -44,7 +50,17 @@
                 <input type="checkbox" name="btn_age" id="btn_age" value="age" disabled="disabled"> Age<br>
                 <input type="checkbox" name="btn_canton"id="btn_canton" value="canton" disabled="disabled"> Canton
             </form>
+            <br>
+            <b>Majority</b>
+            <form name="Majority">
+                <input type="checkbox" name="button" id="majority" disabled="disabled"> Activate Majority <br>
+            </form>
         </div>
+
+        <div>
+
+        </div>
+
         <b>Colors</b>
         <form name="Colors">
             <input type="radio" name="buttons" value="PartyAbbreviation" checked="True"> Parties<br>
@@ -76,7 +92,7 @@
                 <br>
                 <span id='councilorBirthday_add'></span>
             </div>
-            <div id='div_img'>
+            <div>
                 <img id='councilorImage_add' src="data/portraits/person-260.jpg" height="200px">
             </div>
         </div>
@@ -97,7 +113,7 @@
             <br>
             <span id='councilorBirthday'></span>
         </div>
-        <div id='div_img'>
+        <div>
             <img id='councilorImage' src="data/portraits/person-260.jpg" height="200px">
         </div>
         <div class="divline"></div>
@@ -137,11 +153,7 @@
     </div>
 </div>
 
-<div>
-    <div id="legend">
-
-    </div>
-</div>
+<div id="legend"></div>
 
 <br>
 
@@ -150,3 +162,4 @@
 <script src="sidebar.js"></script>
 <script src="clusters.js"></script>
 <script src="colors.js"></script>
+<script src="majority.js"></script>

@@ -1,86 +1,86 @@
-var foci = {"x": 0.5*width, "y": 0.5*height, "nbr": 253};
+var foci = {"x": 0.5*width, "y": 0.5*height, "nbr_CN": 200, "nbr_CE": 46, "nbr_CF": 7};
 
 // Foci
 var init_foci = {
     "CouncilAbbreviation": {
-        "CN": {"x": 0.2 * width, "y": 0.6 * height, "nbr": 0},
-        "CE": {"x": 0.6 * width, "y": 0.2 * height, "nbr": 0},
-        "CF": {"x": 0.8 * width, "y": 0.6 * height, "nbr": 0}
+        "CN": {"x": 0.2 * width, "y": 0.6 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "CE": {"x": 0.6 * width, "y": 0.2 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "CF": {"x": 0.8 * width, "y": 0.6 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0}
     },
     "PartyAbbreviation": {
-        "PDC": {"x": 0.1 * width, "y": 0.5 * height, "nbr": 0},
-        "PLR": {"x": 0.367 * width, "y": 0.3 * height, "nbr": 0},
-        "UDC": {"x": 0.633 * width, "y": 0.5 * height, "nbr": 0},
-        "PSS": {"x": 0.9 * width, "y": 0.3 * height, "nbr": 0},
-        "MCG": {"x": 0.05 * width, "y": 0.8 * height, "nbr": 0},
-        "PEV": {"x": 0.14 * width, "y": 0.8 * height, "nbr": 0},
-        "BastA": {"x": 0.23 * width, "y": 0.8 * height, "nbr": 0},
-        "PBD": {"x": 0.32 * width, "y": 0.8 * height, "nbr": 0},
-        "-": {"x": 0.41 * width, "y": 0.8 * height, "nbr": 0},
-        "Lega": {"x": 0.5 * width, "y": 0.8 * height, "nbr": 0},
-        "csp-ow": {"x": 0.59 * width, "y": 0.8 * height, "nbr": 0},
-        "pvl": {"x": 0.68 * width, "y": 0.8 * height, "nbr": 0},
-        "PdT": {"x": 0.77 * width, "y": 0.8 * height, "nbr": 0},
-        "PES": {"x": 0.86 * width, "y": 0.8 * height, "nbr": 0},
-        "PLD": {"x": 0.95 * width, "y": 0.8 * height, "nbr": 0}
+        "PDC": {"x": 0.1 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "PLR": {"x": 0.367 * width, "y": 0.3 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "UDC": {"x": 0.633 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "PSS": {"x": 0.9 * width, "y": 0.3 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "MCG": {"x": 0.05 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "PEV": {"x": 0.14 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "BastA": {"x": 0.23 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "PBD": {"x": 0.32 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "-": {"x": 0.41 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "Lega": {"x": 0.5 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "csp-ow": {"x": 0.59 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "pvl": {"x": 0.68 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "PdT": {"x": 0.77 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "PES": {"x": 0.86 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "PLD": {"x": 0.95 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0}
     },
     "ParlGroupAbbreviation": {
-        "NaN": {"x": 0.5 * width, "y": 0.5 * height, "nbr": 0},
-        "RL": {"x": 0.5 * width, "y": 0.2 * height, "nbr": 0},
-        "BD": {"x": 0.7 * width, "y": 0.3 * height, "nbr": 0},
-        "C": {"x": 0.8 * width, "y": 0.5 * height, "nbr": 0},
-        "S": {"x": 0.7 * width, "y": 0.8 * height, "nbr": 0},
-        "G": {"x": 0.3 * width, "y": 0.3 * height, "nbr": 0},
-        "GL": {"x": 0.2 * width, "y": 0.5 * height, "nbr": 0},
-        "V": {"x": 0.35 * width, "y": 0.8 * height, "nbr": 0}
+        "NaN": {"x": 0.5 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "RL": {"x": 0.5 * width, "y": 0.2 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "BD": {"x": 0.7 * width, "y": 0.3 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "C": {"x": 0.8 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "S": {"x": 0.7 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "G": {"x": 0.3 * width, "y": 0.3 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "GL": {"x": 0.2 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "V": {"x": 0.35 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0}
     },
     "GenderAsString": {
-        "m": {"x": 0.3*width, "y": 0.5*height, "nbr": 0},
-        "f": {"x": 0.7*width, "y": 0.5*height, "nbr": 0}
+        "m": {"x": 0.3*width, "y": 0.5*height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "f": {"x": 0.7*width, "y": 0.5*height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0}
     },
     "NativeLanguage": {
-        "I": {"x": 0.2 * width, "y": 0.8 * height, "nbr": 0},
-        "D": {"x": 0.5 * width, "y": 0.3 * height, "nbr": 0},
-        "F": {"x": 0.8 * width, "y": 0.8 * height, "nbr": 0},
-        "Tr": {"x": 0.2 * width, "y": 0.3 * height, "nbr": 0},
-        "Sk": {"x": 0.8 * width, "y": 0.3 * height, "nbr": 0},
-        "RM": {"x": 0.5 * width, "y": 0.8 * height, "nbr": 0}
+        "I": {"x": 0.2 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "D": {"x": 0.5 * width, "y": 0.3 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "F": {"x": 0.8 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "Tr": {"x": 0.2 * width, "y": 0.3 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "Sk": {"x": 0.8 * width, "y": 0.3 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "RM": {"x": 0.5 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0}
     },
     "AgeCategory": {
-        1: {"x": 0.2*width, "y": 0.3*height, "nbr": 0},
-        2: {"x": 0.2*width, "y": 0.8*height, "nbr": 0},
-        3: {"x": 0.5*width, "y": 0.3*height, "nbr": 0},
-        4: {"x": 0.5*width, "y": 0.8*height, "nbr": 0},
-        5: {"x": 0.8*width, "y": 0.3*height, "nbr": 0},
-        6: {"x": 0.8*width, "y": 0.8*height, "nbr": 0}
+        1: {"x": 0.2*width, "y": 0.3*height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        2: {"x": 0.2*width, "y": 0.8*height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        3: {"x": 0.5*width, "y": 0.3*height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        4: {"x": 0.5*width, "y": 0.8*height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        5: {"x": 0.8*width, "y": 0.3*height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        6: {"x": 0.8*width, "y": 0.8*height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0}
     },
     "CantonAbbreviation": {
-        "ZH": {"x": 0.1 * width, "y": 0.2 * height, "nbr": 0},
-        "BE": {"x": 0.3 * width, "y": 0.2 * height, "nbr": 0},
-        "VD": {"x": 0.5 * width, "y": 0.2 * height, "nbr": 0},
-        "AG": {"x": 0.7 * width, "y": 0.2 * height, "nbr": 0},
-        "SG": {"x": 0.9 * width, "y": 0.2 * height, "nbr": 0},
-        "GE": {"x": 0.1 * width, "y": 0.5 * height, "nbr": 0},
-        "LU": {"x": 0.233 * width, "y": 0.5 * height, "nbr": 0},
-        "VS": {"x": 0.366 * width, "y": 0.5 * height, "nbr": 0},
-        "TI": {"x": 0.5 * width, "y": 0.5 * height, "nbr": 0},
-        "FR": {"x": 0.633 * width, "y": 0.5 * height, "nbr": 0},
-        "TG": {"x": 0.766 * width, "y": 0.5 * height, "nbr": 0},
-        "BL": {"x": 0.9 * width, "y": 0.5 * height, "nbr": 0},
-        "SO": {"x": 0.1 * width, "y": 0.7 * height, "nbr": 0},
-        "GR": {"x": 0.233 * width, "y": 0.7 * height, "nbr": 0},
-        "NE": {"x": 0.366 * width, "y": 0.7 * height, "nbr": 0},
-        "BS": {"x": 0.5 * width, "y": 0.7 * height, "nbr": 0},
-        "SZ": {"x": 0.633 * width, "y": 0.7 * height, "nbr": 0},
-        "ZG": {"x": 0.766 * width, "y": 0.7 * height, "nbr": 0},
-        "JU": {"x": 0.9 * width, "y": 0.7 * height, "nbr": 0},
-        "SH": {"x": 0.1 * width, "y": 0.9 * height, "nbr": 0},
-        "GL": {"x": 0.233 * width, "y": 0.9 * height, "nbr": 0},
-        "UR": {"x": 0.366 * width, "y": 0.9 * height, "nbr": 0},
-        "OW": {"x": 0.5 * width, "y": 0.9 * height, "nbr": 0},
-        "NW": {"x": 0.633 * width, "y": 0.9 * height, "nbr": 0},
-        "AI": {"x": 0.766 * width, "y": 0.9 * height, "nbr": 0},
-        "AR": {"x": 0.9 * width, "y": 0.9 * height, "nbr": 0}
+        "ZH": {"x": 0.1 * width, "y": 0.2 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "BE": {"x": 0.3 * width, "y": 0.2 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "VD": {"x": 0.5 * width, "y": 0.2 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "AG": {"x": 0.7 * width, "y": 0.2 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "SG": {"x": 0.9 * width, "y": 0.2 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "GE": {"x": 0.1 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "LU": {"x": 0.233 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "VS": {"x": 0.366 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "TI": {"x": 0.5 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "FR": {"x": 0.633 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "TG": {"x": 0.766 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "BL": {"x": 0.9 * width, "y": 0.5 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "SO": {"x": 0.1 * width, "y": 0.7 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "GR": {"x": 0.233 * width, "y": 0.7 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "NE": {"x": 0.366 * width, "y": 0.7 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "BS": {"x": 0.5 * width, "y": 0.7 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "SZ": {"x": 0.633 * width, "y": 0.7 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "ZG": {"x": 0.766 * width, "y": 0.7 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "JU": {"x": 0.9 * width, "y": 0.7 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "SH": {"x": 0.1 * width, "y": 0.9 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "GL": {"x": 0.233 * width, "y": 0.9 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "UR": {"x": 0.366 * width, "y": 0.9 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "OW": {"x": 0.5 * width, "y": 0.9 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "NW": {"x": 0.633 * width, "y": 0.9 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "AI": {"x": 0.766 * width, "y": 0.9 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
+        "AR": {"x": 0.9 * width, "y": 0.9 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0}
     }
 };
 
@@ -90,7 +90,7 @@ function clusters() {
 
         if(cluster_activation_changed) {
             radius = 5;
-            foci = {"x": 0.5*width, "y": 0.5*height, "nbr": 253};
+            foci = {"x": 0.5*width, "y": 0.5*height, "nbr_CN": 200, "nbr_CE": 46, "nbr_CF": 7};
             focis_order = [];
 
             enable_checkboxes();
@@ -177,7 +177,13 @@ function compute_numbers_in_cluster() {
 
     if(focis_order.length > 0) {
         for (var i = 0; i < nodes.length; i++) {
-            upd_elem_foci(nodes[i], "nbr", get_elem_foci(nodes[i], "nbr") + 1);
+            if(nodes[i].CouncilAbbreviation == "CN") {
+                upd_elem_foci(nodes[i], "nbr_CN", get_elem_foci(nodes[i], "nbr_CN") + 1);
+            } else if(nodes[i].CouncilAbbreviation == "CE") {
+                upd_elem_foci(nodes[i], "nbr_CE", get_elem_foci(nodes[i], "nbr_CE") + 1);
+            } else if(nodes[i].CouncilAbbreviation == "CF") {
+                upd_elem_foci(nodes[i], "nbr_CF", get_elem_foci(nodes[i], "nbr_CF") + 1);
+            }
         }
     }
 
@@ -192,7 +198,7 @@ function update_foci(){
 
         focis_order.splice(idx, 1);
 
-        foci = {"x": 0.5*width, "y": 0.5*height, "nbr": 253};
+        foci = {"x": 0.5*width, "y": 0.5*height, "nbr_CN": 200, "nbr_CE": 46, "nbr_CF": 7};
 
         var new_order = [];
 
@@ -279,7 +285,9 @@ function add_layer(upd, foc, new_keys) {
             var json = {}
             json["x"] = Math.max(5, Math.min(width, move_a_bit(nbr + new_keys.length, x)));
             json["y"] = Math.max(5, Math.min(width, move_a_bit(nbr + new_keys.length, y)));
-            json["nbr"] = 0;
+            json["nbr_CN"] = 0;
+            json["nbr_CE"] = 0;
+            json["nbr_CF"] = 0;
 
             foc[upd[i]][new_keys[j]] = json;
         }
@@ -379,6 +387,10 @@ function disable_checkboxes() {
     document.getElementById("btn_language").checked = false;
     document.getElementById("btn_age").checked = false;
     document.getElementById("btn_canton").checked = false;
+
+    // For the majority
+    document.getElementById("majority").disabled = true;
+    document.getElementById("majority").checked = false;
 }
 
 function enable_checkboxes() {
@@ -389,4 +401,7 @@ function enable_checkboxes() {
     document.getElementById("btn_language").disabled = false;
     document.getElementById("btn_age").disabled = false;
     document.getElementById("btn_canton").disabled = false;
+
+    // For the majority
+    document.getElementById("majority").disabled = false;
 }

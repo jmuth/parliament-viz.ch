@@ -7,7 +7,6 @@ rad_cluster.onclick = function() {
     cluster_activation_changed = true;
 };
 
-
 var clusters_changed = false;
 var deleted = false;
 var added = false;
@@ -91,6 +90,38 @@ rad_canton.onclick = function() {
     clusters_changed = true;
 };
 
+// Get the majority
+var rad_majority = document.Majority.button;
+var majority_active = false;
+var majority_activation_changed = true;
+rad_majority.onclick = function() {
+    majority_active  = this.checked;
+    majority_activation_changed = true;
+};
+
+var rad_national = document.Councils.national;
+var national = true;
+var national_changed = false;
+rad_national.onclick = function() {
+    national = this.checked;
+    national_changed = true;
+};
+
+var rad_states = document.Councils.states;
+var states = true;
+var states_changed = false;
+rad_states.onclick = function() {
+    states = this.checked;
+    states_changed = true;
+};
+
+var rad_federal = document.Councils.federal;
+var federal = true;
+var federal_changed = false;
+rad_federal.onclick = function() {
+    federal = this.checked;
+    federal_changed = true;
+};
 // Get the color
 var rad_color = document.Colors.buttons;
 var prev_color = null;
@@ -341,45 +372,59 @@ d3.json("data/active.json", function(error, graph) {
 
         // Get nbr by council
         if(!(nodes[i]["CouncilAbbreviation"] in nbr["CouncilAbbreviation"])) {
-            nbr["CouncilAbbreviation"][nodes[i]["CouncilAbbreviation"]] = 1;
+            var jj = {};
+            jj["CN"] = 0;
+            jj["CE"] = 0;
+            jj["CF"] = 0;
+            nbr["CouncilAbbreviation"][nodes[i]["CouncilAbbreviation"]] = jj;
             variables["CouncilAbbreviation"].push(nodes[i]["CouncilAbbreviation"]);
-        } else {
-            nbr["CouncilAbbreviation"][nodes[i]["CouncilAbbreviation"]] += 1;
-        };
+        }
+        nbr["CouncilAbbreviation"][nodes[i]["CouncilAbbreviation"]][nodes[i]["CouncilAbbreviation"]] += 1;
 
         // Get nbr by party
         if(!(nodes[i]["PartyAbbreviation"] in nbr["PartyAbbreviation"])) {
-            nbr["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] = 1;
+            var jj = {};
+            jj["CN"] = 0;
+            jj["CE"] = 0;
+            jj["CF"] = 0;
+            nbr["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] = jj;
             texts["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] = nodes[i]["PartyAbbreviation"];
             variables["PartyAbbreviation"].push(nodes[i]["PartyAbbreviation"]);
-
-        } else {
-            nbr["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] += 1;
         }
+        nbr["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]][nodes[i]["CouncilAbbreviation"]] += 1;
 
         // Get nbr by parl group
         if(!(nodes[i]["ParlGroupAbbreviation"] in nbr["ParlGroupAbbreviation"])) {
-            nbr["ParlGroupAbbreviation"][nodes[i]["ParlGroupAbbreviation"]] = 1;
+            var jj = {};
+            jj["CN"] = 0;
+            jj["CE"] = 0;
+            jj["CF"] = 0;
+            nbr["ParlGroupAbbreviation"][nodes[i]["ParlGroupAbbreviation"]] = jj;
             variables["ParlGroupAbbreviation"].push(nodes[i]["ParlGroupAbbreviation"]);
-        } else {
-            nbr["ParlGroupAbbreviation"][nodes[i]["ParlGroupAbbreviation"]] += 1;
         }
+        nbr["ParlGroupAbbreviation"][nodes[i]["ParlGroupAbbreviation"]][nodes[i]["CouncilAbbreviation"]] += 1;
 
         // Get nbr by gender
         if(!(nodes[i]["GenderAsString"] in nbr["GenderAsString"])) {
-            nbr["GenderAsString"][nodes[i]["GenderAsString"]] = 1;
+            var jj = {};
+            jj["CN"] = 0;
+            jj["CE"] = 0;
+            jj["CF"] = 0;
+            nbr["GenderAsString"][nodes[i]["GenderAsString"]] = jj;
             variables["GenderAsString"].push(nodes[i]["GenderAsString"]);
-        } else {
-            nbr["GenderAsString"][nodes[i]["GenderAsString"]] += 1;
         }
+        nbr["GenderAsString"][nodes[i]["GenderAsString"]][nodes[i]["CouncilAbbreviation"]] += 1;
 
         // Get nbr by language
         if(!(nodes[i]["NativeLanguage"] in nbr["NativeLanguage"])) {
-            nbr["NativeLanguage"][nodes[i]["NativeLanguage"]] = 1;
+            var jj = {};
+            jj["CN"] = 0;
+            jj["CE"] = 0;
+            jj["CF"] = 0;
+            nbr["NativeLanguage"][nodes[i]["NativeLanguage"]] = jj;
             variables["NativeLanguage"].push(nodes[i]["NativeLanguage"]);
-        } else {
-            nbr["NativeLanguage"][nodes[i]["NativeLanguage"]] += 1;
         }
+        nbr["NativeLanguage"][nodes[i]["NativeLanguage"]][nodes[i]["CouncilAbbreviation"]] += 1;
 
         // Get nbr by age
         if(!(nodes[i]["AgeCategory"] in nbr["AgeCategory"])) {
@@ -387,17 +432,23 @@ d3.json("data/active.json", function(error, graph) {
             texts["AgeCategory"][nodes[i]["AgeCategory"]] = nodes[i]["AgeCategoryText"];
             variables["AgeCategory"].push(nodes[i]["AgeCategory"]);
         } else {
-            nbr["AgeCategory"][nodes[i]["AgeCategory"]] += 1;
+            nbr["AgeCategory"][nodes[i]["AgeCategory"]][nodes[i]["CouncilAbbreviation"]] += 1;
         }
 
         // Get nbr by cantons
         if(!(nodes[i]["CantonAbbreviation"] in nbr["CantonAbbreviation"])) {
-            nbr["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]] = 1;
+            var jj = {};
+            jj["CN"] = 0;
+            jj["CE"] = 0;
+            jj["CF"] = 0;
+            nbr["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]] = jj;
             variables["CantonAbbreviation"].push(nodes[i]["CantonAbbreviation"]);
-        } else {
-            nbr["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]] += 1;
+            texts["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]] = nodes[i]["CantonName"];
         }
+        nbr["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]][nodes[i]["CouncilAbbreviation"]] += 1;
     }
+
+    variables["AgeCategory"].sort();
 
     // Awesomplete
     new Awesomplete(compCounc, {list: list_councilors});
@@ -440,11 +491,15 @@ function ticked() {
 
     clusters();
 
+    majorities();
+
     update_color();
 
     update_friendship();
 
     update_interest();
+
+    remove_non_wanted_council();
 
     node
         .each(gravity())

@@ -86,6 +86,10 @@ function showTimeline(id) {
 
     var data_timeline = ints[id];
 
+    data_timeline.sort(function(a, b) {
+        return a.year - b.year;
+    });
+
     var x = d3.scaleBand()
         .rangeRound([0, barWidth]).padding(0.1);
 
@@ -154,42 +158,38 @@ function showInterests(id) {
         return a.idx - b.idx;
     });
 
-    data_int_author.sort(function(a, b) {
-        return a.idx - b.idx;
-    });
-
     // Remove Unknown field
     if(data_int_all[data_int_all.length-1].theme == "Unknown") {
         data_int_all.pop();
     }
-    if(data_int_author[data_int_author.length-1].theme == "Unknown") {
-        data_int_author.pop();
-    }
 
     var total = 0;
-    var total_cos = 0;
 
     for (var i = 0; i < data_int_all.length; i++) {
         total += data_int_all[i].int;
     }
-    for (var i = 0; i < data_int_author.length; i++) {
-        total_cos += data_int_author[i].int;
+
+    if(interest_type == "all") {
+        data_int_author.sort(function (a, b) {
+            return a.idx - b.idx;
+        });
+
+        if(data_int_author[data_int_author.length-1].theme == "Unknown") {
+            data_int_author.pop();
+        }
+
+        var total_cos = 0;
+
+        for (var i = 0; i < data_int_author.length; i++) {
+            total_cos += data_int_author[i].int;
+        }
     }
 
     // Change text
     if (interest_type == 'all') {
-        if(total > 1) {
-            document.getElementById('interest_info').innerHTML = "Interests (" + (total-total_cos) + " times co-signatory & " +
-                total_cos + " times author)";
-        } else {
-            document.getElementById('interest_info').innerHTML = "Interests (" + total + " motion signed)";
-        }
+        document.getElementById('interest_info').innerHTML = "Interests (<font color='#4682b4'>" + (total-total_cos) + " times co-signatory </font>& <font color='red'>" + total_cos + " times author</font>)";
     } else if (interest_type == 'author') {
-        if(total > 1) {
-            document.getElementById('interest_info').innerHTML = "Interests (" + total + " motions as author)";
-        } else {
-            document.getElementById('interest_info').innerHTML = "Interests (" + total + " motion as author)";
-        }
+        document.getElementById('interest_info').innerHTML = "Interests (<font color='red'>" + total + " times author</font>)";
     }
 
     // To put in percentage (Not really good I think)
@@ -228,19 +228,33 @@ function showInterests(id) {
         .attr("class", "bar")
         .attr("x", function(d) { return x(d.theme); })
         .attr("y", function(d) { return y(d.int); })
-        .attr('fill', 'steelblue')
+        .attr('fill', function() {
+            if(interest_type == "all") {
+                return 'steelblue'
+            } else {
+                return 'red'
+            }
+        })
         .attr("width", x.bandwidth())
         .attr("height", function(d) { return barHeight - y(d.int); });
 
-    interestsBarGraph_second.selectAll(".bar")
-        .data(data_int_author)
-        .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function(d) { return x(d.theme); })
-        .attr("y", function(d) { return y(d.int); })
-        .attr('fill', 'red')
-        .attr("width", x.bandwidth())
-        .attr("height", function(d) { return barHeight - y(d.int); });
+    if(interest_type == "all") {
+        interestsBarGraph_second.selectAll(".bar")
+            .data(data_int_author)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function (d) {
+                return x(d.theme);
+            })
+            .attr("y", function (d) {
+                return y(d.int);
+            })
+            .attr('fill', 'red')
+            .attr("width", x.bandwidth())
+            .attr("height", function (d) {
+                return barHeight - y(d.int);
+            });
+    }
 
 }
 
