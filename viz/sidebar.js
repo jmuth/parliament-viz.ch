@@ -65,7 +65,7 @@ function showTimeline(id) {
         .rangeRound([barHeight, 0]);
 
     // Update information
-    var str = "Number of interventions (<font color='red'> line is median </font>)";
+    var str = "Number of interventions (<font color='red'>red line is median</font>)";
     document.getElementById('timeline_info').innerHTML = str;
 
     // Create the domains
@@ -117,13 +117,15 @@ function showTimeline(id) {
         .attr('height', 1);
 }
 
+// Display information about the timeline
 function timelineOver(year, val, med) {
 
-    var str = "Year + " + year;
+    var str = "Year " + year + ": <font color='#4682b4'>" + val + " interventions</font> (<font color='red'>median: " + med + "</font>)";
 
     document.getElementById('timeline_info').innerHTML = str;
 }
 
+// Put information back to normal
 function timelineOut(str) {
     document.getElementById('timeline_info').innerHTML = str;
 }
