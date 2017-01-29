@@ -43,6 +43,8 @@ function emphasisAndShowInfo(d) {
 
             // Display the additional information about the councilor
             $('#add_info_counc').css('display', 'block');
+            $('#additional-info-card').css('display', 'block');
+
 
             // Replace some info in the HTML
             document.getElementById("councilorName_add").innerHTML = d.FirstName + " " + d.LastName;
@@ -59,6 +61,7 @@ function emphasisAndShowInfo(d) {
     if(cluster_active) {
 
         // Display the additional information about the cluster
+        $('#additional-info-card').css('display', 'block');
         $('#add_info_cluster').css('display', 'block');
 
         // Get the number of councilors in the cluster in which
@@ -276,6 +279,7 @@ function findMax(line) {
 // Reset the opacity
 function resetOp() {
     // First, we remove the displaying of information about clusters and councilors
+    $('#additional-info-card').css('display', 'none');
     $('#add_info_counc').css('display', 'none');
     $('#add_info_cluster').css('display', 'none');
 
