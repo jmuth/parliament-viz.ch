@@ -46,12 +46,12 @@ function update_color() {
             .attr("cy", function(o,i) {
                 if(colorType == "PartyAbbreviation"|| colorType == "ParlGroupAbbreviation") {
                     if(i<variables[colorType].length/2) {
-                        return height_l / 4;
+                        return height_legend / 4;
                     } else {
-                        return 3*height_l / 4;
+                        return 3*height_legend / 4;
                     }
                 } else {
-                    return height_l / 4;
+                    return height_legend / 4;
                 }
             })
             .attr("r", radius)
@@ -80,12 +80,12 @@ function update_color() {
             .attr("y", function(o,i) {
                 if(colorType == "PartyAbbreviation" || colorType == "ParlGroupAbbreviation") {
                     if(i<variables[colorType].length/2) {
-                        return height_l / 4;
+                        return height_legend / 4;
                     } else {
-                        return 3*height_l / 4;
+                        return 3*height_legend / 4;
                     }
                 } else {
-                    return height_l / 4;
+                    return height_legend / 4;
                 }
             })
             .text(function (o, i) {

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
-//  Files containing the functions to deal with the different      //
+//  This file contains the functions to deal with the different    //
 //  buttons in the HTML file.                                      //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
