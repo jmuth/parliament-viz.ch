@@ -20,7 +20,7 @@ body {
 }
 
 /* Reduce margine*/
-.container {
+.large-container {
     padding-right: 0; /*15px in bootstrap.css*/
     padding-left: 0;  /*idem*/
     margin-right: 0;
@@ -74,5 +74,9 @@ hr {
 }
 
 .signature {
+    horiz-align: left;
+}
+
+.copyright {
     horiz-align: left;
 }
