@@ -1,6 +1,15 @@
+/////////////////////////////////////////////////////////////////////
+//                                                                 //
+//  This file contains the main function that are used for the     //
+//  clusters. It defines the base clusters as well as the          //
+//  functions to update them.                                      //
+//                                                                 //
+/////////////////////////////////////////////////////////////////////
+
+// Base focus (when no clusters are selected)
 var foci = {"x": 0.5*width, "y": 0.5*height, "nbr_CN": 200, "nbr_CE": 46, "nbr_CF": 7};
 
-// Foci
+// Inital foci (when only one cluster is selected)
 var init_foci = {
     "CouncilAbbreviation": {
         "CN": {"x": 0.2 * width, "y": 0.6 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
@@ -46,7 +55,7 @@ var init_foci = {
         "Sk": {"x": 0.8 * width, "y": 0.3 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
         "RM": {"x": 0.5 * width, "y": 0.8 * height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0}
     },
-    "AgeCategory": {
+    "AgeCategory": { // Missing for 0, but we don't care. Babies are not in the parliament
         1: {"x": 0.2*width, "y": 0.3*height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
         2: {"x": 0.2*width, "y": 0.8*height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
         3: {"x": 0.5*width, "y": 0.3*height, "nbr_CN": 0, "nbr_CE": 0, "nbr_CF": 0},
@@ -84,97 +93,130 @@ var init_foci = {
     }
 };
 
+// Main function to update the clusters
 function clusters() {
+    // First we check if the clusterisation is activated
     if(cluster_active) {
-        svg.selectAll(".textFoci").remove();
 
+        // If the user just activated the clusterisation, we need to prepare the clusters
         if(cluster_activation_changed) {
-            radius = 5;
+            // Remove the text displayed when there's no cluster
+            svg.selectAll(".textParl").remove();
+            // Create the base foci
             foci = {"x": 0.5*width, "y": 0.5*height, "nbr_CN": 200, "nbr_CE": 46, "nbr_CF": 7};
-            focis_order = [];
+            // Clear the foci_order
+            foci_order = [];
 
+            // We enable the checboxes for the different clusters
             enable_checkboxes();
 
+            // And we say that the activation is finished
             cluster_activation_changed = false;
         }
 
+        // If a cluster has changed (has been checked/unchecked)
         if(clusters_changed) {
 
+            // We update the foci
             update_foci();
 
+            // Then, we compute the numbers in each clusters
             compute_numbers_in_cluster();
 
+            // And we finish this part
             clusters_changed = false;
             added = false;
             deleted = false;
         }
 
+    // If the cluster is not longer active and the clusterisation changed, it means that the user comes back
+    // to the non-clustered viz
     } else if(cluster_activation_changed) {
 
+        // We disable the choices of clusters
         disable_checkboxes();
 
-        svg.selectAll(".textFoci").remove();
+        // Write the text when there's no clusterisation
+        text_no_cluster();
 
-        svg.append("text")
-            .attr("class", "textFoci")
-            .attr("x", function() {return 425;})
-            .attr("y", function() {return 16.6219;})
-            .text("National")
-            .attr("font-family", "serif")
-            .attr("font-size", "16px")
-            .attr("font-weight", "bold")
-            .attr("text-anchor", "end")
-            .attr("fill", "#808080")
-            .attr("dominant-baseline", "central");
-
-        svg.append("text")
-            .attr("class", "textFoci")
-            .attr("x", function() {return 476.9;})
-            .attr("y", function() {return 16.6219;})
-            .text("Federal")
-            .attr("font-family", "serif")
-            .attr("font-size", "16px")
-            .attr("font-weight", "bold")
-            .attr("text-anchor", "middle")
-            .attr("fill", "#808080")
-            .attr("dominant-baseline", "central");
-
-        svg.append("text")
-            .attr("class", "textFoci")
-            .attr("x", function() {return 528;})
-            .attr("y", function() {return 16.6219;})
-            .text("States")
-            .attr("font-family", "serif")
-            .attr("font-size", "16px")
-            .attr("font-weight", "bold")
-            .attr("text-anchor", "start")
-            .attr("fill", "#808080")
-            .attr("dominant-baseline", "central");
-
-        svg.append("line")
-            .attr("class", "textFoci")
-            .style("stroke", "#808080")
-            .attr("x1", 430.9)
-            .attr("y1", 6.5)
-            .attr("x2", 430.9)
-            .attr("y2", 590.3);
-
-        svg.append("line")
-            .attr("class", "textFoci")
-            .style("stroke", "#808080")
-            .attr("x1", 522.9)
-            .attr("y1", 6.5)
-            .attr("x2", 522.9)
-            .attr("y2", 590.3);
-
+        // And we finish
         cluster_activation_changed = false;
     }
 }
 
+// Function to write the information on the viz when there isn't any cluster.
+function text_no_cluster() {
+    // First we remove all the text (just in case)
+    svg.selectAll(".textParl").remove();
+
+    // We add the National name
+    svg.append("text")
+        .attr("class", "textParl")
+        .attr("x", function() {return 425;})
+        .attr("y", function() {return 16.6219;})
+        .text("National")
+        .attr("font-family", "serif")
+        .attr("font-size", "16px")
+        .attr("font-weight", "bold")
+        .attr("text-anchor", "end")
+        .attr("fill", "#808080")
+        .attr("dominant-baseline", "central");
+
+    // We add the Federal name
+    svg.append("text")
+        .attr("class", "textParl")
+        .attr("x", function() {return 476.9;})
+        .attr("y", function() {return 16.6219;})
+        .text("Federal")
+        .attr("font-family", "serif")
+        .attr("font-size", "16px")
+        .attr("font-weight", "bold")
+        .attr("text-anchor", "middle")
+        .attr("fill", "#808080")
+        .attr("dominant-baseline", "central");
+
+    // We add the States name
+    svg.append("text")
+        .attr("class", "textParl")
+        .attr("x", function() {return 528;})
+        .attr("y", function() {return 16.6219;})
+        .text("States")
+        .attr("font-family", "serif")
+        .attr("font-size", "16px")
+        .attr("font-weight", "bold")
+        .attr("text-anchor", "start")
+        .attr("fill", "#808080")
+        .attr("dominant-baseline", "central");
+
+    // We add a line to separate between National and Federal
+    svg.append("line")
+        .attr("class", "textParl")
+        .style("stroke", "#808080")
+        .attr("x1", 430.9)
+        .attr("y1", 6.5)
+        .attr("x2", 430.9)
+        .attr("y2", 590.3);
+
+    // We add a line to separate between Federal and States
+    svg.append("line")
+        .attr("class", "textParl")
+        .style("stroke", "#808080")
+        .attr("x1", 522.9)
+        .attr("y1", 6.5)
+        .attr("x2", 522.9)
+        .attr("y2", 590.3);
+}
+
+// Compute the number of councilors in each cluster
 function compute_numbers_in_cluster() {
 
-    if(focis_order.length > 0) {
+    // If the foci_order has a length of 0, it means that it's the base cluster
+    // => We already have the information
+    if(foci_order.length > 0) {
+        // Go through all the nodes
         for (var i = 0; i < nodes.length; i++) {
+            // Compute the number for each councils (in case of a user remove one of the councils
+            // The function upd_elem_foci is defined in functions.js
             if(nodes[i].CouncilAbbreviation == "CN") {
                 upd_elem_foci(nodes[i], "nbr_CN", get_elem_foci(nodes[i], "nbr_CN") + 1);
             } else if(nodes[i].CouncilAbbreviation == "CE") {
@@ -187,26 +229,44 @@ function compute_numbers_in_cluster() {
 
 }
 
+// Update the foci
 function update_foci(){
 
+    // We first check if a focus type has been added or deleted
     if(added) {
-        focis_order = addition_tree(focis_order, ftype);
+        // If it has been added, we add a new level in the tree of foci
+        foci_order = addition_tree(foci_order, ftype);
     } else { //deleted
-        var idx = focis_order.indexOf(ftype);
+        // If it has been deleted, we start from the base focus and we rebuild the tree
+        // It's not the best way to do it, but it's the easiest =)
 
-        focis_order.splice(idx, 1);
+        // Remove the
+        var idx = foci_order.indexOf(ftype);
+        foci_order.splice(idx, 1);
 
+        // Start with the base foci
         foci = {"x": 0.5*width, "y": 0.5*height, "nbr_CN": 200, "nbr_CE": 46, "nbr_CF": 7};
 
+        // We will update the new order until it becomes the same as the foci_order
         var new_order = [];
 
-        for(var i = 0; i<focis_order.length; i++) {
-            new_order = addition_tree(new_order, focis_order[i]);
+        for(var i = 0; i<foci_order.length; i++) {
+            // Add a level for each focus type in foci_order
+            new_order = addition_tree(new_order, foci_order[i]);
         }
     }
 }
-function addition_tree(order, addition) {
 
+// Add a level in the tree of foci
+function addition_tree(order, addition) {
+    // There is a possibility to write this in a functional way.
+    // But we were a bit lazy and decided just to write the different
+    // possibilities in function of the number of foci type
+
+
+    // If the length is 0, it means that we add the first cluster
+    // Therefore, we just have to update the foci with one of the
+    // init_foci.
     if(order.length == 0) {
         delete foci.x;
         delete foci.y;
@@ -214,9 +274,16 @@ function addition_tree(order, addition) {
         foci = JSON.parse(JSON.stringify(init_foci[addition]));
 
     } else {
+
+        // If the length is not 0, then we have to go through all the leafs in order to split the clusters
+
+        // Leafs to update
         var to_update = Object.keys(init_foci[order[order.length - 1]]);
+
+        // New leafs to add
         var new_keys = Object.keys(init_foci[addition]);
 
+        // For each level, we add a layer (new leafs) on the last layer (actual leafs)
         if (order.length == 1) {
             foci = add_layer(to_update, foci, new_keys)
         } else if (order.length == 2) {
@@ -262,31 +329,36 @@ function addition_tree(order, addition) {
             }
         }
     }
+
+    // We add the new leaf type in the order of foci
     order.push(addition);
 
     return order;
 }
 
+// This function add new leafs to current level of leaf
 function add_layer(upd, foc, new_keys) {
+    // Go through all the nodes that have to be updated
     for (var i = 0; i < upd.length; i++) {
 
+        // Get the actual focus value
         var x = foc[upd[i]].x;
         var y = foc[upd[i]].y;
-        var nbr = foc[upd[i]].nbr;
 
-        console.log(nbr);
-
+        // Delete them
         delete foc[upd[i]].x;
         delete foc[upd[i]].y;
 
+        // For each new leaf, we add the new foci while moving them randomly a bit from their original position
         for (var j = 0; j < new_keys.length; j++) {
             var json = {}
-            json["x"] = Math.max(5, Math.min(width, move_a_bit(nbr + new_keys.length, x)));
-            json["y"] = Math.max(5, Math.min(width, move_a_bit(nbr + new_keys.length, y)));
+            json["x"] = Math.max(10, Math.min(width-10, move_a_bit(nbr, x)));
+            json["y"] = Math.max(10, Math.min(height-10, move_a_bit(nbr, y)));
             json["nbr_CN"] = 0;
             json["nbr_CE"] = 0;
             json["nbr_CF"] = 0;
 
+            // Update the foci
             foc[upd[i]][new_keys[j]] = json;
         }
     }
@@ -294,22 +366,28 @@ function add_layer(upd, foc, new_keys) {
     return foc;
 }
 
+// Function to move randomly a bit a point from its original value
 function move_a_bit(nbr, val) {
-    return Math.random()*(2*radius_foci(nbr))-radius_foci(nbr) + val;
+    return Math.random()*(2*radius_focus(nbr))-radius_focus(nbr) + val;
 }
 
-function get_foci(d) {
+// Get the focus for a given node
+function get_focus(d) {
     var foci_spec;
 
+    // If the clusterisation is not active, then each node has to go
+    // to its position in the parliament
     if(cluster_active == false) {
         foci_spec = pos[d.PersonIdCode];
     } else {
-        if(focis_order.length == 0) {
+        // Other, the node has to go through the tree of foci in order to get the right one
+        if(foci_order.length == 0) {
             foci_spec = foci;
         } else {
-            foci_spec = foci[d[focis_order[0]]];
-            for(var i=1; i<focis_order.length; i++) {
-                foci_spec = foci_spec[d[focis_order[i]]];
+            // We use a for loop to go through the tree if the size isn't 0
+            foci_spec = foci[d[foci_order[0]]];
+            for(var i=1; i<foci_order.length; i++) {
+                foci_spec = foci_spec[d[foci_order[i]]];
             }
         }
     }
@@ -317,59 +395,61 @@ function get_foci(d) {
     return foci_spec;
 }
 
-// Move nodes toward cluster focus.
+// Function to apply the gravity on the nodes
 function gravity() {
     return function(d) {
         var alpha,
-            foci_x,
-            foci_y;
+            focus_x,
+            focus_y;
 
-        foci_x = get_foci(d).x;
-        foci_y = get_foci(d).y;
+        // We need to get the focus of the given node
+        focus_x = get_focus(d).x;
+        focus_y = get_focus(d).y;
 
+        // Then, we get the intensity of the force
         if (cluster_active == false) {
             alpha = 0.1;
         } else {
             alpha = 0.05;
         }
 
-        var dx = foci_x - d.x;
-        var dy = foci_y - d.y;
+        // Get the distance between the node and its focus
+        var dx = focus_x - d.x;
+        var dy = focus_y - d.y;
 
+        // Change its position
         d.x += dx*alpha;
         d.y += dy*alpha;
+
+        // Avoid that the points go outside the viz
+        // TODO: Check why it can go outside at the bottom
+        d.x = Math.max(0, Math.min(width, d.x));
+        d.y = Math.max(0, Math.min(width, d.y));
+
     };
 }
 
-function radius_foci(n) {
+// Get the radius of the focus. Used when we want to move a bit the points
+// when splitting the clusters
+function radius_focus(n) {
     var ratio = 0;
 
-    if (n==1) {
-        ratio = 3;
-    } else if (n<=7) {
-        ratio = 6;
-    } else if (n<=19) {
-        ratio = 9;
-    } else if (n<=38) {
-        ratio = 12;
-    } else if (n<=61) {
-        ratio = 15;
-    } else if (n<=91) {
-        ratio = 18;
-    } else if (n<=127) {
-        ratio = 21;
-    } else if (n<=169) {
-        ratio = 23;
-    } else if (n<=217) {
-        ratio = 23;
+    if(n < 10) {
+        ratio = 5;
+    } else if (n < 50) {
+        ratio = 10;
+    } else if (n < 150) {
+        ratio = 20;
     } else {
-        ratio = 29;
+        ratio = 30;
     }
 
     return radius*ratio;
 }
 
+// Disable the checkboxes for the clustes
 function disable_checkboxes() {
+    // Disable all the cluster choices
     document.getElementById("btn_council").disabled = true;
     document.getElementById("btn_party").disabled = true;
     document.getElementById("btn_parl_gr").disabled = true;
@@ -378,6 +458,7 @@ function disable_checkboxes() {
     document.getElementById("btn_age").disabled = true;
     document.getElementById("btn_canton").disabled = true;
 
+    // Uncheck them
     document.getElementById("btn_council").checked = false;
     document.getElementById("btn_party").checked = false;
     document.getElementById("btn_parl_gr").checked = false;
@@ -386,7 +467,7 @@ function disable_checkboxes() {
     document.getElementById("btn_age").checked = false;
     document.getElementById("btn_canton").checked = false;
 
-    // For the majority
+    // Disable and uncheck the majority button
     document.getElementById("majority").disabled = true;
     document.getElementById("majority").checked = false;
 
@@ -394,7 +475,9 @@ function disable_checkboxes() {
     majority_activation_changed = true;
 }
 
+// Enable the checkboxes for the clusters
 function enable_checkboxes() {
+    // Enable all the cluster choices
     document.getElementById("btn_council").disabled = false;
     document.getElementById("btn_party").disabled = false;
     document.getElementById("btn_parl_gr").disabled = false;
@@ -403,6 +486,6 @@ function enable_checkboxes() {
     document.getElementById("btn_age").disabled = false;
     document.getElementById("btn_canton").disabled = false;
 
-    // For the majority
+    // Enable the majority button
     document.getElementById("majority").disabled = false;
 }

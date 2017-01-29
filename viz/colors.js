@@ -7,7 +7,7 @@
 /////////////////////////////////////////////////////////////////////
 
 // Main function to update the colors
-function update_color() {
+function colors() {
 
     // First, we check if the color has changed
     if (color_changed) {

@@ -58,7 +58,7 @@ var clusters_changed = false;   // True if a checkbox has been checked/unchecked
 var deleted = false;            // True if a checkbox has been unchecked
 var added = false;              // True if a checkbox has been checked
 var ftype = null;               // Name/Type of cluster changed
-var focis_order = [];           // Order of all the clusters
+var foci_order = [];           // Order of all the clusters
 
 // Checkbox for the council
 var rad_council = document.ClusterType.btn_council;

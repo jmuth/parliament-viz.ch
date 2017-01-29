@@ -58,11 +58,11 @@ function emphasisAndShowInfo(d) {
 
         var str = "";//"<b>Clusterisation </b>: <br>";
 
-        if(focis_order.length == 0) {
+        if(foci_order.length == 0) {
             str += "&#8226; All the councilors. <br>"
         } else {
-            for(var i=0; i<focis_order.length; i++) {
-                str += "&#8226; " + text_info_cluster(focis_order[i]) + ": " + texts[focis_order[i]][d[focis_order[i]]] + "<br>";
+            for(var i=0; i<foci_order.length; i++) {
+                str += "&#8226; " + text_info_cluster(foci_order[i]) + ": " + texts[foci_order[i]][d[foci_order[i]]] + "<br>";
             }
         }
 
@@ -130,8 +130,8 @@ function clicked(d) {
 // Double click on window
 function dbclick() {
     nodes.forEach(function(o) {
-        o.x = get_foci(o).x;
-        o.y = get_foci(o).y;
+        o.x = get_focus(o).x;
+        o.y = get_focus(o).y;
     });
 }
 
@@ -234,42 +234,42 @@ document.getElementById('compCouncilors').addEventListener('awesomplete-selectco
 
 
 function upd_elem_foci(d, elem, val) {
-    if(focis_order.length == 0) {
+    if(foci_order.length == 0) {
         foci[elem] = val
-    } else if(focis_order.length == 1) {
-        foci[d[focis_order[0]]][elem] = val
-    } else if(focis_order.length == 2) {
-        foci[d[focis_order[0]]][d[focis_order[1]]][elem] = val
-    } else if(focis_order.length == 3) {
-        foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][elem] = val;
-    } else if(focis_order.length == 4) {
-        foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][elem] = val;
-    } else if(focis_order.length == 5) {
-        foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][elem] = val;
-    } else if(focis_order.length == 6) {
-        foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][d[focis_order[5]]][elem] = val;
-    } else if(focis_order.length == 7) {
-        foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][d[focis_order[5]]][d[focis_order[6]]][elem] = val;
+    } else if(foci_order.length == 1) {
+        foci[d[foci_order[0]]][elem] = val
+    } else if(foci_order.length == 2) {
+        foci[d[foci_order[0]]][d[foci_order[1]]][elem] = val
+    } else if(foci_order.length == 3) {
+        foci[d[foci_order[0]]][d[foci_order[1]]][d[foci_order[2]]][elem] = val;
+    } else if(foci_order.length == 4) {
+        foci[d[foci_order[0]]][d[foci_order[1]]][d[foci_order[2]]][d[foci_order[3]]][elem] = val;
+    } else if(foci_order.length == 5) {
+        foci[d[foci_order[0]]][d[foci_order[1]]][d[foci_order[2]]][d[foci_order[3]]][d[foci_order[4]]][elem] = val;
+    } else if(foci_order.length == 6) {
+        foci[d[foci_order[0]]][d[foci_order[1]]][d[foci_order[2]]][d[foci_order[3]]][d[foci_order[4]]][d[foci_order[5]]][elem] = val;
+    } else if(foci_order.length == 7) {
+        foci[d[foci_order[0]]][d[foci_order[1]]][d[foci_order[2]]][d[foci_order[3]]][d[foci_order[4]]][d[foci_order[5]]][d[foci_order[6]]][elem] = val;
     }
 }
 
 function get_elem_foci(d, elem) {
-    if(focis_order.length == 0) {
+    if(foci_order.length == 0) {
         return foci[elem];
-    } else if(focis_order.length == 1) {
-        return foci[d[focis_order[0]]][elem];
-    } else if(focis_order.length == 2) {
-        return foci[d[focis_order[0]]][d[focis_order[1]]][elem];
-    } else if(focis_order.length == 3) {
-        return foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][elem];
-    } else if(focis_order.length == 4) {
-        return foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][elem];
-    } else if(focis_order.length == 5) {
-        return foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][elem];
-    } else if(focis_order.length == 6) {
-        return foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][d[focis_order[5]]][elem];
-    } else if(focis_order.length == 7) {
-        return foci[d[focis_order[0]]][d[focis_order[1]]][d[focis_order[2]]][d[focis_order[3]]][d[focis_order[4]]][d[focis_order[5]]][d[focis_order[6]]][elem];
+    } else if(foci_order.length == 1) {
+        return foci[d[foci_order[0]]][elem];
+    } else if(foci_order.length == 2) {
+        return foci[d[foci_order[0]]][d[foci_order[1]]][elem];
+    } else if(foci_order.length == 3) {
+        return foci[d[foci_order[0]]][d[foci_order[1]]][d[foci_order[2]]][elem];
+    } else if(foci_order.length == 4) {
+        return foci[d[foci_order[0]]][d[foci_order[1]]][d[foci_order[2]]][d[foci_order[3]]][elem];
+    } else if(foci_order.length == 5) {
+        return foci[d[foci_order[0]]][d[foci_order[1]]][d[foci_order[2]]][d[foci_order[3]]][d[foci_order[4]]][elem];
+    } else if(foci_order.length == 6) {
+        return foci[d[foci_order[0]]][d[foci_order[1]]][d[foci_order[2]]][d[foci_order[3]]][d[foci_order[4]]][d[foci_order[5]]][elem];
+    } else if(foci_order.length == 7) {
+        return foci[d[foci_order[0]]][d[foci_order[1]]][d[foci_order[2]]][d[foci_order[3]]][d[foci_order[4]]][d[foci_order[5]]][d[foci_order[6]]][elem];
     }
 }
 

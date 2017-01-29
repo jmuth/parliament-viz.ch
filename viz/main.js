@@ -382,18 +382,18 @@ function ticked() {
     majorities();
 
     // Update the colors (defined in colors.js)
-    update_color();
+    colors();
 
     // Update the friendships (defined in sidebar.js)
-    update_friendship();
+    friendships();
 
     // Update the interests (defined in sidebar.js)
-    update_interest();
+    interes();
 
     // Remove some councils if not wanted (defined in functions.js)
     remove_non_wanted_council();
 
-    // Apply the gravity on the nodes (defined in functions.js)
+    // Apply the gravity on the nodes (defined in clusters.js)
     node
         .each(gravity())
         .attr("cx", function(d) { return d.x; })

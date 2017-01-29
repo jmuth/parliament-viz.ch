@@ -48,7 +48,7 @@ function clickedBox(o) {
     node_id = o.PersonIdCode;
 }
 
-function update_friendship() {
+function friendships() {
     if (friendship_changed) {
         resetOp();
 
@@ -65,7 +65,7 @@ function update_friendship() {
     }
 }
 
-function update_interest() {
+function interes() {
     if (interest_changed) {
         if(node_id != null) {
             showInterests(node_id);
