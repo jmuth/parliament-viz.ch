@@ -145,10 +145,10 @@ function importAdj(json) {
 };
 
 // Get the interests (JSON)
-var interests;
+var interests_json;
 function importInterests(json) {
     $.getJSON(json, function(d) {
-        interests =  d;
+        interests_json =  d;
     });
 };
 
@@ -389,7 +389,7 @@ function ticked() {
     friendships();
 
     // Update the interests (defined in sidebar.js)
-    interes();
+    interests();
 
     // Remove some councils if not wanted (defined in functions.js)
     remove_non_wanted_council();
