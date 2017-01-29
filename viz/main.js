@@ -1,188 +1,32 @@
-// Get the clustering
-var rad_cluster = document.Clustering.button;
-var cluster_active = false;
-var cluster_activation_changed = true;
-rad_cluster.onclick = function() {
-    cluster_active  = this.checked;
-    cluster_activation_changed = true;
-};
+/////////////////////////////////////////////////////////////////////
+//                                                                 //
+//  This file contains the main function that are used for the     //
+//  visualization. Some variables are defined and then the         //
+//  loading of all the JSON files is done.                         //
+//                                                                 //
+/////////////////////////////////////////////////////////////////////
 
-var clusters_changed = false;
-var deleted = false;
-var added = false;
-var ftype = null;
-var focis_order = [];
+/////////////////////////////////////////////////////////////////////
+//                                                                 //
+//                     Define some variables                       //
+//                                                                 //
+/////////////////////////////////////////////////////////////////////
 
-var rad_council = document.ClusterType.btn_council;
-rad_council.onclick = function() {
-    if(this.checked) {
-        added = true;
-    } else {
-        deleted = true;
-    }
-    ftype = "CouncilAbbreviation";
-    clusters_changed = true;
-};
-
-var rad_party = document.ClusterType.btn_party;
-rad_party.onclick = function() {
-    if(this.checked) {
-        added = true;
-    } else {
-        deleted = true;
-    }
-    ftype = "PartyAbbreviation";
-    clusters_changed = true;
-};
-
-var rad_parl_gr = document.ClusterType.btn_parl_gr;
-rad_parl_gr.onclick = function() {
-    if(this.checked) {
-        added = true;
-    } else {
-        deleted = true;
-    }
-    ftype = "ParlGroupAbbreviation";
-    clusters_changed = true;
-};
-
-var rad_gender = document.ClusterType.btn_gender;
-rad_gender.onclick = function() {
-    if(this.checked) {
-        added = true;
-    } else {
-        deleted = true;
-    }
-    ftype = "GenderAsString";
-    clusters_changed = true;
-};
-
-var rad_language = document.ClusterType.btn_language;
-rad_language.onclick = function() {
-    if(this.checked) {
-        added = true;
-    } else {
-        deleted = true;
-    }
-    ftype = "NativeLanguage";
-    clusters_changed = true;
-};
-
-var rad_age = document.ClusterType.btn_age;
-rad_age.onclick = function() {
-    if(this.checked) {
-        added = true;
-    } else {
-        deleted = true;
-    }
-    ftype = "AgeCategory";
-    clusters_changed = true;
-};
-
-var rad_canton = document.ClusterType.btn_canton;
-rad_canton.onclick = function() {
-    if(this.checked) {
-        added = true;
-    } else {
-        deleted = true;
-    }
-    ftype = "CantonAbbreviation";
-    clusters_changed = true;
-};
-
-// Get the majority
-var rad_majority = document.Majority.button;
-var majority_active = false;
-var majority_activation_changed = true;
-rad_majority.onclick = function() {
-    majority_active  = this.checked;
-    majority_activation_changed = true;
-};
-
-var rad_national = document.Councils.national;
-var national = true;
-var national_changed = false;
-rad_national.onclick = function() {
-    national = this.checked;
-    national_changed = true;
-};
-
-var rad_states = document.Councils.states;
-var states = true;
-var states_changed = false;
-rad_states.onclick = function() {
-    states = this.checked;
-    states_changed = true;
-};
-
-var rad_federal = document.Councils.federal;
-var federal = true;
-var federal_changed = false;
-rad_federal.onclick = function() {
-    federal = this.checked;
-    federal_changed = true;
-};
-// Get the color
-var rad_color = document.Colors.buttons;
-var prev_color = null;
-var colorType = "PartyAbbreviation";
-var color_changed = true;
-for(var i = 0; i < rad_color.length; i++) {
-    rad_color[i].onclick = function() {
-        (prev_color)? console.log(prev_color.value):null;
-        if(this !== prev_color) {
-            prev_color = this;
-            colorType = this.value;
-        }
-        color_changed = true;
-    };
-}
-
-var rad_friendship = document.Friendship.buttons;
-var prev_friendship = null;
-var friendship = "intervention";
-var friendship_changed = true;
-for(var i = 0; i < rad_friendship.length; i++) {
-    rad_friendship[i].onclick = function() {
-        (prev_friendship)? console.log(prev_friendship.value):null;
-        if(this !== prev_friendship) {
-            prev_friendship = this;
-            friendship = this.value;
-        }
-        friendship_changed = true;
-    };
-}
-
-var rad_interest = document.Interest.buttons;
-var prev_interest = null;
-var interest_type = "all";
-var interest_changed = true;
-for(var i = 0; i < rad_interest.length; i++) {
-    rad_interest[i].onclick = function() {
-        (prev_interest)? console.log(prev_interest.value):null;
-        if(this !== prev_interest) {
-            prev_interest = this;
-            interest_type = this.value;
-        }
-        interest_changed = true;
-    };
-}
-
-// Define some variables
+// Define the variables for the nodes
 var radius = 6,
-    padding = 1;
+    padding = 1;    // Distance between the nodes
 
-// We consider that the size of the box is 960x600
+// Define the size of the visualization
 var width = 737,
     height = 600,
-    height_l = 64;
+    height_legend = 64;
 
-// Variable for node selection
+// Variables for node selection
 var node_selected = false;
 var node_id = null;
-
 var dragging = false;
 
+// Text to display for the information about the foci
 var texts = {};
 texts["CouncilAbbreviation"] = {'CN': 'National Council', 'CE': 'Council of States', 'CF': 'Federal Council'};
 texts["PartyAbbreviation"] = {};
@@ -192,6 +36,7 @@ texts["NativeLanguage"] = {"F": "French", "I": "Italian", "Sk": "Slovak", "RM": 
 texts["AgeCategory"] = {};
 texts["CantonAbbreviation"] = {};
 
+// Number of councilors in each foci (Used in the legend)
 var nbr = {};
 nbr["CouncilAbbreviation"] = {};
 nbr["PartyAbbreviation"] = {};
@@ -201,6 +46,7 @@ nbr["NativeLanguage"] = {};
 nbr["AgeCategory"] = {};
 nbr["CantonAbbreviation"] = {};
 
+// List of all the variables for each different kind of clusters (Also use in the legend
 var variables = {};
 variables["CouncilAbbreviation"] = [];
 variables["PartyAbbreviation"] = [];
@@ -210,7 +56,13 @@ variables["NativeLanguage"] = [];
 variables["AgeCategory"] = [];
 variables["CantonAbbreviation"] = [];
 
-// SVG for the main Viz
+/////////////////////////////////////////////////////////////////////
+//                                                                 //
+//                     Get parts of the HTML                       //
+//                                                                 //
+/////////////////////////////////////////////////////////////////////
+
+// Get the main SVG visualization
 var svg = d3.select("div#viz")
         .append("div")
         .classed("svg-container", true) //container class to make it responsive
@@ -221,7 +73,7 @@ var svg = d3.select("div#viz")
         //class to make it responsive
         .classed("svg-content-responsive", true);
 
-// Legend for the colors
+// Get the SVG for the legend
 var legend = d3.select("div#legend")
     .append("div")
     .classed("svg-container-legend", true) //container class to make it responsive
@@ -233,45 +85,49 @@ var legend = d3.select("div#legend")
     .classed("svg-content-responsive-legend", true);
 
 
-// Prepare the Bar Graph
+// Margins for the two bargraphs
 var bGMargin = {top: 10, right: 10, bottom: 10, left: 30};
 
-var barGraph = d3.select("#int_graph")
+// Height and Width of the bars
+var barWidth = 390 - bGMargin.left - bGMargin.right,
+    barHeight = 105 - bGMargin.top - bGMargin.bottom;
+
+// Get the SVG for the bar graph on the timeline
+var timelineBarGraph = d3.select("#int_graph")
     .append("g")
     .attr("transform", "translate(" + bGMargin.left + "," + bGMargin.top + ")");
 
-// Prepare the Bar Graph for the interests
+// Get the SVG for the first bar graph on the interests
 var interestsBarGraph = d3.select('#themes')
     .append("g")
     .attr("transform", "translate(" + bGMargin.left + "," + bGMargin.top + ")");
 
-// Prepare the Bar Graph for the interests
+// Get the SVG for the second bar graph on the interests
 var interestsBarGraph_second = d3.select('#themes')
     .append("g")
     .attr("transform", "translate(" + bGMargin.left + "," + bGMargin.top + ")");
 
-var barWidth = 390 - bGMargin.left - bGMargin.right,
-    barHeight = 105 - bGMargin.top - bGMargin.bottom;
-
-// Prepare the Friends
+// Get the friends
 var svgFriends = d3.select('#friends'),
     gFriends = svgFriends.append('g');
 
-// Prepare the autocomplete
+// Get the autocomplete
 var compCounc = document.getElementById("compCouncilors");
 
-// Simulation
+/////////////////////////////////////////////////////////////////////
+//                                                                 //
+//     Define functions for the simulation and loading files       //
+//                                                                 //
+/////////////////////////////////////////////////////////////////////
+
+// Simulation with forces
 var simulation = d3.forceSimulation().alphaDecay(0)
+        // Decay in velocity in order to avoid the nodes to giggle
         .velocityDecay(0.1)
-        .force("collision", d3.forceCollide().radius(radius+padding).iterations(5).strength(0.5))
-    //.force("link", d3.forceLink().id(function(d) { return d.id; }))
-    //.force("charge", d3.forceManyBody().strength(-2));
-    //.force("center", d3.forceCenter(width / 2, height / 2));
-    ;
+        // Collision forces in order to avoid overlap
+        .force("collision", d3.forceCollide().radius(radius+padding).iterations(5).strength(0.5));
 
-// Define different functions used to import
-// useful stuff
-
+// Get the positions (JSON)
 var pos;
 function importPositions(json) {
     $.getJSON(json, function(d) {
@@ -279,6 +135,7 @@ function importPositions(json) {
     })
 }
 
+// Get the adjacency matrix on the interventions (JSON)
 var adj;
 function importAdj(json) {
     $.getJSON(json, function(d) {
@@ -286,6 +143,7 @@ function importAdj(json) {
     });
 };
 
+// Get the interests (JSON)
 var interests;
 function importInterests(json) {
     $.getJSON(json, function(d) {
@@ -293,6 +151,7 @@ function importInterests(json) {
     });
 };
 
+// Get the authors (JSON)
 var authors;
 function importAuthors(json) {
     $.getJSON(json, function(d) {
@@ -300,6 +159,7 @@ function importAuthors(json) {
     });
 };
 
+// Get the adjacency matrix on the cosignations (JSON)
 var adj_cosign;
 function importAdjCosign(json) {
     $.getJSON(json, function(d) {
@@ -307,6 +167,7 @@ function importAdjCosign(json) {
     })
 }
 
+// Get the interventions (JSON)
 var ints;
 function importInts(json) {
     $.getJSON(json, function(d) {
@@ -314,6 +175,7 @@ function importInts(json) {
     });
 }
 
+// Get the people (JSON)
 var people;
 function importPeople(json) {
     $.getJSON(json, function(d) {
@@ -321,6 +183,7 @@ function importPeople(json) {
     });
 }
 
+// Get the friends with the interventions (JSON)
 var friends;
 function importFriends(json) {
     $.getJSON(json, function(d) {
@@ -328,6 +191,7 @@ function importFriends(json) {
     });
 }
 
+// Get the friends with the cosignations (JSON)
 var friends_cosign;
 function importFriendsCosign(json) {
     $.getJSON(json, function(d) {
@@ -335,6 +199,7 @@ function importFriendsCosign(json) {
     });
 }
 
+// Load all the JSON files
 importPositions('data/positions.json');
 importAdj('data/adj.json');
 importInts('data/interventions.json');
@@ -345,102 +210,117 @@ importFriendsCosign('data/friends_cosign.json');
 importInterests('data/interests.json');
 importAuthors('data/authors.json');
 
+/////////////////////////////////////////////////////////////////////
+//                                                                 //
+//          Load the last file and start the simulation            //
+//                                                                 //
+/////////////////////////////////////////////////////////////////////
+
+// Define the two variables
 var nodes;
 var node;
-// Read the Nodes and do stuff!
+// Read the Nodes and do the viz!
 d3.json("data/active.json", function(error, graph) {
     if (error) throw error;
 
+    // Update the positions such that it matches the number of picels
     for(var key in pos) {
         pos[key]["x"] = pos[key]["x"]*width;
         pos[key]["y"] = pos[key]["y"]*height;
 
     }
 
+    // Get the nodes and go through them in order to fill some of the variables
     nodes = graph.nodes;
 
     var list_councilors = [];
 
     for(var i=0; i<nodes.length; i++) {
+        // Add additional fields in the JSON object
         nodes[i]["x"] = pos[nodes[i]["PersonIdCode"]]["x"];
         nodes[i]["y"] = pos[nodes[i]["PersonIdCode"]]["y"];
         nodes[i]["radius"] = radius;
         nodes[i]["selected"] = false;
         nodes[i]["dragged"] = false;
 
+        // Update list of councilors for the autocomplete
         list_councilors.push(nodes[i]["FirstName"] + " " + nodes[i]["LastName"]);
 
-        // Get nbr by council
+        // Update number and variables for the councils
         if(!(nodes[i]["CouncilAbbreviation"] in nbr["CouncilAbbreviation"])) {
             var jj = {};
-            jj["CN"] = 0;
-            jj["CE"] = 0;
-            jj["CF"] = 0;
+            jj["CN"] = 0;   // For National council
+            jj["CE"] = 0;   // For council of States
+            jj["CF"] = 0;   // For Federal council
             nbr["CouncilAbbreviation"][nodes[i]["CouncilAbbreviation"]] = jj;
             variables["CouncilAbbreviation"].push(nodes[i]["CouncilAbbreviation"]);
         }
         nbr["CouncilAbbreviation"][nodes[i]["CouncilAbbreviation"]][nodes[i]["CouncilAbbreviation"]] += 1;
 
-        // Get nbr by party
+        // Update number and variables for the parties
         if(!(nodes[i]["PartyAbbreviation"] in nbr["PartyAbbreviation"])) {
             var jj = {};
-            jj["CN"] = 0;
-            jj["CE"] = 0;
-            jj["CF"] = 0;
+            jj["CN"] = 0;   // For National council
+            jj["CE"] = 0;   // For council of States
+            jj["CF"] = 0;   // For Federal council
             nbr["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] = jj;
             texts["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]] = nodes[i]["PartyAbbreviation"];
             variables["PartyAbbreviation"].push(nodes[i]["PartyAbbreviation"]);
         }
         nbr["PartyAbbreviation"][nodes[i]["PartyAbbreviation"]][nodes[i]["CouncilAbbreviation"]] += 1;
 
-        // Get nbr by parl group
+        // Update number and variables for the parliamentary groups
         if(!(nodes[i]["ParlGroupAbbreviation"] in nbr["ParlGroupAbbreviation"])) {
             var jj = {};
-            jj["CN"] = 0;
-            jj["CE"] = 0;
-            jj["CF"] = 0;
+            jj["CN"] = 0;   // For National council
+            jj["CE"] = 0;   // For council of States
+            jj["CF"] = 0;   // For Federal council
             nbr["ParlGroupAbbreviation"][nodes[i]["ParlGroupAbbreviation"]] = jj;
             variables["ParlGroupAbbreviation"].push(nodes[i]["ParlGroupAbbreviation"]);
         }
         nbr["ParlGroupAbbreviation"][nodes[i]["ParlGroupAbbreviation"]][nodes[i]["CouncilAbbreviation"]] += 1;
 
-        // Get nbr by gender
+        // Update number and variables for the genders
         if(!(nodes[i]["GenderAsString"] in nbr["GenderAsString"])) {
             var jj = {};
-            jj["CN"] = 0;
-            jj["CE"] = 0;
-            jj["CF"] = 0;
+            jj["CN"] = 0;   // For National council
+            jj["CE"] = 0;   // For council of States
+            jj["CF"] = 0;   // For Federal council
             nbr["GenderAsString"][nodes[i]["GenderAsString"]] = jj;
             variables["GenderAsString"].push(nodes[i]["GenderAsString"]);
         }
         nbr["GenderAsString"][nodes[i]["GenderAsString"]][nodes[i]["CouncilAbbreviation"]] += 1;
 
-        // Get nbr by language
+        // Update number and variables for the native languages
         if(!(nodes[i]["NativeLanguage"] in nbr["NativeLanguage"])) {
             var jj = {};
-            jj["CN"] = 0;
-            jj["CE"] = 0;
-            jj["CF"] = 0;
+            jj["CN"] = 0;   // For National council
+            jj["CE"] = 0;   // For council of States
+            jj["CF"] = 0;   // For Federal council
             nbr["NativeLanguage"][nodes[i]["NativeLanguage"]] = jj;
             variables["NativeLanguage"].push(nodes[i]["NativeLanguage"]);
         }
         nbr["NativeLanguage"][nodes[i]["NativeLanguage"]][nodes[i]["CouncilAbbreviation"]] += 1;
 
-        // Get nbr by age
+        // Update number and variables for the age categories
         if(!(nodes[i]["AgeCategory"] in nbr["AgeCategory"])) {
-            nbr["AgeCategory"][nodes[i]["AgeCategory"]] = 1;
+            var jj = {};
+            jj["CN"] = 0;   // For National council
+            jj["CE"] = 0;   // For council of States
+            jj["CF"] = 0;   // For Federal council
+            nbr["AgeCategory"][nodes[i]["AgeCategory"]] = jj;
             texts["AgeCategory"][nodes[i]["AgeCategory"]] = nodes[i]["AgeCategoryText"];
             variables["AgeCategory"].push(nodes[i]["AgeCategory"]);
         } else {
             nbr["AgeCategory"][nodes[i]["AgeCategory"]][nodes[i]["CouncilAbbreviation"]] += 1;
         }
 
-        // Get nbr by cantons
+        // Update number and variables for the cantons
         if(!(nodes[i]["CantonAbbreviation"] in nbr["CantonAbbreviation"])) {
             var jj = {};
-            jj["CN"] = 0;
-            jj["CE"] = 0;
-            jj["CF"] = 0;
+            jj["CN"] = 0;   // For National council
+            jj["CE"] = 0;   // For council of States
+            jj["CF"] = 0;   // For Federal council
             nbr["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]] = jj;
             variables["CantonAbbreviation"].push(nodes[i]["CantonAbbreviation"]);
             texts["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]] = nodes[i]["CantonName"];
@@ -448,12 +328,13 @@ d3.json("data/active.json", function(error, graph) {
         nbr["CantonAbbreviation"][nodes[i]["CantonAbbreviation"]][nodes[i]["CouncilAbbreviation"]] += 1;
     }
 
+    // Sort the variables in AgeCategory (Prettier to show)
     variables["AgeCategory"].sort();
 
-    // Awesomplete
+    // Start the autocomplete with Awesomplete
     new Awesomplete(compCounc, {list: list_councilors});
 
-
+    // Create the SVG nodes for each councilor
     node = svg.append("g")
             .attr("class", "nodes")
             .selectAll("circle")
@@ -461,7 +342,7 @@ d3.json("data/active.json", function(error, graph) {
             .enter().append("circle")
             .attr("class", "dataNodes")
             .attr("r", radius)
-            .attr("fill", function(d) { return color(colorType, d);})
+            .attr("fill", function(d) { return color(colorType, d[colorType]);})
             .attr("desc", false)
             .attr("id", function(d) { return d.PersonIdCode;})
             .call(d3.drag()
@@ -473,34 +354,46 @@ d3.json("data/active.json", function(error, graph) {
             .on("click", clicked)
         ;
 
+    // Start the simulation on the nodes
     simulation
         .nodes(graph.nodes)
+        // Ticked is the main function to update the simulation
         .on("tick", ticked)
     ;
 
+    // Double click function on the whole SVG of the viz.
     svg.on("dblclick", dbclick);
 
 });
 
+// Main function used to update the visualization
 function ticked() {
+    // Links are note used. But they can be in the future of the project
     /*link
      .attr("x1", function(d) { return d.source.x; })
      .attr("y1", function(d) { return d.source.y; })
      .attr("x2", function(d) { return d.target.x; })
      .attr("y2", function(d) { return d.target.y; });*/
 
+    // Update the clusters (defined in clusters.js)
     clusters();
 
+    // Update the majorities (defined in majority.js)
     majorities();
 
-    update_color();
+    // Update the colors (defined in colors.js)
+    colors();
 
-    update_friendship();
+    // Update the friendships (defined in sidebar.js)
+    friendships();
 
-    update_interest();
+    // Update the interests (defined in sidebar.js)
+    interes();
 
+    // Remove some councils if not wanted (defined in functions.js)
     remove_non_wanted_council();
 
+    // Apply the gravity on the nodes (defined in clusters.js)
     node
         .each(gravity())
         .attr("cx", function(d) { return d.x; })

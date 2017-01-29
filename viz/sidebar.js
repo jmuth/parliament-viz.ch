@@ -11,7 +11,7 @@ function clickedBox(o) {
             if(d.PersonIdCode == o.PersonIdCode) {
                 return "#000000"
             } else {
-                return color(colorType, getValForColor(colorType, nodes[i]));
+                return color(colorType, nodes[i][colorType]);
             }
         })
         .style("stroke-width", function(d) {
@@ -48,7 +48,7 @@ function clickedBox(o) {
     node_id = o.PersonIdCode;
 }
 
-function update_friendship() {
+function friendships() {
     if (friendship_changed) {
         resetOp();
 
@@ -65,7 +65,7 @@ function update_friendship() {
     }
 }
 
-function update_interest() {
+function interes() {
     if (interest_changed) {
         if(node_id != null) {
             showInterests(node_id);
@@ -82,7 +82,7 @@ function showTimeline(id) {
     // declaring the bar graph according to id
 
     // remove what was previously there
-    barGraph.selectAll('*').remove();
+    timelineBarGraph.selectAll('*').remove();
 
     var data_timeline = ints[id];
 
@@ -99,7 +99,7 @@ function showTimeline(id) {
     x.domain(data_timeline.map(function(d) { return d.year; }));
     y.domain([0, Math.max(d3.max(data_timeline, function(d) { return d.int; }), d3.max(data_timeline, function(d) { return d.median; }))]);
 
-    barGraph.append("g")
+    timelineBarGraph.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(0," + barHeight + ")")
         .call(d3.axisBottom(x).ticks(3))
@@ -110,11 +110,11 @@ function showTimeline(id) {
         .attr("transform", "rotate(90)")
         .style("text-anchor", "start");
 
-    barGraph.append("g")
+    timelineBarGraph.append("g")
         .attr("class", "axis")
         .call(d3.axisLeft(y).ticks(3))
 
-    barGraph.selectAll(".bar")
+    timelineBarGraph.selectAll(".bar")
         .data(data_timeline)
         .enter().append("rect")
         .attr("class", "bar")
@@ -124,7 +124,7 @@ function showTimeline(id) {
         .attr("width", x.bandwidth())
         .attr("height", function(d) { return barHeight - y(d.int); });
 
-    barGraph.selectAll(".barmedian")
+    timelineBarGraph.selectAll(".barmedian")
         .data(data_timeline)
         .enter().append("rect")
         .attr("class", "bar")
@@ -315,7 +315,7 @@ function showFriends(id) {
         .attr('width', 175)
         .attr('height', (223/5)-3)
         .attr('fill', function(d) {
-            return color(colorType, getValForColor(colorType, people[d.friend]));
+            return color(colorType, people[d.friend][colorType]);
         })
         .attr('opacity', .7)
 
