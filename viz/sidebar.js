@@ -434,7 +434,7 @@ function clickedBox(o) {
     document.getElementById("councilorName").href = "https://www.parlament.ch/en/biografie?CouncillorId=" + o.PersonNumber;
     document.getElementById("councilorParty").innerHTML = o.PartyName;
     document.getElementById("councilorCouncil").innerHTML = o.CouncilName;
-    document.getElementById("councilorBirthday").innerHTML = o.DateOfBirth + " (" + o.age + " y.o.)";
+    document.getElementById("councilorBirthday").innerHTML = o.DateOfBirth;
     document.getElementById("councilorCanton").innerHTML = o.CantonName;
     document.getElementById("councilorImage").src = "data/portraits/" + o.PersonIdCode + ".jpg";
     document.getElementById("councilorImage").alt = o.FirstName + " " + o.LastName;
