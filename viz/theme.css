@@ -47,3 +47,7 @@ hr {
 .bright-background {
     background: ghostwhite;
 }
+
+.input-group-addon {
+    vertical-align: middle;
+}

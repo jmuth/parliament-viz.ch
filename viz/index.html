@@ -38,6 +38,11 @@
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
+    <!-- Toogle button-->
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
     <![endif]-->
   </head>
 
@@ -83,20 +88,43 @@
             <div class="row">
                 <!-- Filter panel -->
                 <div class="col-sm-2">
-                    coucou
                     <b>Find a Councilor</b> <br>
                     <input id="compCouncilors" class="awesomplete" placeholder="E.g.: Doris Leuthard "/>
                     <br><br>
                     <div id="choices">
-                        <b>Councils</b>
-                        <form name="Councils">
-                            <input type="checkbox" name="national" id="national" value="national" checked="true"> National<br>
-                            <input type="checkbox" name="states" id="states" value="states" checked="true"> States<br>
-                            <input type="checkbox" name="federal" id="federal" value="federal" checked="true"> Federal<br>
+                        <h5>Councils</h5>
+
+                        <form name="Councils" class="form-horizontal">
+                            <div class="input-group">
+                                <label class="input-group-addon">
+                                    <input type="checkbox" name="national" id="national" value="national" checked="true"> National<br>
+                                </label>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-group-addon">
+                                    <input type="checkbox" name="states" id="states" value="states" checked="true"> States<br>
+                                </label>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-group-addon">
+                                    <input type="checkbox" name="federal" id="federal" value="federal" checked="true"> Federal<br>
+                                </label>
+                            </div>
                         </form>
-                        <b>Clustering</b>
+                        <!---->
+                        <!--<form name="Councils" class="form-horizontal">-->
+                            <!--<input type="checkbox" name="national" id="national" value="national" checked="true"> National<br>-->
+                            <!--<input type="checkbox" name="states" id="states" value="states" checked="true"> States<br>-->
+                            <!--<input type="checkbox" name="federal" id="federal" value="federal" checked="true"> Federal<br>-->
+                        <!--</form>-->
+                        <br>
+                        <!--<b>Clustering</b>-->
                         <form name="Clustering">
-                            <input type="checkbox" name="button" value="cluster"> Activate Cluster <br>
+                            <div class="input-group">
+                                <label class="input-group-addon">
+                                    <input type="checkbox" name="button" value="cluster"> Activate Cluster <br>
+                                </label>
+                            </div>
                         </form>
 
                         <div id="cluster_type">
@@ -162,8 +190,8 @@
                 <!-- Visualization -->
                 <div class="col-sm-7">
                     coucou
-                    <div id="viz">
-                    </div>
+                    <div id="viz"></div>
+                    <div id="legend"></div>
                 </div><!-- /.col-sm-4 -->
 
                 <!-- Identification Card-->
@@ -212,6 +240,7 @@
                                     <svg id='friends' width='175px' height="100%"></svg>
                                 </div>
                             </div>
+                            <!-- Choices buttons -->
                             <div class="col-sm-4">
                                 <div id="choice" class="choice">
                                     <div>
@@ -237,6 +266,8 @@
                 </div>
                 </div><!-- /.col-sm-4 -->
             </div>
+
+
 
 
 
