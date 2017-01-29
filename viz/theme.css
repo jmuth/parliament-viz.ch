@@ -72,3 +72,7 @@ hr {
 .awesomplete {
     width: 100%;
 }
+
+.signature {
+    horiz-align: left;
+}
