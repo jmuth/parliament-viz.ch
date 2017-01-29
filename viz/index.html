@@ -92,40 +92,35 @@
                     <input id="compCouncilors" class="awesomplete" placeholder="E.g.: Doris Leuthard "/>
                     <br><br>
                     <div id="choices">
+                        <!-- Councils -->
                         <h5>Councils</h5>
-
                         <form name="Councils" class="form-horizontal">
                             <div class="input-group">
                                 <label class="input-group-addon">
-                                    <input type="checkbox" name="national" id="national" value="national" checked="true"> National<br>
+                                    <input type="checkbox" name="national" id="national" value="national" checked="true" class="pull-left"> National<br>
                                 </label>
                             </div>
                             <div class="input-group">
                                 <label class="input-group-addon">
-                                    <input type="checkbox" name="states" id="states" value="states" checked="true"> States<br>
+                                    <input type="checkbox" name="states" id="states" value="states" checked="true"  class="pull-left"> States<br>
                                 </label>
                             </div>
                             <div class="input-group">
                                 <label class="input-group-addon">
-                                    <input type="checkbox" name="federal" id="federal" value="federal" checked="true"> Federal<br>
+                                    <input type="checkbox" name="federal" id="federal" value="federal" checked="true"  class="pull-left"> Federal<br>
                                 </label>
                             </div>
                         </form>
-                        <!---->
-                        <!--<form name="Councils" class="form-horizontal">-->
-                            <!--<input type="checkbox" name="national" id="national" value="national" checked="true"> National<br>-->
-                            <!--<input type="checkbox" name="states" id="states" value="states" checked="true"> States<br>-->
-                            <!--<input type="checkbox" name="federal" id="federal" value="federal" checked="true"> Federal<br>-->
-                        <!--</form>-->
                         <br>
                         <!--<b>Clustering</b>-->
                         <form name="Clustering">
                             <div class="input-group">
                                 <label class="input-group-addon">
-                                    <input type="checkbox" name="button" value="cluster"> Activate Cluster <br>
+                                    <input type="checkbox" name="button" value="cluster"  class="pull-left"> Activate Cluster <br>
                                 </label>
                             </div>
                         </form>
+                        <!-- Cluster type-->
 
                         <div id="cluster_type">
                             <b>Clusters</b>
@@ -151,12 +146,22 @@
 
                         <b>Colors</b>
                         <form name="Colors">
-                            <input type="radio" name="buttons" value="PartyAbbreviation" checked="True"> Parties<br>
-                            <input type="radio" name="buttons" value="ParlGroupAbbreviation" > Parl. Group<br>
-                            <input type="radio" name="buttons" value="CouncilAbbreviation"> Council<br>
-                            <input type="radio" name="buttons" value="GenderAsString"> Gender<br>
-                            <input type="radio" name="buttons" value="NativeLanguage"> Language<br>
-                            <input type="radio" name="buttons" value="AgeCategory"> Age<br>
+                            <div class="form-group">
+                                <select class="form-control" id="colorSelection">
+                                    <option name="buttons" value="PartyAbbreviation" >Parties</option>
+                                    <option name="buttons" value="ParlGroupAbbreviation" selected="selected">Parl. Group</option>
+                                    <option name="buttons" value="CouncilAbbreviation">Coucil</option>
+                                    <option name="buttons" value="GenderAsString">Gender</option>
+                                    <option name="buttons" value="NativeLanguage">Language</option>
+                                    <option name="buttons" value="AgeCategory">Age</option>
+                                </select>
+                            </div>
+                            <!--<input type="radio" name="buttons" value="PartyAbbreviation" checked="True"> Parties<br>-->
+                            <!--<input type="radio" name="buttons" value="ParlGroupAbbreviation" > Parl. Group<br>-->
+                            <!--<input type="radio" name="buttons" value="CouncilAbbreviation"> Council<br>-->
+                            <!--<input type="radio" name="buttons" value="GenderAsString"> Gender<br>-->
+                            <!--<input type="radio" name="buttons" value="NativeLanguage"> Language<br>-->
+                            <!--<input type="radio" name="buttons" value="AgeCategory"> Age<br>-->
                         </form>
                         <br>
                         <div id="add_info_cluster">

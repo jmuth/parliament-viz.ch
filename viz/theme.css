@@ -47,7 +47,20 @@ hr {
 .bright-background {
     background: ghostwhite;
 }
+.input-group {
+    vertical-align: middle;
+    horiz-align: left;
+}
 
 .input-group-addon {
     vertical-align: middle;
+    horiz-align: left;
+}
+
+.left {
+    horiz-align: left;
+}
+
+.disabled{
+    display: none;
 }
