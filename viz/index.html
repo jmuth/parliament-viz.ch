@@ -112,6 +112,7 @@
                             </div>
                         </form>
                         <br>
+                        <h5>Clusters</h5>
                         <!--<b>Clustering</b>-->
                         <form name="Clustering">
                             <div class="input-group">
@@ -121,30 +122,56 @@
                             </div>
                         </form>
                         <!-- Cluster type-->
-
-                        <div id="cluster_type">
-                            <b>Clusters</b>
+                        <div id="cluster_type" style="display: none">
                             <form name="ClusterType">
-                                <input type="checkbox" name="btn_council" id="btn_council" value="council" disabled="disabled"> Council<br>
-                                <input type="checkbox" name="btn_party" id="btn_party" value="party" disabled="disabled"> Parties<br>
-                                <input type="checkbox" name="btn_parl_gr" id="btn_parl_gr" value="parl_gr" disabled="disabled"> Parl. Group<br>
-                                <input type="checkbox" name="btn_gender" id="btn_gender" value="gender" disabled="disabled"> Gender<br>
-                                <input type="checkbox" name="btn_language" id="btn_language" value="language" disabled="disabled"> Language<br>
-                                <input type="checkbox" name="btn_age" id="btn_age" value="age" disabled="disabled"> Age<br>
-                                <input type="checkbox" name="btn_canton"id="btn_canton" value="canton" disabled="disabled"> Canton
+                                <div class="input-group">
+                                    <label class="input-group-addon">
+                                        <input type="checkbox" name="btn_council" id="btn_council" value="council" disabled="disabled" class="pull-left"> Council<br>
+                                    </label>
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-group-addon">
+                                        <input type="checkbox" name="btn_party" id="btn_party" value="party" disabled="disabled" class="pull-left"> Parties<br>
+                                    </label>
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-group-addon">
+                                        <input type="checkbox" name="btn_parl_gr" id="btn_parl_gr" value="parl_gr" disabled="disabled" class="pull-left"> Parl. Group<br>
+                                    </label>
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-group-addon">
+                                        <input type="checkbox" name="btn_gender" id="btn_gender" value="gender" disabled="disabled" class="pull-left"> Gender<br>
+                                    </label>
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-group-addon">
+                                        <input type="checkbox" name="btn_language" id="btn_language" value="language" disabled="disabled" class="pull-left"> Language<br>
+                                    </label>
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-group-addon">
+                                        <input type="checkbox" name="btn_age" id="btn_age" value="age" disabled="disabled" class="pull-left"> Age<br>
+                                    </label>
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-group-addon">
+                                        <input type="checkbox" name="btn_canton"id="btn_canton" value="canton" disabled="disabled" class="pull-left"> Canton
+                                    </label>
+                                </div>
                             </form>
                             <br>
-                            <b>Majority</b>
+                            <!--<b>Majority</b>-->
                             <form name="Majority">
-                                <input type="checkbox" name="button" id="majority" disabled="disabled"> Activate Majority <br>
+                                <div class="input-group">
+                                    <label class="input-group-addon">
+                                        <input type="checkbox" name="button" id="majority" disabled="disabled"> Activate Majority <br>
+                                    </label>
+                                </div>
                             </form>
                         </div>
-
-                        <div>
-
-                        </div>
-
-                        <b>Colors</b>
+                        <br>
+                        <h5>Colors</h5>
                         <form name="Colors">
                             <div class="form-group">
                                 <select class="form-control" id="colorSelection">
