@@ -64,6 +64,10 @@ function showTimeline(id) {
     var y = d3.scaleLinear()
         .rangeRound([barHeight, 0]);
 
+    // Update information
+    var str = "Number of interventions (<font color='red'> line is median </font>)";
+    document.getElementById('timeline_info').innerHTML = str;
+
     // Create the domains
     x.domain(data_timeline.map(function(d) { return d.year; }));
     y.domain([0, Math.max(d3.max(data_timeline, function(d) { return d.int; }), d3.max(data_timeline, function(d) { return d.median; }))]);
@@ -115,8 +119,13 @@ function showTimeline(id) {
 
 function timelineOver(year, val, med) {
 
-    var str = "Year + " + year +
+    var str = "Year + " + year;
 
+    document.getElementById('timeline_info').innerHTML = str;
+}
+
+function timelineOut(str) {
+    document.getElementById('timeline_info').innerHTML = str;
 }
 
 // Function to show the bargraph of the interests
