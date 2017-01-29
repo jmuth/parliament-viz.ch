@@ -166,19 +166,11 @@ rad_majority.onclick = function() {
 /////////////////////////////////////////////////////////////////////
 
 // Get the color with the radio button. Default is the color on the party
-// TODO addapt to option button
-var rad_color = document.Colors.buttons;
-var prev_color = null;
-var colorType = "PartyAbbreviation";
+var colorType = "ParlGroupAbbreviation";
 var color_changed = true;
-for(var i = 0; i < rad_color.length; i++) {
-    rad_color[i].onclick = function() {
-        if(this !== prev_color) {
-            prev_color = this;
-            colorType = this.value;
-        }
-        color_changed = true;
-    };
+function change_color(button) {
+    colorType = button.val();
+    color_changed = true;
 }
 
 /////////////////////////////////////////////////////////////////////
