@@ -1,6 +1,7 @@
 body {
   padding-top: 70px;
   padding-bottom: 30px;
+  position: relative;
 }
 
 .theme-dropdown .dropdown-menu {

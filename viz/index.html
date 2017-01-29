@@ -37,6 +37,23 @@
     <link rel="stylesheet" href="ext/awesomplete.css"/>
     <script src="ext/awesomplete.min.js" async></script>
 
+    <script>
+        $(function() {
+            $('a[href*="#"]:not([href="#"])').click(function() {
+                if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+                    var target = $(this.hash);
+                    target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+                    if (target.length) {
+                        $('html, body').animate({
+                            scrollTop: target.offset().top
+                        }, 1000);
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -48,9 +65,7 @@
 
     <![endif]-->
 </head>
-
-<body>
-
+<body id="top">
 <!-- Fixed navbar -->
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
@@ -63,8 +78,9 @@
             </button>
             <a class="navbar-brand" href="#">Parliament-Viz</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
+        <div id="myNavBar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
+                <li><a href="#top">Visualization</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#vizu_info">Visualization information</a></li>
                 <li><a href="#authors">Authors</a></li>
@@ -76,7 +92,6 @@
 </nav>
 
 <div class="container" role="main">
-
     <div id="visualisation">
         <div class="row">
             <!-- Filter panel -->
@@ -304,32 +319,37 @@
 
     <font size="4">
 
-        <div class="page-header" id="about">
-            <h1>About this project</h1>
+        <div id="about">
+            <div class="page-header">
+                <h1>About this project</h1>
+            </div>
+
+            The motivation for this project comes from the gulf existing between the political world and citizens.
+            Even though all the information is freely accessible on the official <a href="http://www.parlament.ch"> website of the Swiss Parliament</a>, it
+            amounts to a substantial number of papers and is hard to understand.
+
+            <blockquote class="blockquote-reverse">
+                <font size="5">
+                <i>The Freedom of Information Act came into force on 1 July 2006. It is intended to promote transparency
+                    with regard to the purpose, organisation and activities of the federal administration, while
+                    guaranteeing access to official documents produced after 1 July 2006.
+                </i>
+                </font>
+                <footer> <a href="https://www.parlament.ch/en/services/freedom-of-information-act" id="signature">Swiss Parliament Website</a></footer>
+            </blockquote>
+
+            This project has been done during the course <b><a href="http://ada.epfl.ch/">Applied Data Analysis (ADA)</a></b> at the
+            École Polytechnique fédérale de Lausanne (EPFL) during the Fall Semester 2016.
+
         </div>
 
-        The motivation for this project comes from the gulf existing between the political world and citizens.
-        Even though all the information is freely accessible on the official <a href="http://www.parlament.ch"> website of the Swiss Parliament</a>, it
-        amounts to a substantial number of papers and is hard to understand.
-
-        <blockquote class="blockquote-reverse">
-            <font size="5">
-            <i>The Freedom of Information Act came into force on 1 July 2006. It is intended to promote transparency
-                with regard to the purpose, organisation and activities of the federal administration, while
-                guaranteeing access to official documents produced after 1 July 2006.
-            </i>
-            </font>
-            <footer> <a href="https://www.parlament.ch/en/services/freedom-of-information-act" id="signature">Swiss Parliament Website</a></footer>
-        </blockquote>
-
-        This project has been done during the course <b><a href="http://ada.epfl.ch/">Applied Data Analysis (ADA)</a></b> at the
-        École Polytechnique fédérale de Lausanne (EPFL) during the Fall Semester 2016.
-
-        <div class="page-header" id="vizu_info">
+        <div id="vizu_info"></div> <br>
+        <div class="page-header">
             <h1>Visualization information</h1>
         </div>
 
-        <div class="page-header" id="authors">
+        <div id="authors"></div> <br>
+        <div class="page-header">
             <h1>Authors</h1>
         </div>
 
@@ -342,7 +362,8 @@
             <dd>Student in Computational Science and Engineering</dd>
         </dl>
 
-        <div class="page-header" id="acknowledgements">
+        <div id="acknowledgements"></div> <br>
+        <div class="page-header">
             <h1>Acknowledgements</h1>
         </div>
 
