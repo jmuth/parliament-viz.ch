@@ -39,15 +39,15 @@ function emphasisAndShowInfo(d) {
         var nn = 0;
 
         if(national) {
-            nn += get_elem_foci(d, "nbr_CN");
+            nn += get_elem_focus(d, "nbr_CN");
         }
 
         if(states) {
-            nn += get_elem_foci(d, "nbr_CE");
+            nn += get_elem_focus(d, "nbr_CE");
         }
 
         if(federal) {
-            nn += get_elem_foci(d, "nbr_CF");
+            nn += get_elem_focus(d, "nbr_CF");
         }
 
         if(nn > 1) {
@@ -151,8 +151,8 @@ function dragged(d) {
     var valx = Math.max(Math.min(d.fx, width), 0);
     var valy = Math.max(Math.min(d.fy, width), 0);
 
-    upd_elem_foci(d, "x", valx);
-    upd_elem_foci(d, "y", valy);
+    upd_elem_focus(d, "x", valx);
+    upd_elem_focus(d, "y", valy);
 }
 
 function dragended(d) {
@@ -233,7 +233,7 @@ document.getElementById('compCouncilors').addEventListener('awesomplete-selectco
 
 
 
-function upd_elem_foci(d, elem, val) {
+function upd_elem_focus(d, elem, val) {
     if(foci_order.length == 0) {
         foci[elem] = val
     } else if(foci_order.length == 1) {
@@ -253,7 +253,7 @@ function upd_elem_foci(d, elem, val) {
     }
 }
 
-function get_elem_foci(d, elem) {
+function get_elem_focus(d, elem) {
     if(foci_order.length == 0) {
         return foci[elem];
     } else if(foci_order.length == 1) {

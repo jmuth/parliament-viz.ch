@@ -1,10 +1,25 @@
+/////////////////////////////////////////////////////////////////////
+//                                                                 //
+//  This file contains some functions that are used without        //
+//  belonging to a specific task.                                  //
+//                                                                 //
+/////////////////////////////////////////////////////////////////////
+
+// Function used to emphasis a node when the mouse is on it
 function emphasisAndShowInfo(d) {
 
+    // First, we check that the node is being dragged.
     if(dragging == false) {
 
+        // If we don't have any selected node, we will display all the information
+        // about the councilor on the right panel
         if (node_selected == false) {
+
+            // Make the node with the mouse on bigger
             d3.selectAll(".dataNodes").style("r", radius);
             d3.select(this).style("r", 1.5 * radius);
+
+            // Replace some info in the HTML
             document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
             document.getElementById("councilorName").href = "https://www.parlament.ch/en/biografie?CouncillorId=" + d.PersonNumber;
             document.getElementById("councilorParty").innerHTML = d.PartyName;
@@ -14,14 +29,22 @@ function emphasisAndShowInfo(d) {
             document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
             document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
 
+            // Show some information
             showTimeline(d.PersonIdCode);
             showInterests(d.PersonIdCode);
             changeOpac(d.PersonIdCode);
             showFriends(d.PersonIdCode);
+
+            // Set the node_id
             node_id = d.PersonIdCode;
         } else {
+            // If a node is selected, we will display some information about another councilor
+            // on the left panel.
+
+            // Display the additional information about the councilor
             $('#add_info_counc').css('display', 'block');
 
+            // Replace some info in the HTML
             document.getElementById("councilorName_add").innerHTML = d.FirstName + " " + d.LastName;
             document.getElementById("councilorParty_add").innerHTML = d.PartyName;
             document.getElementById("councilorCouncil_add").innerHTML = d.CouncilName;
@@ -32,30 +55,34 @@ function emphasisAndShowInfo(d) {
         }
     }
 
+    // We check if the clusterisation is active
     if(cluster_active) {
 
+        // Display the additional information about the cluster
         $('#add_info_cluster').css('display', 'block');
 
+        // Get the number of councilors in the cluster in which
+        // he/she belongs. (Depends on the selected councils)
         var nn = 0;
 
         if(national) {
-            nn += get_elem_foci(d, "nbr_CN");
+            nn += get_elem_focus(d, "nbr_CN");
         }
-
         if(states) {
-            nn += get_elem_foci(d, "nbr_CE");
+            nn += get_elem_focus(d, "nbr_CE");
         }
-
         if(federal) {
-            nn += get_elem_foci(d, "nbr_CF");
+            nn += get_elem_focus(d, "nbr_CF");
         }
 
+        // Display this number
         if(nn > 1) {
             document.getElementById("cluster_nbr").innerHTML = nn + " councilors";
         } else {
             document.getElementById("cluster_nbr").innerHTML = nn + " councilor";
         }
 
+        // Prepare the Clusterisation information
         var str = "";//"<b>Clusterisation </b>: <br>";
 
         if(foci_order.length == 0) {
@@ -66,32 +93,39 @@ function emphasisAndShowInfo(d) {
             }
         }
 
-
+        // Show it
         document.getElementById("cluster_info").innerHTML = str;
 
     }
 }
 
-// Simple click on node
+// Function defining what's happening when the user clicks on a node
 function clicked(d) {
+    // First, we get the node in which
     var node = d3.select(this);
 
+    // If the node isn't already selected
     if(d.selected == false) {
+
+        // We update all the nodes
         d3.selectAll(".dataNodes")
+            // radius the same for everyone
             .style("r", radius)
+            // Stroke of the right color
             .style("stroke", function(o,i) {
                 return color(colorType, nodes[i][colorType]);
             })
+            // stroke style smaller again
             .style("stroke-width", 1);
 
+        // We update the newly selected node (bigger radius, black and widder stroke)
         node.style("r", 1.5*radius)
             .style("stroke", function() {
                 return "#000000"
             })
             .style("stroke-width", 3);
 
-        d3.selectAll(".dataNodes").style("r", radius);
-        d3.select(this).style("r", 1.5 * radius);
+        // Then we replace some elements in the HTML
         document.getElementById("councilorName").innerHTML = d.FirstName + " " + d.LastName;
         document.getElementById("councilorName").href = "https://www.parlament.ch/en/biografie?CouncillorId=" + d.PersonNumber;
         document.getElementById("councilorParty").innerHTML = d.PartyName;
@@ -101,25 +135,30 @@ function clicked(d) {
         document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
         document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
 
+        // Show more information in the right panel
         showTimeline(d.PersonIdCode);
         showInterests(d.PersonIdCode);
         changeOpac(d.PersonIdCode);
         showFriends(d.PersonIdCode);
 
+        // Say that all the nodes are unselected
         for(var i=0; i<nodes.length; i++) {
             nodes[i].selected = false;
         }
 
+        // And select this node =)
         d.selected = true;
         node_selected = true;
         node_id = d.PersonIdCode;
 
     } else {
+        // If the node is selected, we unselect it.
         node.style("r", 1.5*radius)
             .style("stroke", function(d) {
                 return color(colorType, d[colorType]);
             })
             .style("stroke-width", 1);
+
         d.selected = false;
         node_selected = false;
         node_id = d.PersonIdCode;
@@ -127,57 +166,81 @@ function clicked(d) {
 
 }
 
-// Double click on window
+// Double click on the SVG viz
 function dbclick() {
+    // If we double-click, we put all the nodes on their focus. With the collision force
+    // from d3.js, it will make them move away from each other.
+    // This helps when a node is stuck somewhere
     nodes.forEach(function(o) {
         o.x = get_focus(o).x;
         o.y = get_focus(o).y;
     });
 }
 
+// Function defining what's happening when the dragging start
 function dragstarted() {
+    // Something to do with d3
     if (!d3.event.active) simulation.alphaTarget(0.1).restart();
 
+    // If the cluster is active, we don't show the opacity
+    // It's easier to see where we move them
     if(cluster_active) {
         resetOp();
     }
 }
 
+// Function defining what's happening when a node is being dragged
 function dragged(d) {
+    // We say that we are dragging
     dragging = true;
+    // Give its position as the mouse event
     d.fx = d3.event.x;
     d.fy = d3.event.y;
 
+    // Get the values for the new focus center
     var valx = Math.max(Math.min(d.fx, width), 0);
     var valy = Math.max(Math.min(d.fy, height), 0);
 
-    upd_elem_foci(d, "x", valx);
-    upd_elem_foci(d, "y", valy);
+    // Update the focus center
+    upd_elem_focus(d, "x", valx);
+    upd_elem_focus(d, "y", valy);
 }
 
+// Function defining what's happening when the dragging finish
 function dragended(d) {
+    // We don't force the nodes anymore
     d.fx = null;
     d.fy = null;
+
+    // We say that we are not dragging anymore
     dragging = false;
+
+    // Something to do with d3
     if (!d3.event.active) simulation.alphaTarget(0);
+
+    // If the cluster is active, we reactivate the opacity of the nodes
     if(node_selected && cluster_active) {
         changeOpac(node_id);
     }
 }
 
+// Function used to give opacity/transparency to the nodes
 function changeOpac(id) {
+    // Depending on the type of friendship, we will give opacaity on different nodes
     if (friendship == 'intervention') {
         var line = adj[id];
     } else if (friendship == 'cosign') {
         var line = adj_cosign[id];
     }
 
+    // Get the max
     var max = findMax(line);
     if (max == 0) {
         max = 1;
     }
 
-    // Change the opacity
+
+    // Change the opacity of all the nodes
     d3.selectAll(".dataNodes")
         .style("fill-opacity", function(d) {
             var thisId = d.PersonIdCode;
@@ -198,6 +261,7 @@ function changeOpac(id) {
         });
 }
 
+// Function to return the max value in an array
 function findMax(line) {
     var max = 0;
     for (var key in line) {
@@ -209,10 +273,13 @@ function findMax(line) {
     return max;
 }
 
+// Reset the opacity
 function resetOp() {
+    // First, we remove the displaying of information about clusters and councilors
     $('#add_info_counc').css('display', 'none');
     $('#add_info_cluster').css('display', 'none');
 
+    // Then, we give opacity 1 to all the nodes
     if (node_selected == false && dragging == false) {
         d3.selectAll(".dataNodes")
             .style("fill-opacity", 1)
@@ -220,6 +287,7 @@ function resetOp() {
     }
 }
 
+// Awesomplete function for the autocomplete
 document.getElementById('compCouncilors').addEventListener('awesomplete-selectcomplete',function(){
     var val = this.value;
     d3.selectAll(".dataNodes").each(function(o,i)
@@ -231,9 +299,9 @@ document.getElementById('compCouncilors').addEventListener('awesomplete-selectco
     );
 });
 
-
-
-function upd_elem_foci(d, elem, val) {
+// Update an element in a focus
+// This function has not been written in a functional way.. Sorry =(
+function upd_elem_focus(d, elem, val) {
     if(foci_order.length == 0) {
         foci[elem] = val
     } else if(foci_order.length == 1) {
@@ -253,7 +321,9 @@ function upd_elem_foci(d, elem, val) {
     }
 }
 
-function get_elem_foci(d, elem) {
+// Get an element in a focus
+// This function has not been written in a functional way.. Sorry =(
+function get_elem_focus(d, elem) {
     if(foci_order.length == 0) {
         return foci[elem];
     } else if(foci_order.length == 1) {
@@ -273,6 +343,7 @@ function get_elem_foci(d, elem) {
     }
 }
 
+// Return some text in function of the type of cluster
 function text_info_cluster(val) {
     if(val == "CouncilAbbreviation") {
         return "Council";
@@ -291,13 +362,20 @@ function text_info_cluster(val) {
     }
 }
 
+// Remove the councils we don't want
 function remove_non_wanted_council() {
 
+    // In order to remove the nodes of the councils we don't want, we
+    // just force them to go outside of the viz. We add tell them to go on a
+    // circle with a random radius (with a given minimum value) so that when they
+    // come back it's prettier.
     var rmin = 600;
     var dr = 1000;
 
+    // Check if one of the wanted/non-wanted council has changed
     if(national_changed) {
 
+        // Remove the nodes in National Council
         if(national == false) {
             for(var i=0; i<nodes.length; i++) {
                 if(nodes[i].CouncilAbbreviation == "CN") {
@@ -307,6 +385,7 @@ function remove_non_wanted_council() {
                 }
             }
         } else {
+            // Add the nodes in National Council
             for(var i=0; i<nodes.length; i++) {
                 if(nodes[i].CouncilAbbreviation == "CN") {
                     nodes[i].fx = null;
@@ -317,6 +396,8 @@ function remove_non_wanted_council() {
 
         national_changed = false;
     } else if(states_changed) {
+
+        // Remove the nodes in Council of States
         if(states == false) {
             for(var i=0; i<nodes.length; i++) {
                 if(nodes[i].CouncilAbbreviation == "CE") {
@@ -326,6 +407,7 @@ function remove_non_wanted_council() {
                 }
             }
         } else {
+            // Add the nodes in Council of States
             for(var i=0; i<nodes.length; i++) {
                 if(nodes[i].CouncilAbbreviation == "CE") {
                     nodes[i].fx = null;
@@ -336,6 +418,8 @@ function remove_non_wanted_council() {
 
         states_changed = false;
     } else if(federal_changed) {
+
+        // Remove the nodes in Federal Council
         if(federal == false) {
             for(var i=0; i<nodes.length; i++) {
                 if(nodes[i].CouncilAbbreviation == "CF") {
@@ -345,6 +429,7 @@ function remove_non_wanted_council() {
                 }
             }
         } else {
+            // Add the nodes in Federal Council
             for(var i=0; i<nodes.length; i++) {
                 if(nodes[i].CouncilAbbreviation == "CF") {
                     nodes[i].fx = null;
