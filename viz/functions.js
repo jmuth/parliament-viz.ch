@@ -149,7 +149,7 @@ function dragged(d) {
     d.fy = d3.event.y;
 
     var valx = Math.max(Math.min(d.fx, width), 0);
-    var valy = Math.max(Math.min(d.fy, width), 0);
+    var valy = Math.max(Math.min(d.fy, height), 0);
 
     upd_elem_foci(d, "x", valx);
     upd_elem_foci(d, "y", valy);

@@ -423,8 +423,8 @@ function gravity() {
 
         // Avoid that the points go outside the viz
         // TODO: Check why it can go outside at the bottom
-        d.x = Math.max(0, Math.min(width, d.x));
-        d.y = Math.max(0, Math.min(width, d.y));
+        //d.x = Math.max(0, Math.min(width, d.x));
+        //d.y = Math.max(0, Math.min(width, d.y));
 
     };
 }
