@@ -24,7 +24,7 @@ function emphasisAndShowInfo(d) {
             document.getElementById("councilorName").href = "https://www.parlament.ch/en/biografie?CouncillorId=" + d.PersonNumber;
             document.getElementById("councilorParty").innerHTML = d.PartyName;
             document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
-            document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth + " (" + d.age + " y.o.)";
+            document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
             document.getElementById("councilorCanton").innerHTML = d.CantonName;
             document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
             document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;
@@ -50,7 +50,7 @@ function emphasisAndShowInfo(d) {
             document.getElementById("councilorName_add").innerHTML = d.FirstName + " " + d.LastName;
             document.getElementById("councilorParty_add").innerHTML = d.PartyName;
             document.getElementById("councilorCouncil_add").innerHTML = d.CouncilName;
-            document.getElementById("councilorBirthday_add").innerHTML = d.DateOfBirth + " (" + d.age + " y.o.)";
+            document.getElementById("councilorBirthday_add").innerHTML = d.DateOfBirth;
             document.getElementById("councilorCanton_add").innerHTML = d.CantonName;
             document.getElementById("councilorImage_add").src = "data/portraits/" + d.PersonIdCode + ".jpg";
             document.getElementById("councilorImage_add").alt = d.FirstName + " " + d.LastName;
@@ -133,7 +133,7 @@ function clicked(d) {
         document.getElementById("councilorName").href = "https://www.parlament.ch/en/biografie?CouncillorId=" + d.PersonNumber;
         document.getElementById("councilorParty").innerHTML = d.PartyName;
         document.getElementById("councilorCouncil").innerHTML = d.CouncilName;
-        document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth + " (" + d.age + " y.o.)";
+        document.getElementById("councilorBirthday").innerHTML = d.DateOfBirth;
         document.getElementById("councilorCanton").innerHTML = d.CantonName;
         document.getElementById("councilorImage").src = "data/portraits/" + d.PersonIdCode + ".jpg";
         document.getElementById("councilorImage").alt = d.FirstName + " " + d.LastName;

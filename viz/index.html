@@ -25,7 +25,8 @@
 
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <!--[if lt IE 9]>
+    <script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="assets/js/ie-emulation-modes-warning.js"></script>
 
     <!--d3-->
@@ -38,11 +39,11 @@
     <script src="ext/awesomplete.min.js" async></script>
 
     <script>
-        $(function() {
-            $('a[href*="#"]:not([href="#"])').click(function() {
-                if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+        $(function () {
+            $('a[href*="#"]:not([href="#"])').click(function () {
+                if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
                     var target = $(this.hash);
-                    target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+                    target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
                     if (target.length) {
                         $('html, body').animate({
                             scrollTop: target.offset().top
@@ -63,6 +64,13 @@
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
+    <!-- Font Awesome-->
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+
+    <!-- Footer -->
+    <link href="sticky-footer-navbar.css" rel="stylesheet">
+
+
     <![endif]-->
 </head>
 <body id="top">
@@ -70,7 +78,8 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -91,7 +100,7 @@
     </div>
 </nav>
 
-<div class="container" role="main">
+<div class="container large-container" role="main">
     <div id="visualisation">
         <div class="row">
             <!-- Filter panel -->
@@ -102,17 +111,20 @@
                     <form name="Councils" class="form-horizontal">
                         <div class="input-group">
                             <label class="input-group-addon">
-                                <input type="checkbox" name="national" id="national" value="national" checked="true" class="pull-left"> National<br>
+                                <input type="checkbox" name="national" id="national" value="national" checked="true"
+                                       class="pull-left"> National<br>
                             </label>
                         </div>
                         <div class="input-group">
                             <label class="input-group-addon">
-                                <input type="checkbox" name="states" id="states" value="states" checked="true"  class="pull-left"> States<br>
+                                <input type="checkbox" name="states" id="states" value="states" checked="true"
+                                       class="pull-left"> States<br>
                             </label>
                         </div>
                         <div class="input-group">
                             <label class="input-group-addon">
-                                <input type="checkbox" name="federal" id="federal" value="federal" checked="true"  class="pull-left"> Federal<br>
+                                <input type="checkbox" name="federal" id="federal" value="federal" checked="true"
+                                       class="pull-left"> Federal<br>
                             </label>
                         </div>
                     </form>
@@ -122,7 +134,8 @@
                     <form name="Clustering">
                         <div class="input-group">
                             <label class="input-group-addon">
-                                <input type="checkbox" name="button" value="cluster"  class="pull-left"> Activate Cluster <br>
+                                <input type="checkbox" name="button" value="cluster" class="pull-left"> Activate Cluster
+                                <br>
                             </label>
                         </div>
                     </form>
@@ -131,37 +144,44 @@
                         <form name="ClusterType">
                             <div class="input-group">
                                 <label class="input-group-addon sub-checkbox">
-                                    <input type="checkbox" name="btn_council" id="btn_council" value="council" disabled="disabled" class="pull-left"> Council<br>
+                                    <input type="checkbox" name="btn_council" id="btn_council" value="council"
+                                           disabled="disabled" class="pull-left"> Council<br>
                                 </label>
                             </div>
                             <div class="input-group">
                                 <label class="input-group-addon sub-checkbox">
-                                    <input type="checkbox" name="btn_party" id="btn_party" value="party" disabled="disabled" class="pull-left"> Parties<br>
+                                    <input type="checkbox" name="btn_party" id="btn_party" value="party"
+                                           disabled="disabled" class="pull-left"> Parties<br>
                                 </label>
                             </div>
                             <div class="input-group">
                                 <label class="input-group-addon sub-checkbox">
-                                    <input type="checkbox" name="btn_parl_gr" id="btn_parl_gr" value="parl_gr" disabled="disabled" class="pull-left"> Parl. Group<br>
+                                    <input type="checkbox" name="btn_parl_gr" id="btn_parl_gr" value="parl_gr"
+                                           disabled="disabled" class="pull-left"> Parl. Group<br>
                                 </label>
                             </div>
                             <div class="input-group">
                                 <label class="input-group-addon sub-checkbox">
-                                    <input type="checkbox" name="btn_gender" id="btn_gender" value="gender" disabled="disabled" class="pull-left"> Gender<br>
+                                    <input type="checkbox" name="btn_gender" id="btn_gender" value="gender"
+                                           disabled="disabled" class="pull-left"> Gender<br>
                                 </label>
                             </div>
                             <div class="input-group">
                                 <label class="input-group-addon sub-checkbox">
-                                    <input type="checkbox" name="btn_language" id="btn_language" value="language" disabled="disabled" class="pull-left"> Language<br>
+                                    <input type="checkbox" name="btn_language" id="btn_language" value="language"
+                                           disabled="disabled" class="pull-left"> Language<br>
                                 </label>
                             </div>
                             <div class="input-group">
                                 <label class="input-group-addon sub-checkbox">
-                                    <input type="checkbox" name="btn_age" id="btn_age" value="age" disabled="disabled" class="pull-left"> Age<br>
+                                    <input type="checkbox" name="btn_age" id="btn_age" value="age" disabled="disabled"
+                                           class="pull-left"> Age<br>
                                 </label>
                             </div>
                             <div class="input-group">
                                 <label class="input-group-addon sub-checkbox">
-                                    <input type="checkbox" name="btn_canton"id="btn_canton" value="canton" disabled="disabled" class="pull-left"> Canton
+                                    <input type="checkbox" name="btn_canton" id="btn_canton" value="canton"
+                                           disabled="disabled" class="pull-left"> Canton
                                 </label>
                             </div>
                         </form>
@@ -170,7 +190,8 @@
                         <form name="Majority">
                             <div class="input-group">
                                 <label class="input-group-addon sub-checkbox">
-                                    <input type="checkbox" name="button" id="majority" disabled="disabled" class="pull-left"> Activate Majority <br>
+                                    <input type="checkbox" name="button" id="majority" disabled="disabled"
+                                           class="pull-left"> Activate Majority <br>
                                 </label>
                             </div>
                         </form>
@@ -245,15 +266,15 @@
                         <div class="col-sm-5">
                             <!--Bio-->
                             <div id='bio' class='bio'>
-                                <h4> <a target="_blank" href="" id='councilorName'></a> </h4>
+                                <h4><a target="_blank" href="" id='councilorName'></a></h4>
+                                <i class="fa fa-users" aria-hidden="true"></i> <span id='councilorParty'></span>
                                 <br>
-                                <span id='councilorParty'></span>
+                                <i class="fa fa-home" aria-hidden="true"></i> <span id='councilorCanton'></span>
                                 <br>
-                                <span id='councilorCanton'></span>
+                                <i class="fa fa-briefcase" aria-hidden="true"></i> <span id='councilorCouncil'></span>
                                 <br>
-                                <span id='councilorCouncil'></span>
-                                <br>
-                                <span id='councilorBirthday'></span>
+                                <i class="fa fa-birthday-cake" aria-hidden="true"></i> <span
+                                    id='councilorBirthday'></span>
                             </div>
                         </div>
                         <div class="col-sm-7">
@@ -284,29 +305,53 @@
                     <hr>
                     <!-- Friends -->
                     <div class="row">
-                        <div class="col-sm-8">
+                        <div class="col-sm-6">
                             <div id='div_friends' class='bio pre-scrollable bright-background'>
                                 <span id='friends_info'></span>
                                 <svg id='friends' width='175px' height="100%"></svg>
                             </div>
                         </div>
                         <!-- Choices buttons -->
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <div id="choice" class="choice">
                                 <div>
                                     Relations
                                 </div>
                                 <form name="Friendship">
-                                    <input type="radio" name="buttons" value="intervention" checked="True"> Interventions<br>
-                                    <input type="radio" name="buttons" value="cosign"> Co-signed motions<br>
+                                    <div class="input-group">
+                                        <label class="input-group-sm">
+                                            <input type="radio" name="buttons" value="cosign" checked="True"> Co-signed
+                                            motions<br>
+                                        </label>
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="input-group-sm">
+                                            <input type="radio" name="buttons" value="intervention"> Interventions<br>
+                                        </label>
+                                    </div>
                                 </form>
                                 <br>
                                 <div>
                                     Interests
                                 </div>
+                                <!--<div class="form-group">-->
+                                <!--<select class="form-control" id="colorSelection" onchange="change_color($(this));">-->
+                                <!--<option name="buttons" value="all" selected="selected">Auth. and co-signator</option>-->
+                                <!--<option name="buttons" value="author">Author</option>-->
+                                <!--</select>-->
+                                <!--</div>-->
                                 <form name="Interest">
-                                    <input type="radio" name="buttons" value="all" checked="True"> Auth. and co-signator<br>
-                                    <input type="radio" name="buttons" value="author"> Author<br>
+                                    <div class="input-group">
+                                        <label class="input-group-sm">
+                                            <input type="radio" name="buttons" value="all" checked="True"> Auth. and
+                                            co-signator<br>
+                                        </label>
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="input-group-sm">
+                                            <input type="radio" name="buttons" value="author"> Author<br>
+                                        </label>
+                                    </div>
                                 </form>
 
                             </div>
@@ -317,38 +362,47 @@
         </div><!-- /.col-sm-4 -->
     </div>
 
+</div> <!-- /container -->
+
+<div class="container">
     <font size="4">
 
-        <div id="about">
-            <div class="page-header">
-                <h1>About this project</h1>
-            </div>
+        <div id="about"></div>
+        <div class="page-header">
+            <h1>About this project</h1>
+        </div>
 
-            The motivation for this project comes from the gulf existing between the political world and citizens.
-            Even though all the information is freely accessible on the official <a href="http://www.parlament.ch"> website of the Swiss Parliament</a>, it
-            amounts to a substantial number of papers and is hard to understand.
+        The motivation for this project comes from the gulf existing between the political world and citizens.
+        Even though all the information is freely accessible on the official <a href="http://www.parlament.ch"> website
+        of the Swiss Parliament</a>, it
+        amounts to a substantial number of papers and is hard to understand.
 
-            <blockquote class="blockquote-reverse">
-                <font size="5">
+        <blockquote class="blockquote-reverse">
+            <font size="5">
                 <i>The Freedom of Information Act came into force on 1 July 2006. It is intended to promote transparency
                     with regard to the purpose, organisation and activities of the federal administration, while
                     guaranteeing access to official documents produced after 1 July 2006.
                 </i>
-                </font>
-                <footer> <a href="https://www.parlament.ch/en/services/freedom-of-information-act" id="signature">Swiss Parliament Website</a></footer>
-            </blockquote>
+            </font>
+            <footer><a href="https://www.parlament.ch/en/services/freedom-of-information-act" id="signature">Swiss
+                Parliament Website</a></footer>
+        </blockquote>
 
-            This project has been done during the course <b><a href="http://ada.epfl.ch/">Applied Data Analysis (ADA)</a></b> at the
-            École Polytechnique fédérale de Lausanne (EPFL) during the Fall Semester 2016.
+        This project has been done during the course <b><a href="http://ada.epfl.ch/">Applied Data Analysis
+        (ADA)</a></b> at the
+        École Polytechnique fédérale de Lausanne (EPFL) during the Fall Semester 2016.
+        <br>
+        All the source code is available on our <a href="https://github.com/jmuth/parliament-viz.ch"> GitHub
+        repository</a>.
 
-        </div>
-
-        <div id="vizu_info"></div> <br>
+        <div id="vizu_info"></div>
+        <br>
         <div class="page-header">
             <h1>Visualization information</h1>
         </div>
 
-        <div id="authors"></div> <br>
+        <div id="authors"></div>
+        <br>
         <div class="page-header">
             <h1>Authors</h1>
         </div>
@@ -362,20 +416,31 @@
             <dd>Student in Computational Science and Engineering</dd>
         </dl>
 
-        <div id="acknowledgements"></div> <br>
+        <div id="acknowledgements"></div>
+        <br>
         <div class="page-header">
             <h1>Acknowledgements</h1>
         </div>
 
-        A warm thank you to <b>Alain Rebetez</b>, political journalist, and <b>Philippe Nantermod</b>, PLR deputy at National Council, for their expertise in Swiss parliamentary
+        A warm thank you to <b>Alain Rebetez</b>, political journalist, and <b>Philippe Nantermod</b>, PLR deputy at
+        National Council, for their expertise in Swiss parliamentary
         system and their external point of view about the project.
 
         Thank you Michele! Thank your the TAs!
 
     </font>
-</div> <!-- /container -->
 
+</div>
 
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted">
+            Project for Applied Data Analysis class in 2016. <a href="https://github.com/jmuth/parliament-viz.ch">GitHub
+            repo</a>
+            ©Joachim Muth, Gael Lederrey, Jonas Racine
+        </p>
+    </div>
+</footer>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <script src="main.js"></script>

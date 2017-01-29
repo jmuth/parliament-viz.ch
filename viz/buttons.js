@@ -182,7 +182,7 @@ function change_color(button) {
 // Get the friendship with the radio button. Default is the friendship on the interventions
 var rad_friendship = document.Friendship.buttons;
 var prev_friendship = null;
-var friendship = "intervention";
+var friendship = "cosign";
 var friendship_changed = true;
 for(var i = 0; i < rad_friendship.length; i++) {
     rad_friendship[i].onclick = function() {
@@ -220,26 +220,3 @@ for(var i = 0; i < rad_interest.length; i++) {
 //                          Test                                   //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
-$(document).ready(function(){
-
-    /* Button which shows and hides div with a id of "post-details" */
-    $( ".toggle-visibility" ).click(function() {
-
-        var target_selector = $(this).attr('data-target');
-        var $target = $( target_selector );
-
-        if ($target.is(':hidden'))
-        {
-            $target.show( "slow" );
-        }
-        else
-        {
-            $target.hide( "slow" );
-        }
-
-        console.log($target.is(':visible'));
-
-
-    });
-
-});
