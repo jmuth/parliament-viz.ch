@@ -88,8 +88,9 @@ var legend = d3.select("div#legend")
 // Margins for the two bargraphs
 var bGMargin = {top: 10, right: 10, bottom: 10, left: 30};
 
-// Height and Width of the bars
-var barWidth = 390 - bGMargin.left - bGMargin.right,
+// Warning: do not update itself if you resize the window
+var max_width = document.getElementById('int_timeline').clientWidth
+var barWidth = max_width - bGMargin.left - bGMargin.right,
     barHeight = 105 - bGMargin.top - bGMargin.bottom;
 
 // Get the SVG for the bar graph on the timeline
