@@ -80,7 +80,7 @@ function clicked(d) {
         d3.selectAll(".dataNodes")
             .style("r", radius)
             .style("stroke", function(o,i) {
-                return color(colorType, getValForColor(colorType, nodes[i]));
+                return color(colorType, nodes[i][colorType]);
             })
             .style("stroke-width", 1);
 
@@ -117,7 +117,7 @@ function clicked(d) {
     } else {
         node.style("r", 1.5*radius)
             .style("stroke", function(d) {
-                return color(colorType, getValForColor(colorType, d));
+                return color(colorType, d[colorType]);
             })
             .style("stroke-width", 1);
         d.selected = false;

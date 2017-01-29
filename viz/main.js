@@ -342,7 +342,7 @@ d3.json("data/active.json", function(error, graph) {
             .enter().append("circle")
             .attr("class", "dataNodes")
             .attr("r", radius)
-            .attr("fill", function(d) { return color(colorType, d);})
+            .attr("fill", function(d) { return color(colorType, d[colorType]);})
             .attr("desc", false)
             .attr("id", function(d) { return d.PersonIdCode;})
             .call(d3.drag()

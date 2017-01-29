@@ -11,7 +11,7 @@ function clickedBox(o) {
             if(d.PersonIdCode == o.PersonIdCode) {
                 return "#000000"
             } else {
-                return color(colorType, getValForColor(colorType, nodes[i]));
+                return color(colorType, nodes[i][colorType]);
             }
         })
         .style("stroke-width", function(d) {
@@ -315,7 +315,7 @@ function showFriends(id) {
         .attr('width', 175)
         .attr('height', (223/5)-3)
         .attr('fill', function(d) {
-            return color(colorType, getValForColor(colorType, people[d.friend]));
+            return color(colorType, people[d.friend][colorType]);
         })
         .attr('opacity', .7)
 
