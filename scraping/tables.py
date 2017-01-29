@@ -203,6 +203,7 @@ class Tables:
         df_long = transcripts.loc[transcripts.NumberWord > 30]
 
         # link session number to year
+        sessions.set_index('ID', inplace=True)
         sessions['StartYear'] = sessions.apply(get_year, axis=1)
         year_dict = sessions['StartYear'].to_dict()
         year_dict = defaultdict(lambda: 0, year_dict)
@@ -240,9 +241,14 @@ class Tables:
                 arr.append(internal_dic)
             dic[str(person_id)] = arr
 
+        # ensure you have all the person, even the one without intervention
+        for id in persons:
+            if str(id) not in dic:
+                dic[str(id)] = [{'year': int(2016), 'int': int(0), 'median': int(18)}]
+
         filepath = 'data/' + filename + '.json'
         with open(filepath, 'w') as fp:
             json.dump(dic, fp)
             print("[INFO] JSON created in file ", filepath)
 
-        return interventions
+        return dic
