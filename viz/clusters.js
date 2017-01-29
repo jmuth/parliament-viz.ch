@@ -111,8 +111,6 @@ function clusters() {
 
     } else if(cluster_activation_changed) {
 
-        radius = 6;
-
         disable_checkboxes();
 
         svg.selectAll(".textFoci").remove();
@@ -391,6 +389,9 @@ function disable_checkboxes() {
     // For the majority
     document.getElementById("majority").disabled = true;
     document.getElementById("majority").checked = false;
+
+    majority_active = false;
+    majority_activation_changed = true;
 }
 
 function enable_checkboxes() {
