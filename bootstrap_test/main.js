@@ -145,10 +145,10 @@ function importAdj(json) {
 };
 
 // Get the interests (JSON)
-var interests;
+var interests_json;
 function importInterests(json) {
     $.getJSON(json, function(d) {
-        interests =  d;
+        interests_json =  d;
     });
 };
 

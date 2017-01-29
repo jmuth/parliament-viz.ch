@@ -216,13 +216,13 @@ function compute_numbers_in_cluster() {
         // Go through all the nodes
         for (var i = 0; i < nodes.length; i++) {
             // Compute the number for each councils (in case of a user remove one of the councils
-            // The function upd_elem_foci is defined in functions.js
+            // The function upd_elem_focus is defined in functions.js
             if(nodes[i].CouncilAbbreviation == "CN") {
-                upd_elem_foci(nodes[i], "nbr_CN", get_elem_foci(nodes[i], "nbr_CN") + 1);
+                upd_elem_focus(nodes[i], "nbr_CN", get_elem_focus(nodes[i], "nbr_CN") + 1);
             } else if(nodes[i].CouncilAbbreviation == "CE") {
-                upd_elem_foci(nodes[i], "nbr_CE", get_elem_foci(nodes[i], "nbr_CE") + 1);
+                upd_elem_focus(nodes[i], "nbr_CE", get_elem_focus(nodes[i], "nbr_CE") + 1);
             } else if(nodes[i].CouncilAbbreviation == "CF") {
-                upd_elem_foci(nodes[i], "nbr_CF", get_elem_foci(nodes[i], "nbr_CF") + 1);
+                upd_elem_focus(nodes[i], "nbr_CF", get_elem_focus(nodes[i], "nbr_CF") + 1);
             }
         }
     }
