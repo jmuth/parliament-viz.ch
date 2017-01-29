@@ -449,7 +449,8 @@ function radius_focus(n) {
 
 // Disable the checkboxes for the clustes
 function disable_checkboxes() {
-    document.getElementById("cluster_type").style.display = 'none';
+    // document.getElementById("cluster_type").style.display = 'none';
+    $( "#cluster_type" ).hide("slow")
     // Disable all the cluster choices
     document.getElementById("btn_council").disabled = true;
     document.getElementById("btn_party").disabled = true;
@@ -478,7 +479,8 @@ function disable_checkboxes() {
 
 // Enable the checkboxes for the clusters
 function enable_checkboxes() {
-    document.getElementById("cluster_type").style.display = 'block';
+    // document.getElementById("cluster_type").style.display = 'block';
+    $( "#cluster_type" ).show("slow")
     // Enable all the cluster choices
     document.getElementById("btn_council").disabled = false;
     document.getElementById("btn_party").disabled = false;
