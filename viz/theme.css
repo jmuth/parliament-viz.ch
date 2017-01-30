@@ -27,7 +27,7 @@ body {
     margin-right: 0;
     margin-left: 2%;
     width: 95%;
-    margin-top: -50px;
+    margin-top: -65px;
 }
 
 hr {
@@ -44,6 +44,19 @@ hr {
     border: none;
     border-top: 1px solid #aaaaaa;
     border-bottom: 1px solid #ffffff;
+}
+
+.navbar {
+    margin-bottom: 0%;
+}
+
+.jumbotron {
+    margin-top: 0%;
+}
+
+#title {
+    text-align: center;
+    width: 100%;
 }
 
 .bright-background {
@@ -85,4 +98,8 @@ hr {
 
 #div_friends {
     height: 202px;
+}
+
+.title {
+    horiz-align: center;
 }
