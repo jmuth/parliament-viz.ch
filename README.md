@@ -51,14 +51,14 @@ We provide here a short summary (when the name is not self-explaining) of the ma
 
 ## Folder hierachy
 
-  - `graph`: all computation of JSON for d3.js visualization
-  - `logo `: a very mysterious folder
-  - `nlp`: NLP tool used for previous speech theme extraction, not used in final delivery
-  - `poster`: latex files for poster presentation
-  - `scraping`: scrap and analyse of data
-    - `scraper.py`: scraper class to retrieve database table
-    - `tables.py`: class to reproduce tables used in visualization
-  - `viz`: website files
+* `graph`: all computation of JSON for d3.js visualization
+* `logo `: a very mysterious folder
+* `nlp`: NLP tool used for previous speech theme extraction, not used in final delivery
+* `poster`: latex files for poster presentation
+* `scraping`: scrap and analyse of data
+  * `scraper.py`: scraper class to retrieve database table
+  * `tables.py`: class to reproduce tables used in visualization
+* `viz`: website files
 
 
 ## Helps and others
