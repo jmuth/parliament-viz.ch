@@ -102,10 +102,11 @@
 
 <div class="jumbotron" id="title">
     <h1 class="display-3">Swiss Parliament Visualization</h1>
+    <h3>Prototyping a new Visualization for the Swiss Parliament</h3>
     <img src="assets/img/logo_high_res.png" width="70%">
 </div>
 
-<div class="container">
+<div class="container" id="texts_intro">
     <div id="about"></div><br>
     <div class="page-header">
         <h1>About this project</h1>
@@ -113,30 +114,31 @@
     <br>
     BLA BLA BLA INTRODUCTION
     <br>
-    This project represent the final aim of the course <b><a href="http://ada.epfl.ch/">Applied Data Analysis (ADA)</a></b>
+    This project represent the final aim of the course <b><a target="blank" href="http://ada.epfl.ch/">Applied Data Analysis (ADA)</a></b>
     taught by Dr. Michele Catasta at EPFL during the Fall semester 2016.
     <br>
     BLA BLA BLA MOTIVATION
     <br>
     The motivation for this project comes from the gulf existing between the political world and citizens.
-    Even though all the information is freely accessible on the official <a href="http://www.parlament.ch"> website
+    Even though all the information is freely accessible on the official <a target="blank" href="http://www.parlament.ch"> website
         of the Swiss Parliament</a>, it
     amounts to a substantial number of papers and is hard to understand.
 
-    <blockquote class="blockquote-reverse">
+    <blockquote class="blockquote-reverse" id="quote_intro">
         <font size="5">
-            <i>The Freedom of Information Act came into force on 1 July 2006. It is intended to promote transparency
+            <i><bdi>
+                The Freedom of Information Act came into force on 1 July 2006. It is intended to promote transparency
                 with regard to the purpose, organisation and activities of the federal administration, while
                 guaranteeing access to official documents produced after 1 July 2006.
-            </i>
+            </bdi></i>
         </font>
-        <footer><a href="https://www.parlament.ch/en/services/freedom-of-information-act" id="signature">Swiss
+        <footer><a target="blank" href="https://www.parlament.ch/en/services/freedom-of-information-act" id="signature">Swiss
             Parliament Website</a></footer>
     </blockquote>
     <br>
     BLA BLA BLA SOURCE CODE
     <br>
-    All the source code is available on our <a href="https://github.com/jmuth/parliament-viz.ch"> GitHub
+    All the source code is available on our <a target="blank" href="https://github.com/jmuth/parliament-viz.ch"> GitHub
         repository</a>.
 
     <div class="page-header">
@@ -195,7 +197,7 @@
                             <div class="input-group">
                                 <label class="input-group-addon sub-checkbox">
                                     <input type="checkbox" name="btn_party" id="btn_party" value="party"
-                                           disabled="disabled" class="pull-left"> Parties<br>
+                                           disabled="disabled" class="pull-left"> Party<br>
                                 </label>
                             </div>
                             <div class="input-group">
@@ -417,7 +419,7 @@
 
 </div> <!-- /container -->
 
-<div class="container">
+<div class="container" id="texts">
     <font size="4">
 
         <div id="vizu_info"></div>
@@ -439,7 +441,7 @@
         If the other circles are opaque, this means that the two councilors have a strong relationship. On the other hand,
         a transparent circle means that the two councilors do not have a strong relationship. On the right panel, you can
         choose between two type of relations:
-
+        <br><br>
         <dl class="dl-horizontal">
             <dt>Co-signed motions</dt>
             <dd>The cosigners are the councilors who signed the motion proposed by the selected councilor.</dd>
@@ -457,9 +459,31 @@
         <h2>Right panel</h2>
 
         The right panel will provide you some information about the councilor. At the top, some basic information are given.
-        Then the timeline of their intervention is provided. If you move your mouse over a bar, you will get a bit more
-        information.
+        Then the timeline of their interventions is provided. On the third level, we show their interest. It's done by computing
+        the number of motions cosigned or as author on the different subjects. You can select if you want to see the numbers as
+        cosigner and author or only as author. If you move your mouse over the bars in the two histograms, you will get
+        more precise information.
 
+        <h2>Clusters</h2>
+
+        If you activate the clusters, the circles will move from their initial position to go into a cluster. This will also
+        activate a list of checkboxes allowing you to split into multiple clusters by different characteristics such as the party,
+        the age, etc.
+
+        <h2>Majority</h2>
+
+        Once the clusters are activated, you can also activate the majority. You will be able to move the clusters on the right or
+        on the left of a line in the middle of the visualization. This will then tell you if the majority is on the right or on the
+        left of the line.
+
+        <h2>Colors</h2>
+
+        You can change the colors of the circles according to some characteristics of the councilors.
+
+        <h2>Councils</h2>
+
+        You can choose to remove the councils from the visualization. This can be particularly interessant when playing with the
+        majority.
 
         <div id="authors"></div>
         <br>
@@ -474,6 +498,12 @@
             <dd>Student in Mathematical Engineering</dd>
             <dt>Gael Lederrey</dt>
             <dd>Student in Computational Science and Engineering</dd>
+
+            <!--Place the code below where you want the link to be displayed-->
+            <span id="obf"><script>document.getElementById("obf").innerHTML="<n uers=\"znvygb:wbanf.enpvar@rcsy.pu,wbnpuvz.u.zhgu@tznvy.pbz,tnry.yrqreerl@rcsy.pu?fhowrpg=cneyvnzrag-ivm\" gnetrg=\"_oynax\">Pbagnpg gur Nhgubef</n>".replace(/[a-zA-Z]/g,function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);});document.body.appendChild(eo);</script>
+<noscript><span style="unicode-bidi:bidi-override;direction:rtl;">hc.lfpe@yerredel.leag,moc.liamg@htum.h.mihcaoj,hc.lfpe@enicar.sanoj</span></noscript></span>
+
+
         </dl>
 
         <div id="acknowledgements"></div>
@@ -482,12 +512,13 @@
             <h1>Acknowledgements</h1>
         </div>
 
-        We would like to express our special thanks of gratitude to M. <b>Alain Rebetez</b>, political journalist, M. <b>Mathias Reynard</b>, PSS deputy at National Council,
-        and M. <b>Philippe Nantermod</b>, PLR deputy at National Council, for their expertise in the Swiss parliamentary
-        system and their external point of view about the project.
+        We would like to express our special thanks of gratitude to <b>M. Alain Rebetez</b>, political journalist,
+        <b>M. Mathias Reynard</b>, PSS councilor at National Council, and <b>M. Philippe Nantermod</b>, PLR councilor
+        at National Council, for their expertise in the Swiss parliamentary system and their external point of view
+        about the project.
         <br><br>
-        Secondly we would also like to thank <b>Dr. Michele Catasta</b> for all the knowledge and the passion about Data Science he shared
-        with us during this semester.
+        Secondly we would also like to thank <b>Dr. Michele Catasta</b> for all the knowledge and the passion
+        about Data Science he shared with us during this semester.
 
     </font>
 </div>
@@ -495,7 +526,7 @@
 <footer class="footer" id="footer">
 <div class="container">
 <p class="text-muted">
-Project for Applied Data Analysis class in 2016. <a href="https://github.com/jmuth/parliament-viz.ch">GitHub
+Project for Applied Data Analysis class in 2016. <a target="blank" href="https://github.com/jmuth/parliament-viz.ch">GitHub
 repo</a>
 ©Joachim Muth, Gael Lederrey, Jonas Racine</p>
 </div>

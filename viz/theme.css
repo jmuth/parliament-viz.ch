@@ -56,6 +56,7 @@ hr {
 
 #footer{
     margin-bottom: -60px;
+    text-align: center;
 }
 
 #title {
@@ -63,7 +64,7 @@ hr {
     width: 100%;
 }
 
-h1 {
+h1, h2 {
     font-weight: bold;
 }
 
@@ -122,4 +123,18 @@ h1 {
 
 .dl-horizontal dt {
     white-space: normal;
+}
+
+#texts {
+    text-align: justify;
+}
+
+#texts_intro {
+    text-align: justify;
+    align: right;
+}
+
+#quote_intro {
+    direction:rtl;
+    text-align:justify;
 }
