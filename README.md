@@ -47,50 +47,36 @@ We provide here a short summary (when the name is not self-explaining) of the ma
 
 * **Tags** classifies the initiatives into themes
 
+## Folder hierachy
 
-## Feasibility and Risks
+  - `graph`: all computation of JSON for d3.js visualization
+  - `logo `: a very mysterious folder
+  - `nlp`: NLP tool used for previous speech theme extraction, not used in final delivery
+  - `node_modules`: Gael doesn't know
+  - `poster`: latex files for poster presentation
+  - `scraping`: scrap and analyse of data
+    - `scraper.py`: scraper class to retrieve database table
+    - `tables.py`: class to reproduce tables used in visualization
+  - `viz`: website files
+  
+## Helps and others
 
-#### Parliamentary Terms
+### Parliamentary Terms
 Complicated and precise terminology, specific to the political area.
 [Lexicon of Parliamentary Terms](https://www.parlament.ch/en/über-das-parlament/parlamentswörterbuch)
 
-#### Three official languages
-Speakers debate in their own language, mainly in German and French. Textual analysis must take care not to lose information
-by translating them into English.
+
+#### Data-Driven Documents
+The D3 javaScript library will allow us to design a clean and interactive visualization. [D3 website](https://d3js.org)
+
 
 #### Licences
 [Open Data / Web services statement of Parliament website](https://www.parlament.ch/en/services/open-data-webservices)
 The provided information can be freely used, under reasonable conditions (no alterations, source indicated, 
 date of download indicated).
 
-#### Data collecting
-The data is available via API [here](https://ws.parlament.ch/odata.svc/$metadata)
 
-#### Theme classification
-Official bulletins don't contain clear *topic* attribute. The names of debated object do not always state clearly what they cover.
-We will use NLP tools on speeches in order to extract their theme.
-
-#### Visualization
-The objective of the visualization is to show the importance of the different topics discussed in the parliament. To accomplish that, it must merge different points of view: frequency of the topic, evolution over time, importance compared to other subjects, diversity of speakers participating in the topic.
-
-A big part of the project will be spent on how to visualize all these parameters. 
-
-Source of inspiration : [legex timeline](http://www.legex.org/timeline/index.html#legislation=all&chamber=all&party=all&committee=all&majority=all&gender=all&state=all&outcomes=all&topics=all&view=total&zoomed=false&graphbar=false&relative=false)
-
-#### Website hosting
-The website will be deployed on [GitHub Pages](https://pages.github.com) and accessible through EPFL domain name.
-
-#### Automation task
-The task of grabbing, parsing, sorting and adding the data to our database (i.e. to our website since we will use D3) will be completely automated to allow future automatic updates each time a parliamentary session opens.
-
-#### Data-Driven Documents
-The D3 javaScript library will allow us to design a clean and interactive visualization. [D3 website](https://d3js.org)
-
-
-
-
-
-## Deliverables 
+## Deliverable
 
 The final product takes the form of an online website presenting an interactive visualization of Swiss Parliament deputies activity. This website will be on [parliament-viz.ch](www.paliament-viz.ch). 
 
