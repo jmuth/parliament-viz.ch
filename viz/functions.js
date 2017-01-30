@@ -48,17 +48,12 @@ function emphasisAndShowInfo(d) {
 
             // Replace some info in the HTML
             document.getElementById("councilorName_add").innerHTML = d.FirstName + " " + d.LastName;
-            document.getElementById("councilorParty_add").innerHTML = d.PartyName;
+            document.getElementById("councilorParty_add").innerHTML = d["PartyAbbreviation"];
             document.getElementById("councilorCouncil_add").innerHTML = d.CouncilName;
             document.getElementById("councilorBirthday_add").innerHTML = d.DateOfBirth;
             document.getElementById("councilorCanton_add").innerHTML = d.CantonName;
-            if(cluster_active) {
-                $('#counc_img').css('display', 'none');
-            } else {
-                $('#counc_img').css('display', 'block');
-                document.getElementById("councilorImage_add").src = "data/portraits/" + d.PersonIdCode + ".jpg";
-                document.getElementById("councilorImage_add").alt = d.FirstName + " " + d.LastName;
-            }
+            document.getElementById("councilorImage_add").src = "data/portraits/" + d.PersonIdCode + ".jpg";
+            document.getElementById("councilorImage_add").alt = d.FirstName + " " + d.LastName;
         }
     }
 

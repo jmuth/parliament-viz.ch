@@ -133,8 +133,6 @@ function timelineOut(str) {
 // Function to show the bargraph of the interests
 function showInterests(id) {
 
-    console.log(barWidth);
-
     // We remove the old graphs
     interestsBarGraph.selectAll('*').remove();
     interestsBarGraph_second.selectAll('*').remove();
@@ -191,7 +189,7 @@ function showInterests(id) {
 
     // Change text
     if (interest_type == 'all') {
-        str = "Interests (<font color='#4682b4'>" + (total-total_sec) + " times co-signatory </font>& <font color='red'>" + total_sec + " times author</font>)";
+        str = "Interests (<font color='#4682b4'>" + (total-total_sec) + " times cosigner </font>& <font color='red'>" + total_sec + " times author</font>)";
     } else if (interest_type == 'author') {
         str = "Interests (<font color='red'>" + total + " times author</font>)";
     }
@@ -314,9 +312,9 @@ function showFriends(id) {
     } else if (friendship == 'cosign') {
         var data = friends_cosign[id];
         if(data.length > 1) {
-            document.getElementById('friends_info').innerHTML = data.length + " co-signatories";
+            document.getElementById('friends_info').innerHTML = data.length + " cosigners";
         } else {
-            document.getElementById('friends_info').innerHTML = data.length + " co-signatory";
+            document.getElementById('friends_info').innerHTML = data.length + " cosigner";
         }
     }
 

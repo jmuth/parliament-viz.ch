@@ -73,7 +73,6 @@
 
     <![endif]-->
 </head>
-<body id="top">
 <!-- Fixed navbar -->
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
@@ -99,6 +98,39 @@
         </div><!--/.nav-collapse -->
     </div>
 </nav>
+<body id="top">
+
+<div id="title">
+    <h1 class="display-3"> <b>Swiss Parliament Visualization</b></h1>
+    <img href="./logo_parliament_viz.png" width="800px" height="200px">
+</div>
+
+<div class="page-header">
+    <h2>About this project</h2>
+</div>
+
+The motivation for this project comes from the gulf existing between the political world and citizens.
+Even though all the information is freely accessible on the official <a href="http://www.parlament.ch"> website
+    of the Swiss Parliament</a>, it
+amounts to a substantial number of papers and is hard to understand.
+
+<blockquote class="blockquote-reverse">
+    <font size="5">
+        <i>The Freedom of Information Act came into force on 1 July 2006. It is intended to promote transparency
+            with regard to the purpose, organisation and activities of the federal administration, while
+            guaranteeing access to official documents produced after 1 July 2006.
+        </i>
+    </font>
+    <footer><a href="https://www.parlament.ch/en/services/freedom-of-information-act" id="signature">Swiss
+        Parliament Website</a></footer>
+</blockquote>
+
+This project has been done during the course <b><a href="http://ada.epfl.ch/">Applied Data Analysis
+    (ADA)</a></b> at the
+École Polytechnique fédérale de Lausanne (EPFL) during the Fall Semester 2016.
+<br>
+All the source code is available on our <a href="https://github.com/jmuth/parliament-viz.ch"> GitHub
+    repository</a>.
 
 <div class="container large-container" role="main">
     <div id="visualisation">
@@ -231,10 +263,13 @@
                         <div id="new_line">
                             <br>
                         </div>
-                        <div id="add_info_counc" style="display: none">
+                        <div id="add_info_counc" style="display: none" class="row">
+                            <div class="col-sm-12">
                             <b>Councilor information</b>
+                            </div>
                             <div id="other_counc">
-                                <h4><span id='councilorName_add'></span></h4>
+                                <div class="col-sm-7">
+                                <h4><span id='councilorName_add' font-color="blue"></span></h4>
                                 <br>
                                 <i class="fa fa-users" aria-hidden="true"></i> <span id='councilorParty_add'></span>
                                 <br>
@@ -243,9 +278,12 @@
                                 <i class="fa fa-briefcase" aria-hidden="true"></i> <span id='councilorCouncil_add'></span>
                                 <br>
                                 <i class="fa fa-birthday-cake" aria-hidden="true"></i> <span id='councilorBirthday_add'></span>
-                            </div>
-                            <div id="counc_img">
-                                <img id='councilorImage_add' src="data/portraits/person-260.jpg" width="100%">
+                                </div>
+                                <div class="col-sm-5">
+                                    <div id="counc_img">
+                                        <img id='councilorImage_add' src="data/portraits/person-260.jpg" width="100%">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -265,7 +303,7 @@
                     <hr>
                     <!-- Personal Card -->
                     <div class="row">
-                        <div class="col-sm-5">
+                        <div class="col-sm-6">
                             <!--Bio-->
                             <div id='bio' class='bio'>
                                 <h4><a target="_blank" href="" id='councilorName'></a></h4>
@@ -279,7 +317,7 @@
                                     id='councilorBirthday'></span>
                             </div>
                         </div>
-                        <div class="col-sm-7">
+                        <div class="col-sm-6">
                             <!-- Profile Picture -->
                             <div>
                                 <img id='councilorImage' src="data/portraits/person-260.jpg" width="100%">
@@ -368,34 +406,6 @@
 
 <div class="container">
     <font size="4">
-
-        <div id="about"></div><br>
-        <div class="page-header">
-            <h1>About this project</h1>
-        </div>
-
-        The motivation for this project comes from the gulf existing between the political world and citizens.
-        Even though all the information is freely accessible on the official <a href="http://www.parlament.ch"> website
-        of the Swiss Parliament</a>, it
-        amounts to a substantial number of papers and is hard to understand.
-
-        <blockquote class="blockquote-reverse">
-            <font size="5">
-                <i>The Freedom of Information Act came into force on 1 July 2006. It is intended to promote transparency
-                    with regard to the purpose, organisation and activities of the federal administration, while
-                    guaranteeing access to official documents produced after 1 July 2006.
-                </i>
-            </font>
-            <footer><a href="https://www.parlament.ch/en/services/freedom-of-information-act" id="signature">Swiss
-                Parliament Website</a></footer>
-        </blockquote>
-
-        This project has been done during the course <b><a href="http://ada.epfl.ch/">Applied Data Analysis
-        (ADA)</a></b> at the
-        École Polytechnique fédérale de Lausanne (EPFL) during the Fall Semester 2016.
-        <br>
-        All the source code is available on our <a href="https://github.com/jmuth/parliament-viz.ch"> GitHub
-        repository</a>.
 
         <div id="vizu_info"></div>
         <br>
