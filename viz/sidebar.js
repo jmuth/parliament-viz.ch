@@ -273,6 +273,7 @@ function showInterests(id) {
 
 // Function to display information about the interests
 function interestOver(id, i) {
+    window.alert("PROUT");
     if(interest_type == "all") {
         var val_auth = authors[id][i]["int"];
         var val_cos = interests_json[id][i]["int"] - val_auth;

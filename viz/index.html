@@ -84,13 +84,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Parliament-Viz</a>
+            <a class="navbar-brand" href="#top"><b>Parliament-Viz</b></a>
         </div>
         <div id="myNavBar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="#top">Visualization</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#vizu_info">Visualization information</a></li>
+                <li><a href="#visualization"><b>Visualization</b></a></li>
+                <li><a href="#vizu_info">Explanation</a></li>
                 <li><a href="#authors">Authors</a></li>
                 <li><a href="#acknowledgements">Acknowledgements</a></li>
 
@@ -100,39 +100,50 @@
 </nav>
 <body id="top">
 
-<div id="title">
-    <h1 class="display-3"> <b>Swiss Parliament Visualization</b></h1>
-    <img href="./logo_parliament_viz.png" width="800px" height="200px">
+<div class="jumbotron" id="title">
+    <h1 class="display-3">Swiss Parliament Visualization</h1>
+    <img src="assets/img/logo_high_res.png" height="250">
 </div>
 
-<div class="page-header">
-    <h2>About this project</h2>
+<div class="container" id="about">
+    <div class="page-header">
+        <h1>About this project</h1>
+    </div>
+    <br>
+    BLA BLA BLA INTRODUCTION
+    <br>
+    This project represent the final aim of the course <b><a href="http://ada.epfl.ch/">Applied Data Analysis (ADA)</a></b>
+    taught by Dr. Michele Catasta at EPFL during the Fall semester 2016.
+    <br>
+    BLA BLA BLA MOTIVATION
+    <br>
+    The motivation for this project comes from the gulf existing between the political world and citizens.
+    Even though all the information is freely accessible on the official <a href="http://www.parlament.ch"> website
+        of the Swiss Parliament</a>, it
+    amounts to a substantial number of papers and is hard to understand.
+
+    <blockquote class="blockquote-reverse">
+        <font size="5">
+            <i>The Freedom of Information Act came into force on 1 July 2006. It is intended to promote transparency
+                with regard to the purpose, organisation and activities of the federal administration, while
+                guaranteeing access to official documents produced after 1 July 2006.
+            </i>
+        </font>
+        <footer><a href="https://www.parlament.ch/en/services/freedom-of-information-act" id="signature">Swiss
+            Parliament Website</a></footer>
+    </blockquote>
+    <br>
+    BLA BLA BLA SOURCE CODE
+    <br>
+    All the source code is available on our <a href="https://github.com/jmuth/parliament-viz.ch"> GitHub
+        repository</a>.
+
+    <div class="page-header">
+        <h1>Visualization</h1>
+    </div>
 </div>
 
-The motivation for this project comes from the gulf existing between the political world and citizens.
-Even though all the information is freely accessible on the official <a href="http://www.parlament.ch"> website
-    of the Swiss Parliament</a>, it
-amounts to a substantial number of papers and is hard to understand.
-
-<blockquote class="blockquote-reverse">
-    <font size="5">
-        <i>The Freedom of Information Act came into force on 1 July 2006. It is intended to promote transparency
-            with regard to the purpose, organisation and activities of the federal administration, while
-            guaranteeing access to official documents produced after 1 July 2006.
-        </i>
-    </font>
-    <footer><a href="https://www.parlament.ch/en/services/freedom-of-information-act" id="signature">Swiss
-        Parliament Website</a></footer>
-</blockquote>
-
-This project has been done during the course <b><a href="http://ada.epfl.ch/">Applied Data Analysis
-    (ADA)</a></b> at the
-École Polytechnique fédérale de Lausanne (EPFL) during the Fall Semester 2016.
-<br>
-All the source code is available on our <a href="https://github.com/jmuth/parliament-viz.ch"> GitHub
-    repository</a>.
-
-<div class="container large-container" role="main">
+<div class="container large-container" role="main" id="visualization">
     <div id="visualisation">
         <div class="row">
             <!-- Filter panel -->
@@ -410,8 +421,29 @@ All the source code is available on our <a href="https://github.com/jmuth/parlia
         <div id="vizu_info"></div>
         <br>
         <div class="page-header">
-            <h1>Visualization information</h1>
+            <h1>Explanation</h1>
         </div>
+
+        A small explanation is given here about the different functionalities of this visualization. If you
+        <b>have trouble understanding it</b>, it may be useful to read these few lines.
+        <br><br>
+        This visualization is <b>focused on the councilors and their interactions</b> inside the parliament. The base
+        visualization shows where the councilors are sitting in the parliament. Each circle represent one of the councilor.
+        If you move your mouse over one of the circle, you will get information about this councilor. You will also see
+        that some points become transparent. This is used to show the relations between one councilor and all of the others.
+        If the other circles are opaque, this means that the two councilors have a strong relationship. On the other hand,
+        a transparent circle means that the two councilors do not have a strong relationship. On the right panel, you can
+        choose between two type of relations:
+        <dl class="dl-horizontal">
+            <dt>Co-signed motions</dt>
+            <dd>The cosigners are the councilors who signed the motion proposed by the selected councilor.</dd>
+            <dt>Interventions</dt>
+            <dd>The speakers are the councilors who spoke with the selected councilor in the same debate.</dd>
+        </dl>
+
+
+        <h2>Opacity</h2>
+
 
         <div id="authors"></div>
         <br>
@@ -434,23 +466,24 @@ All the source code is available on our <a href="https://github.com/jmuth/parlia
             <h1>Acknowledgements</h1>
         </div>
 
-        A warm thank you to <b>Alain Rebetez</b>, political journalist, and <b>Philippe Nantermod</b>, PLR deputy at
-        National Council, for their expertise in Swiss parliamentary
+        We would like to express our special thanks of gratitude to M. <b>Alain Rebetez</b>, political journalist, M. <b>Mathias Reynard</b>, PSS deputy at National Council,
+        and M. <b>Philippe Nantermod</b>, PLR deputy at National Council, for their expertise in the Swiss parliamentary
         system and their external point of view about the project.
-
-        Thank you Michele! Thank your the TAs!
+        <br><br>
+        Secondly we would also like to thank <b>Dr. Michele Catasta</b> for all the knowledge and the passion about Data Science he shared
+        with us during this semester.
 
     </font>
 </div>
 
-<!--<footer class="footer">-->
-    <!--<div class="container">-->
-        <!--<p class="text-muted">-->
-            <!--Project for Applied Data Analysis class in 2016. <a href="https://github.com/jmuth/parliament-viz.ch">GitHub-->
-            <!--repo</a>-->
-            <!--©Joachim Muth, Gael Lederrey, Jonas Racine</p>-->
-    <!--</div>-->
-<!--</footer>-->
+<footer class="footer" id="footer">
+<div class="container">
+<p class="text-muted">
+Project for Applied Data Analysis class in 2016. <a href="https://github.com/jmuth/parliament-viz.ch">GitHub
+repo</a>
+©Joachim Muth, Gael Lederrey, Jonas Racine</p>
+</div>
+</footer>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <script src="main.js"></script>
