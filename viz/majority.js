@@ -75,7 +75,7 @@ function write_majority() {
 
     // If total is bigger than 0, we add the majority on the right or on the left
     // depending on the number of nodes on the right and on the left of the middle line
-    if(total > 0) {
+    if(left != right) {
         svg.append("text")
             .attr("class", "textMaj")
             .attr("x", function () {
