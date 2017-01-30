@@ -176,6 +176,19 @@ class Tables:
 
         return df_interest
 
+    def get_friends(self, adj):
+        # sorts a person's friends in decreasing order of collaboration
+        dico = {}
+        for i in adj.index:
+            row = adj.loc[i].sort_values(ascending=False)
+            friends = []
+            for j, k in row.iteritems():
+                if k.item() > 0:
+                    sub_dico = {'friend': j, 'number': k.item()}
+                    friends.append(sub_dico)
+            dico[i.item()] = friends
+        return dico
+
     def get_short_transcripts(self, limit):
         # returns a transcript sub-table with only
         # transcripts longer than limit
@@ -263,10 +276,13 @@ class Tables:
         return dic
 
     def adj_interventions(self):
+        # outputs an adjacency matrix for common interventions
+        # as a json file and also a sorted list of friends as
+        # a json, both are ready for viz
 
-        # builds one PersonNumber PersonIdCode map
-        # instead of querying 
         def person_number_to_id(active_ids, ppl):
+            # builds one PersonNumber PersonIdCode map
+            # instead of querying 
             dico = {}
             active_numbers = []
             for row in ppl.iterrows():
@@ -321,6 +337,12 @@ class Tables:
         dico, active_numbers = person_number_to_id(active_ids, ppl)
 
         adja = populate_adj(zero_adj, transcripts, dico, active_numbers, subjects)
+        friends = self.get_friends(adja)
+
+        filepath = 'data/'+friends_name+'.json'
+        with open(filepath, 'w') as fp:
+            json.dump(friends, fp)
+
         filepath = 'data/' + adj_name + '.json'
         adja.to_json(filepath, orient='index')
         print("[INFO] JSON created in file ", filepath)
