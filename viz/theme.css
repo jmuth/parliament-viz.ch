@@ -54,9 +54,25 @@ hr {
     margin-top: 0%;
 }
 
+#footer{
+    margin-bottom: -60px;
+}
+
 #title {
     text-align: center;
     width: 100%;
+}
+
+h1 {
+    font-weight: bold;
+}
+
+#title {
+    margin-top: -20px;
+}
+
+#about {
+    margin-top: -100px;
 }
 
 .bright-background {
