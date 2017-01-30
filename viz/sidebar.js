@@ -133,6 +133,8 @@ function timelineOut(str) {
 // Function to show the bargraph of the interests
 function showInterests(id) {
 
+    console.log(barWidth);
+
     // We remove the old graphs
     interestsBarGraph.selectAll('*').remove();
     interestsBarGraph_second.selectAll('*').remove();
@@ -455,4 +457,19 @@ function clickedBox(o) {
     o.selected = true;
     node_selected = true;
     node_id = o.PersonIdCode;
+}
+
+// Redraw the interest and timeline if the window has been resized
+function window_resized() {
+    if (new Date() - rtime < delta) {
+        setTimeout(resizeend, delta);
+    } else {
+        timeout = false;
+        if(node_id != null) {
+            var max_width = document.getElementById('int_timeline').clientWidth;
+            barWidth = max_width - bGMargin.left - bGMargin.right;
+            showTimeline(node_id);
+            showInterests(node_id);
+        }
+    }
 }
