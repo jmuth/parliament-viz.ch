@@ -1,4 +1,4 @@
-![Logo](logo/logo_parliament_viz.png)
+![Logo](logo/logo_high_res.png)
 
 # parliament-viz.ch
 (ADA CS-401 EPFL)
