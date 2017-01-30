@@ -34,8 +34,7 @@ class Tables:
                               'Transcript',
                               'Session',
                               'Person',
-                              'adj',
-                              'People']
+                              'adj']
         self.check_data_exists()
         self.df = {}
         for table in self.needed_tables:
