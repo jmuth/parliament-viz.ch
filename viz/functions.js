@@ -52,60 +52,77 @@ function emphasisAndShowInfo(d) {
             document.getElementById("councilorCouncil_add").innerHTML = d.CouncilName;
             document.getElementById("councilorBirthday_add").innerHTML = d.DateOfBirth;
             document.getElementById("councilorCanton_add").innerHTML = d.CantonName;
-            document.getElementById("councilorImage_add").src = "data/portraits/" + d.PersonIdCode + ".jpg";
-            document.getElementById("councilorImage_add").alt = d.FirstName + " " + d.LastName;
+            if(cluster_active) {
+                $('#counc_img').css('display', 'none');
+            } else {
+                $('#counc_img').css('display', 'block');
+                document.getElementById("councilorImage_add").src = "data/portraits/" + d.PersonIdCode + ".jpg";
+                document.getElementById("councilorImage_add").alt = d.FirstName + " " + d.LastName;
+            }
         }
+    }
+
+    if(cluster_active && node_selected) {
+        $('#new_line').css('display', 'block');
+    } else {
+        $('#new_line').css('display', 'none');
     }
 
     // We check if the clusterisation is active
     if(cluster_active) {
-
-        // Display the additional information about the cluster
-        $('#additional-info-card').css('display', 'block');
-        $('#add_info_cluster').css('display', 'block');
-
-        // Get the number of councilors in the cluster in which
-        // he/she belongs. (Depends on the selected councils)
-        var nn = 0;
-
-        if(national) {
-            nn += get_elem_focus(d, "nbr_CN");
-        }
-        if(states) {
-            nn += get_elem_focus(d, "nbr_CE");
-        }
-        if(federal) {
-            nn += get_elem_focus(d, "nbr_CF");
-        }
-
-        // Display this number
-        if(nn > 1) {
-            document.getElementById("cluster_nbr").innerHTML = nn + " councilors";
-        } else {
-            document.getElementById("cluster_nbr").innerHTML = nn + " councilor";
-        }
-
-        // Prepare the Clusterisation information
-        var str = "";//"<b>Clusterisation </b>: <br>";
-
-        if(foci_order.length == 0) {
-            str += "&#8226; All the councilors. <br>"
-        } else {
-            for(var i=0; i<foci_order.length; i++) {
-                str += "&#8226; " + text_info_cluster(foci_order[i]) + ": " + texts[foci_order[i]][d[foci_order[i]]] + "<br>";
-            }
-        }
-
-        // Show it
-        document.getElementById("cluster_info").innerHTML = str;
-
+        showInfoCluster(d);
     }
+}
+
+function showInfoCluster(d) {
+    // Display the additional information about the cluster
+    $('#additional-info-card').css('display', 'block');
+    $('#add_info_cluster').css('display', 'block');
+
+    // Get the number of councilors in the cluster in which
+    // he/she belongs. (Depends on the selected councils)
+    var nn = 0;
+
+    if(national) {
+        nn += get_elem_focus(d, "nbr_CN");
+    }
+    if(states) {
+        nn += get_elem_focus(d, "nbr_CE");
+    }
+    if(federal) {
+        nn += get_elem_focus(d, "nbr_CF");
+    }
+
+    // Display this number
+    if(nn > 1) {
+        document.getElementById("cluster_nbr").innerHTML = nn + " councilors";
+    } else {
+        document.getElementById("cluster_nbr").innerHTML = nn + " councilor";
+    }
+
+    // Prepare the Clusterisation information
+    var str = "";//"<b>Clusterisation </b>: <br>";
+
+    if(foci_order.length == 0) {
+        str += "&#8226; All the councilors. <br>"
+    } else {
+        for(var i=0; i<foci_order.length; i++) {
+            str += "&#8226; " + text_info_cluster(foci_order[i]) + ": " + texts[foci_order[i]][d[foci_order[i]]] + "<br>";
+        }
+    }
+
+    // Show it
+    document.getElementById("cluster_info").innerHTML = str;
 }
 
 // Function defining what's happening when the user clicks on a node
 function clicked(d) {
     // First, we get the node in which
     var node = d3.select(this);
+
+    if(cluster_active) {
+        showInfoCluster(d);
+    }
 
     // If the node isn't already selected
     if(d.selected == false) {

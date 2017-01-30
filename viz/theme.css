@@ -82,3 +82,7 @@ hr {
 .copyright {
     horiz-align: left;
 }
+
+#div_friends {
+    height: 202px;
+}

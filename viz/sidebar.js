@@ -462,7 +462,7 @@ function clickedBox(o) {
 // Redraw the interest and timeline if the window has been resized
 function window_resized() {
     if (new Date() - rtime < delta) {
-        setTimeout(resizeend, delta);
+        setTimeout(window_resized, delta);
     } else {
         timeout = false;
         if(node_id != null) {

@@ -412,6 +412,6 @@ $(window).resize(function() {
     rtime = new Date();
     if (timeout === false) {
         timeout = true;
-        setTimeout(resizeend, delta);
+        setTimeout(window_resized, delta);
     }
 });
