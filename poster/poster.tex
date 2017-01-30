@@ -112,7 +112,11 @@
 
 \begin{block}{Introduction}
 
+<<<<<<< Updated upstream
 This project represents the final point of {\bf Applied Data Analysis} course, taught by Michele Catasta in 2016. We put into practice the analysis of real-world data, following the whole pipeline from {\bf scraping} to {\bf interactive visualization}. By doing so we experienced the \textbf{real-world challenges} that arise in such a project. Our case study focuses on the data available on \url{hwww.parliament.ch} which describe all publicly available activities of the Swiss Parliament.
+=======
+This project represents the final point of the {\bf Applied Data Analysis} course taught by Michele Catasta in 2016. We put into practice an analysis of real-world data and followed the whole pipeline, from {\bf scraping} to an {\bf interactive visualization}. By doing so we experienced first-hand the \textbf{real-world challenges} that arise in such a project. Our case study focus on the data available on \url{hwww.parliament.ch} which describes all publicly available activities of the Swiss Parliament.
+>>>>>>> Stashed changes
 
 \end{block}
 
@@ -122,7 +126,11 @@ This project represents the final point of {\bf Applied Data Analysis} course, t
 
 \begin{block}{Motivation}
 
+<<<<<<< Updated upstream
 Since the \textbf{Freedom of Information Act} entered into force (on 1 July 2006) a huge amount of data related to political activities is freely available to the public. However, it represents a large number of hardly understandable documents. We suggest an interface giving a \textbf{light overview} of Swiss parliamentary activities.
+=======
+Since the \textbf{The Freedom of Information Act} entered into force (on 1 July 2006) a huge amount of data related to political activities is freely available to the public. However, it represents a big amount of documents hardly understandable. We suggest an interface giving a \textbf{light overview} of the Swiss parliamentary activities.
+>>>>>>> Stashed changes
 
 \end{block}
 
@@ -132,6 +140,7 @@ Since the \textbf{Freedom of Information Act} entered into force (on 1 July 2006
 
 \begin{alertblock}{1. Data Acquisition}
 
+<<<<<<< Updated upstream
 Parliament IT service provides an API which allows direct access to database tables. However, it presents some restrictions:
 
 \begin{itemize}
@@ -140,6 +149,16 @@ Parliament IT service provides an API which allows direct access to database tab
 \end{itemize}
 
 To overcome these issues we developed a Python scraper that bypasses these restrictions.
+=======
+The Parliament IT service provided us with an API, which allows direct access to database tables. However, it presented some restrictions:
+
+\begin{itemize}
+\item \textbf{Limited} number ofreturned items per request
+\item A \textbf{timeout} so short it prevented us from using \texttt{skip} to access the last elements of big tables.
+\end{itemize}
+
+To overcome these issues, we developed a python scraper that bypasses these restrictions.
+>>>>>>> Stashed changes
 
 \end{alertblock}
 
@@ -186,7 +205,11 @@ The database tables collected contain numerous problems:
 
 \begin{alertblock}{3. Constraints}
 
+<<<<<<< Updated upstream
 As we are working on data involving public people, we refrain from any \textbf{subjective interpretation}. Instead, we focus on a visualization tool that other people (e.g. journalists) can use to draw conclusions. Hence, it needed to be transparent enough to be trusted.
+=======
+As we are working on data involving public people, we refrain from giving any \textbf{subjective interprepretation}. Instead, we focus on a visualization tool that other people (e.g. journalists) can use to draw conclusions. Hence, it needs to be transparent enough to be trusted.
+>>>>>>> Stashed changes
 
 
 \end{alertblock}
