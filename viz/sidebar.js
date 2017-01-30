@@ -262,6 +262,8 @@ function showInterests(id) {
             .attr("y", function (d) {
                 return y(d.int);
             })
+            .on('mouseover', function(d, i) { interestOver(id, i);})
+            .on('mouseleave', function(d) { interestOut(str);})
             .attr('fill', 'red')
             .attr("width", x.bandwidth())
             .attr("height", function (d) {
