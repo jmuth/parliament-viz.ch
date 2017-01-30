@@ -112,7 +112,7 @@
 
 \begin{block}{Introduction}
 
-This project represents the final point of {\bf Applied Data Analysis} course, taught by Michele Catasta in 2016. We put into practice the analysis of real-world data, following the whole pipeline, from {\bf scraping} to {\bf interactive visualization}. We experiment what are the \textbf{real-world challenges} encountered in such a project. Our case study focuses on the data available on \url{hwww.parliament.ch} which describe all publicly available activities of Swiss parliamentary deputies.
+This project represents the final point of {\bf Applied Data Analysis} course, taught by Michele Catasta in 2016. We put into practice the analysis of real-world data, following the whole pipeline from {\bf scraping} to {\bf interactive visualization}. By doing so we experienced the \textbf{real-world challenges} that arise in such a project. Our case study focuses on the data available on \url{hwww.parliament.ch} which describe all publicly available activities of the Swiss Parliament.
 
 \end{block}
 
@@ -122,7 +122,7 @@ This project represents the final point of {\bf Applied Data Analysis} course, t
 
 \begin{block}{Motivation}
 
-Since the \textbf{Freedom of Information Act} entered into force (on 1 July 2006) a huge amount of data related to political activities are freely available to the public. However, it represents a large number of documents hardly understandable. We suggest an interface giving \textbf{light overview} of Swiss parliamentarians.
+Since the \textbf{Freedom of Information Act} entered into force (on 1 July 2006) a huge amount of data related to political activities is freely available to the public. However, it represents a large number of hardly understandable documents. We suggest an interface giving a \textbf{light overview} of Swiss parliamentary activities.
 
 \end{block}
 
@@ -132,14 +132,14 @@ Since the \textbf{Freedom of Information Act} entered into force (on 1 July 2006
 
 \begin{alertblock}{1. Data Acquisition}
 
-Parliament IT service provides an API, which allows direct access to database tables. However, it presents some restrictions:
+Parliament IT service provides an API which allows direct access to database tables. However, it presents some restrictions:
 
 \begin{itemize}
-\item \textbf{Limited} returned items per request
-\item Too short \textbf{timeout}, forbidden the use of \texttt{skip} to access last elements of big tables.
+\item \textbf{Limited} number of returned items per request
+\item A \textbf{timeout} so short it makes it impossible to use \texttt{skip} to access last elements of big tables.
 \end{itemize}
 
-We develop a python scrapper that bypass these restrictions.
+To overcome these issues we developed a Python scraper that bypasses these restrictions.
 
 \end{alertblock}
 
@@ -153,7 +153,7 @@ The database tables collected contain numerous problems:
 \begin{itemize}
 \item Hashed primary key (ID)
 \item Multiple entries for same item in different languages
-\item 3 different IDs to designate a parliamentary
+\item 3 different IDs to designate a member of parliament
 \end{itemize}
 
 \end{alertblock}
@@ -184,9 +184,9 @@ The database tables collected contain numerous problems:
 %	3. RESTRICTION
 %----------------------------------------------------------------------------------------
 
-\begin{alertblock}{3. Constraints choices}
+\begin{alertblock}{3. Constraints}
 
-As working on data involving public peoples, we forbid ourselves for any \textbf{subjective interpretations}. Instead, we focus on a visualization tool from which other people (e.g. journalist) can draw conclusions. Hence, it needed to be transparent enough to be trusted.
+As we are working on data involving public people, we refrain from any \textbf{subjective interpretation}. Instead, we focus on a visualization tool that other people (e.g. journalists) can use to draw conclusions. Hence, it needed to be transparent enough to be trusted.
 
 
 \end{alertblock}
@@ -208,7 +208,7 @@ As working on data involving public peoples, we forbid ourselves for any \textbf
 Under reasonable assumptions:
 \begin{itemize}
 \item \textbf{Involvement:} number of speeches and initiatives
-\item \textbf{Interests:} distribution of wrote and signed initiatives between themes.
+\item \textbf{Interests:} distribution of written and signed initiatives among themes.
 \item \textbf{Partnerships:} cosigned initiatives.
 \end{itemize}
 
@@ -249,7 +249,7 @@ Under reasonable assumptions:
 
 \begin{block}{Conclusion}
 
-This project gives an \textbf{overview of some challenges} that could be encountered at each step of the process, when trying to analyse real-world data. It puts in evidence the interdisciplinarity of data analysis, requiring the full range of skills: \textbf{codding} to master the numerous IT tools; \textbf{analytical} to take on what to focus on; \textbf{curiosity} to understand the field where data come from; \textbf{social} to interact with domain experts and understand their point of view.
+This project gives an \textbf{overview of some challenges} that can be encountered at each step of the process when trying to analyse real-world data. It highlights the interdisciplinarity of data analysis, requiring the full range of skills: \textbf{coding} to master the numerous IT tools; \textbf{analytical} to decide what to focus on; \textbf{curiosity} to understand the field the data come from; \textbf{social} to interact with domain experts and understand their point of view.
 
 \end{block}
 
@@ -266,9 +266,9 @@ This project gives an \textbf{overview of some challenges} that could be encount
 \begin{block}{Involved IT tools}
 
 \begin{itemize}
-\item Scrapping and data analysis with \textbf{Python}, enhanced with Pandas, NumPy and SciPy libraries.
-\item Visualization with \textbf{JavaScript}, enhanced with D3JS and JQuery
-\item Website with \textbf{Bootstrap}.
+\item Scraping and data analysis with \textbf{Python}, enhanced with Pandas, NumPy and SciPy libraries.
+\item Visualization with \textbf{JavaScript}, enhanced with D3.js and JQuery
+\item Website design with \textbf{Bootstrap}.
 \end{itemize}
 
 
@@ -301,9 +301,9 @@ This project gives an \textbf{overview of some challenges} that could be encount
 We want the visualization to be: 
 \begin{itemize}
 \item \textbf{Intuitive} enough to be used without explanation.
-\item \textbf{Enjoyable}, so people have fun playing with it.
-\item \textbf{One page sized}, to lower complexity
-\item View per \textbf{deputy} or per \textbf{agglomerated group}.
+\item \textbf{Enjoyable}, so people have fun exploring it.
+\item \textbf{Single-Page}, to lower complexity
+\item Focused on the \textbf{individuals} or \textbf{agglomerated groups}.
 \end{itemize}
 
 
@@ -313,7 +313,7 @@ We want the visualization to be:
 %	6. DOMAIN EXPERT
 %----------------------------------------------------------------------------------------
 
-\begin{alertblock}{6. Assessment from Domain Expert}
+\begin{alertblock}{6. Assessment from Domain Experts}
 
 Meeting with \textbf{Alain Rebetez}, political journalist, and \textbf{Philippe Nantermod}, PLR deputy.
 
@@ -355,7 +355,7 @@ Go back to point 3 and iterate until reaching the deadline :)
 
 \begin{block}{Acknowledgements}
 
-\small{\rmfamily{A warm thank you to \textbf{Alain Rebetez}, political journalist, and \textbf{Philippe Nantermod}, PLR deputy at National Council, for their expertise in Swiss parliamentary system and their external point of view about the project.}} \\
+\small{\rmfamily{A warm thank you to \textbf{Alain Rebetez}, political journalist, and \textbf{Philippe Nantermod}, PLR deputy in the National Council, for their expertise in the Swiss parliamentary system and their external point of view on the project.}} \\
 
 \end{block}
 
