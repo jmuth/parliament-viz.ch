@@ -119,3 +119,7 @@ h1 {
 .title {
     horiz-align: center;
 }
+
+.dl-horizontal dt {
+    white-space: normal;
+}

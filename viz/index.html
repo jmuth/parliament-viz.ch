@@ -102,10 +102,11 @@
 
 <div class="jumbotron" id="title">
     <h1 class="display-3">Swiss Parliament Visualization</h1>
-    <img src="assets/img/logo_high_res.png" height="250">
+    <img src="assets/img/logo_high_res.png" width="70%">
 </div>
 
-<div class="container" id="about">
+<div class="container">
+    <div id="about"></div><br>
     <div class="page-header">
         <h1>About this project</h1>
     </div>
@@ -430,11 +431,15 @@
         <br><br>
         This visualization is <b>focused on the councilors and their interactions</b> inside the parliament. The base
         visualization shows where the councilors are sitting in the parliament. Each circle represent one of the councilor.
+
+        <h2>Moving the mouse over a circle</h2>
+
         If you move your mouse over one of the circle, you will get information about this councilor. You will also see
         that some points become transparent. This is used to show the relations between one councilor and all of the others.
         If the other circles are opaque, this means that the two councilors have a strong relationship. On the other hand,
         a transparent circle means that the two councilors do not have a strong relationship. On the right panel, you can
         choose between two type of relations:
+
         <dl class="dl-horizontal">
             <dt>Co-signed motions</dt>
             <dd>The cosigners are the councilors who signed the motion proposed by the selected councilor.</dd>
@@ -442,8 +447,18 @@
             <dd>The speakers are the councilors who spoke with the selected councilor in the same debate.</dd>
         </dl>
 
+        The list of relations will also be shown sorted by the relationship between the selected councilor and all the
+        other councilors.
+        <br>
+        You can also click on a councilor to select him/her. Then you can move your mouser over the other councilors to
+        get a few information on the right (under the options). If you want to deselect a councilor, you have to click on
+        him/her again.
 
-        <h2>Opacity</h2>
+        <h2>Right panel</h2>
+
+        The right panel will provide you some information about the councilor. At the top, some basic information are given.
+        Then the timeline of their intervention is provided. If you move your mouse over a bar, you will get a bit more
+        information.
 
 
         <div id="authors"></div>
