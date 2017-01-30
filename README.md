@@ -112,22 +112,25 @@ The website contains more information on page [About](http://www.parliament-viz.
   - **November 9th, 2016**: Developing Python scraper
   - **November 17th, 2016**: Developing Python NLP analyser
   - **December 1st, 2016**: First cluster visualization
-  - **December 8th, 2016**: Without success, abandon of NLP tool for theme extraction
-  
-  
+  - **December 6th, 2016**: Phone appointment with **Alain Rebetez**
+    - Discussion about the paliamentary system
+    - Discussion about what kind of informations could interest a journalist 
+    - Reorientation of the project, more on visualization, less on interpretation
+  - **December 8th, 2016**: Abandon of NLP tool for theme extraction, according with reorientation
   - **January 3rd, 2016**: First "parliament-overview" visualization
-  - **November 27th, 2016**: Content extraction of the official bulletins using NLP tools (speaker, themes, ...) ✘ 
-  - [UPD] Topics will be extracted from tags
-  - **December 11th, 2016**: First interactive data visualization (local hosted) ✔
-  - **Mid-December, 2016**: Checkpoint ✔
-  - **January 1st, 2017**: Growing of the database
-  - [ADD] Distinction between speeches as reporter and questions in participation scale.
-  - [ADD] Focus on initiatives and interventions.
-  - [ADD] Friendship though co-signatures.
-  - **January 15th, 2017**: website design for user-friendly visualization
-  - **January 31th, 2017**: Final deadline
+  - **January 6th, 2017**: Meeting with **Philippe Nantermod**
+    - Discussion about the paliamentary system
+    - Demonstration of the visualization and how intuitive it looks like for an external user
+    - New ideas about how extract partnerships and interests of deputies
+  - **January 20th, 2017**: Partnerships based on cosigned initiatives
+  - **January 23th, 2017**: Merge of the two visualization: "parliament-overview" and "clusters"
+  - **January 24th, 2017**: Interests based on theme of redacted initiatives
+  - **January 28th, 2017**: Sub-clusters and majority by moving clusters into the visualization
+  - **January 29th, 2017**: Website
+  - **January 30th, 2017**: Poster
+  - **January 31th, 2017**: Project presentation at **Applied Machine Learning Days** (EPFL)
 
 ## Acknowledgements
-A warm thank you to **Alain Rebetez**, political journalist, and **Philippe Nantermod**, PLR deputy at National Council, for their expertise in Swiss parliamentary system and their external point of view about the project.
+A warm thank you to **Alain Rebetez**, political journalist, **Philippe Nantermod**, PLR deputy at National Council, and **Mathias Reynard**, PS deputy, for their expertise in Swiss parliamentary system, their advice and their external point of view about the project.
 
 
