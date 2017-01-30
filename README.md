@@ -5,16 +5,13 @@
 
 [Gael Lederrey](https://github.com/glederrey), [Jonas Racine](https://github.com/jonasracine) and [Joachim Muth](https://github.com/jmuth)
 
-The current drafts of visualizations are available on website:
-  * [Draft 1](http://178.62.67.149)
-  * [Draft 2](http://178.62.67.149/parl/parliament.html)
-
+Find the final visualization at [www.parliament-viz.ch](http://www.parliament-viz.ch)
 
 ## Similar Project
 
 A project about predictions on the same data exists [here](https://github.com/thom056/ada-parliament-ML). 
 
-It is possible that, in the future, both teams will work together. 
+Both teams collaborated on various aspects of the project, including the *scraping* and the understanding of the data.
 
 ## Abstract
 
@@ -23,64 +20,32 @@ It is possible that, in the future, both teams will work together.
 > official documents produced after 1 July 2006.
 >- [Swiss Parliament Website](https://www.parlament.ch/en/services/freedom-of-information-act)
 
-The motivation for this project comes from the gulf existing between the political world and citizens. Even though all the information
-is freely accessible on the official website of the Swiss Parliament, it amounts to a substantial number of papers and is hard to understand. Grabbing 
-all the official 
-bulletins produced during national assemblies, we will provide a clear and understandable summary of what main subjects are being
-discussed during each session, who are the speakers and which party are they affiliated with. This summary will be presented as a D3 data visualization tool, and will be accessible through a web page.
+The motivation for this project comes from the gulf existing between the political community and citizens. However, it represents a large number of hardly understandable documents. We suggest a visualization of what could be a light and user-friendly public interface of Swiss parliament activities.
 
 ## Data description
-The whole data schema is accessible through [metadata web page](https://ws.parlament.ch/odata.svc/$metadata).
+The whole data schema is accessible through [metadata web page](https://ws.parlament.ch/odata.svc/$metadata) and can be explored using [Pragmatica WOData visualization tool](https://pragmatiqa.com/xodata/)
 
-*This is a first look at the data, and will become far more precise as we work through it.*
+We provide here a short summary (when the name is not self-explaining) of the main tables we consider in the project.
 
-### Official bulletins
+* **Transcript** contains textual transcription of all speeches made during regular parlamentary session.
 
+* **Business** contains initiatives (motions, postulates, interpellation, ordinary questions, questions) made by deputies.
 
+* **BusinessRole** contains role of each deputy in initiatives (author, cosignee, ...)
 
-[Official website of Swiss parliament - Official bulletins](https://www.parlament.ch/en/ratsbetrieb/suche-amtliches-bulletin)
+* **BusinessStatus**
 
+* **BusinessType**
 
-Type of Procedure:        |
----------------------------
-Question hour             |
-Canton Initiative         |
-Parliament Initiative     |
-Interpellation            |
-Motion                    |
-Federal Council Object    |
-Parliament Object         |
-Postulate                 |
-Petition                  |
-Question                  |
-Urgent Question           |
+* **MemberCoucil** lists all parliament deputies
 
+* **MemberParty**
 
-Each procedure can go though different debate:                  |     *details*
-----------------------------------------------------------------| ----------------------------------------------------------
-Advice (Rat)                | *First Advice*
-                            | *Second Advice*
-Differences (Differenzen)   | *Main debate*
-Continuation (Fortsetzung)  | *Delayed debate*
-Vote (Abstimmung)           |
+* **Party**
 
-Official bulletins contains:                      |     *details*
---------------------------------------------------|--------------------------------
-Subject                                           |
-Date                                              |
-Kind of parliamentary chamber                     | *Council of States (46 deputies: cantons-equitable)*
-                                                  | *National Council (200 deputies: proportional to canton population)*
-                                                  | *United Federal Assembly (both unified)*
-Course of Debate                                  | *List of speakers (+ canton and political party)*                       
-Full speeches of all speakers                     |
+* **Session** contains the date of each parliamentary session
 
-### Session briefings
-[Official website of Swiss parliament - Session briefings](https://www.parlament.ch/en/ratsbetrieb/sessions/overview-briefings)
-
-The briefings are PDF summaries of all objects debated during parliamentary sessions. Could be a good starting point to create a frame of
-our project.
-
-
+* **Tags** classifies the initiatives into themes
 
 
 ## Feasibility and Risks
@@ -127,14 +92,30 @@ The D3 javaScript library will allow us to design a clean and interactive visual
 
 ## Deliverables 
 
-The final product will take the form of an online website presenting different interactive visualization of Swiss Parliament data. This website will be hosted on github. These interactive visualizations will be built with the d3.js library
+The final product takes the form of an online website presenting an interactive visualization of Swiss Parliament deputies activity. This website will be on [parliament-viz.ch](www.paliament-viz.ch). 
 
-Visitors will be able to see the evolution of frequencies of specific themes in chronologic order. They will also be able to focus on the importance of one theme within each session. Visitors will be able to focus on one speaker or one political party to see their preferred subjects and their evolution in time.
+This visualization on:
+* the d3.js library
+* jQuery
+* bootstrap
 
-## Timeplan
+Visitors have a general overview of the parliament where they can fly over each point and see some information about the deputy. Additionnaly, the whole parliament recolor itself to show the partnership the deputy maintains with the others.
 
-  - **November 6th, 2016**: Start of the project ✔
-  - **November 13th, 2016**: Data scraping and parsing of a first usable dataset ✔
+A second visualization can seen by clicking the "Clustering" button, where the visitor can group the deputies on some criterias, as well as color them.
+
+The website contains more information on page [About](http://www.parliament-viz.ch/#about)
+
+## Chronology
+
+  - **October 26th, 2016**: Start of the project
+  - **November 6th, 2016**: Project approval
+  - **November 9th, 2016**: Developing Python scraper
+  - **November 17th, 2016**: Developing Python NLP analyser
+  - **December 1st, 2016**: First cluster visualization
+  - **December 8th, 2016**: Without success, abandon of NLP tool for theme extraction
+  
+  
+  - **January 3rd, 2016**: First "parliament-overview" visualization
   - **November 27th, 2016**: Content extraction of the official bulletins using NLP tools (speaker, themes, ...) ✘ 
   - [UPD] Topics will be extracted from tags
   - **December 11th, 2016**: First interactive data visualization (local hosted) ✔
