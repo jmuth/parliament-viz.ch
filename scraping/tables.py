@@ -34,16 +34,77 @@ class Tables:
                               'Transcript',
                               'Session',
                               'Person',
-                              'adj']
+                              'adj',
+                              'People']
         self.check_data_exists()
         self.df = {}
         for table in self.needed_tables:
             self.df[table] = pd.read_csv('data/' + table + '.csv')
 
+    def get_friends(self, adj):
+        # sorts a person's friends in decreasing order of collaboration
+        dico = {}
+        for i in adj.index:
+            row = adj.loc[i].sort_values(ascending=False)
+            friends = []
+            for j, k in row.iteritems():
+                if k.item() > 0:
+                    sub_dico = {'friend': j, 'number': k.item()}
+                    friends.append(sub_dico)
+            dico[i.item()] = friends
+        return dico
+
     def cosigner(self):
         friends = self.relation_between_person('Auteur', 'Cosignataire')
+        adj_name = 'adj_cosign'
+        friends_name = 'friends_cosign'
 
-        return friends
+        def get_cosign_friends(matrix, person_number):
+            x = matrix[person_number,:].nonzero()[1]
+            y = matrix[person_number,:].data[0]
+
+            df = pd.DataFrame({'Person_num':x, 'times_cosigner':y })
+            df = df.sort_values(by='times_cosigner', ascending=False)
+            df = df.reset_index(drop=True)
+            return df
+
+        zero_adj = self.df['adj'].set_index('PersonIdCode')
+        people = self.df['People'].set_index('PersonIdCode')
+
+        def fill_adj(adj, people):
+            # getting a list of active members (we're only interested in them)
+            active = people.PersonNumber.tolist()
+            print(active)
+            # going through an empty adj matrix with PersonIdCodes as rows and columns
+            for row in adj.iterrows():
+                person_id = row[0]
+                # converting from PersonIdCode to PersonNumber for friends search
+                person_number = people.loc[person_id].PersonNumber
+                # searching co-sign friends w/ the function defined above
+                friends_matrix = get_cosign_friends(friends, person_number)
+                # looping through friends to fill the matrix
+                for friend in friends_matrix.iterrows():
+                    # checking if active
+                    if friend[1].Person_num in active:
+                        # converting from PersonNumber to PersonIdCode
+                        friend_id = people.loc[people.PersonNumber == friend[1].Person_num].index.tolist()[0]
+                        # Updating matrix
+                        adj.loc[person_id, str(friend_id)] = friend[1].times_cosigner
+            return adj
+
+        adj = fill_adj(zero_adj, people)
+        friends = self.get_friends(adj)
+
+        filepath = 'data/'+friends_name+'.json'
+        with open(filepath, 'w') as fp:
+            json.dump(friends, fp)
+
+        print("[INFO] JSON created in file ", filepath)
+
+        filepath = 'data/' + adj_name + '.json'
+        adj.to_csv('data/bitch.csv')
+        adj.to_json(filepath, orient='index')
+        print("[INFO] JSON created in file ", filepath)
 
     def opponent(self):
         opponents = self.relation_between_person('Auteur', 'Opposant(e)')
@@ -175,19 +236,6 @@ class Tables:
         df_interest = df_interest.drop(['index', 'MemberCouncilNumber'], axis=1)
 
         return df_interest
-
-    def get_friends(self, adj):
-        # sorts a person's friends in decreasing order of collaboration
-        dico = {}
-        for i in adj.index:
-            row = adj.loc[i].sort_values(ascending=False)
-            friends = []
-            for j, k in row.iteritems():
-                if k.item() > 0:
-                    sub_dico = {'friend': j, 'number': k.item()}
-                    friends.append(sub_dico)
-            dico[i.item()] = friends
-        return dico
 
     def get_short_transcripts(self, limit):
         # returns a transcript sub-table with only
