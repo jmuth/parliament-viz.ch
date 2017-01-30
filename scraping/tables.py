@@ -11,6 +11,7 @@ import numpy as np
 import scipy.sparse as sp
 import os.path
 import sys
+import itertools
 from collections import defaultdict
 
 
@@ -32,7 +33,8 @@ class Tables:
                               'Active_People',
                               'Transcript',
                               'Session',
-                              'Person']
+                              'Person',
+                              'adj']
         self.check_data_exists()
         self.df = {}
         for table in self.needed_tables:
@@ -174,6 +176,24 @@ class Tables:
 
         return df_interest
 
+    def get_short_transcripts(self, limit):
+        # returns a transcript sub-table with only
+        # transcripts longer than limit
+        def word_counter(df):
+            if type(df['Text']) == float:
+                return 0
+            else:
+                return len(df['Text'].split())
+
+        transcripts = self.df['Transcript']
+        # filter transcription with PersonIdField
+        transcripts = transcripts[np.isfinite(transcripts['PersonNumber'])]
+        transcripts['PersonNumber'] = transcripts['PersonNumber'].astype(int)
+
+        # filter long intervention
+        transcripts['NumberWord'] = transcripts.apply(word_counter, axis=1)
+        return transcripts.loc[transcripts.NumberWord > limit]
+
     def interventions(self, filename=None):
         transcripts = self.df['Transcript']
         sessions = self.df['Session']
@@ -182,25 +202,13 @@ class Tables:
         if filename is None:
             filename = 'interventions'
 
-        def word_counter(df):
-            if type(df['Text']) == float:
-                return 0
-            else:
-                return len(df['Text'].split())
-
         def define_year(df):
             return year_dict[df['IdSession']]
 
         def get_year(df):
             return int(df.StartDate[:4])
 
-        # filter transcription with PersonIdField
-        transcripts = transcripts[np.isfinite(transcripts['PersonNumber'])]
-        transcripts['PersonNumber'] = transcripts['PersonNumber'].astype(int)
-
-        # filter long intervention
-        transcripts['NumberWord'] = transcripts.apply(word_counter, axis=1)
-        df_long = transcripts.loc[transcripts.NumberWord > 30]
+        df_long = self.get_short_transcripts(30)
 
         # link session number to year
         sessions.set_index('ID', inplace=True)
@@ -214,6 +222,7 @@ class Tables:
         # table : PersonNumber, year, interventions
         interventions = pd.DataFrame(df_long.groupby(['PersonNumber', 'year']).size().rename('Counts'))
         interventions = interventions.reset_index()
+        print(interventions)
 
         # table : year, median intervention per person
         median = interventions.groupby('year').agg('median')
@@ -252,3 +261,74 @@ class Tables:
             print("[INFO] JSON created in file ", filepath)
 
         return dic
+
+    def adj_interventions(self):
+
+        # builds one PersonNumber PersonIdCode map
+        # instead of querying 
+        def person_number_to_id(active_ids, ppl):
+            dico = {}
+            active_numbers = []
+            for row in ppl.iterrows():
+                row = row[1]
+                id_code = int(row['PersonIdCode'])
+                number = row['PersonNumber']
+                if id_code in active_ids:
+                    dico[number] = id_code
+                    active_numbers.append(number)
+            return dico, active_numbers
+
+        def combine(l, n):
+            # gets all permutated n-uples out of the list l
+            return list(itertools.combinations(l, n))
+
+        def update_adj(adj, pair):
+            # updates adjacency matrix
+            # creates weighted adj matrix
+            try:
+                adj.loc[pair[0], str(pair[1])] += 1
+                adj.loc[pair[1], str(pair[0])] += 1
+                #print('adj updated')
+            except:
+                #print('adj: not an active pair')
+                pass
+            #print(' ')
+
+        def populate_adj(adj, df, dico, active_numbers, subjects):
+            for subj in subjects:
+                one = df.loc[df.IdSubject == subj]
+                people = one.PersonNumber.unique().tolist()
+                pairs = combine(people, 2)
+                if len(pairs) > 0:
+                    for pair in pairs:
+                        if (pair[0] in active_numbers) and (pair[1] in active_numbers):
+                            pair = [int(dico[pair[0]]), int(dico[pair[1]])]
+                            #print(pair)
+                            update_adj(adj, pair)
+                #print('subject '+str(subj)+' done!')
+            return adj
+
+        adj_name = 'adj'
+        friends_name = 'friends'
+
+        zero_adj = self.df['adj'].set_index('PersonIdCode')
+        active_ids = list(zero_adj.index)
+
+        ppl = self.df['Person'].dropna(axis=0, subset=['PersonNumber', 'PersonIdCode'])
+
+        transcripts = self.get_short_transcripts(30)
+        subjects = transcripts['IdSubject'].unique().tolist()
+        dico, active_numbers = person_number_to_id(active_ids, ppl)
+
+        adja = populate_adj(zero_adj, transcripts, dico, active_numbers, subjects)
+        filepath = 'data/' + adj_name + '.json'
+        adja.to_json(filepath, orient='index')
+        print("[INFO] JSON created in file ", filepath)
+        return adja
+
+
+
+
+
+
+
