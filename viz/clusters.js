@@ -450,7 +450,7 @@ function radius_focus(n) {
 // Disable the checkboxes for the clustes
 function disable_checkboxes() {
     // document.getElementById("cluster_type").style.display = 'none';
-    $( "#cluster_type" ).show("slow")
+    $( "#cluster_type" ).hide("slow")
     // Disable all the cluster choices
     document.getElementById("btn_council").disabled = true;
     document.getElementById("btn_party").disabled = true;

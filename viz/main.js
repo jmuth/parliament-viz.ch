@@ -395,7 +395,7 @@ function ticked() {
     remove_non_wanted_council();
 
     // Check if the window has been resized and update the graph
-    window_resized();
+    //window_resized();
 
     // Apply the gravity on the nodes (defined in clusters.js)
     node
@@ -405,13 +405,15 @@ function ticked() {
 }
 
 // Checking if the window is being resized
-var rtime;
-var timeout = false;
-var delta = 200;
-$(window).resize(function() {
-    rtime = new Date();
-    if (timeout === false) {
-        timeout = true;
-        setTimeout(window_resized, delta);
-    }
+var resizeTimer;
+$(window).on('resize', function(e) {
+
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+
+        // Run code here, resizing has "stopped"
+        window_resized();
+
+    }, 100);
+
 });

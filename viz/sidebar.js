@@ -273,7 +273,7 @@ function showInterests(id) {
 
 // Function to display information about the interests
 function interestOver(id, i) {
-    window.alert("PROUT");
+    console.log(document.getElementById('interest_info').innerHTML);
     if(interest_type == "all") {
         var val_auth = authors[id][i]["int"];
         var val_cos = interests_json[id][i]["int"] - val_auth;
@@ -460,15 +460,10 @@ function clickedBox(o) {
 
 // Redraw the interest and timeline if the window has been resized
 function window_resized() {
-    if (new Date() - rtime < delta) {
-        setTimeout(window_resized, delta);
-    } else {
-        timeout = false;
-        if(node_id != null) {
-            var max_width = document.getElementById('int_timeline').clientWidth;
-            barWidth = max_width - bGMargin.left - bGMargin.right;
-            showTimeline(node_id);
-            showInterests(node_id);
-        }
+    if(node_id != null) {
+        var max_width = document.getElementById('int_timeline').clientWidth;
+        barWidth = max_width - bGMargin.left - bGMargin.right;
+        showTimeline(node_id);
+        showInterests(node_id);
     }
 }
