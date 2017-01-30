@@ -69,7 +69,7 @@ class Tables:
             return df
 
         zero_adj = self.df['adj'].set_index('PersonIdCode')
-        people = self.df['People'].set_index('PersonIdCode')
+        people = self.df['Active_People'].set_index('PersonIdCode')
 
         def fill_adj(adj, people):
             # getting a list of active members (we're only interested in them)
@@ -77,7 +77,7 @@ class Tables:
             print(active)
             # going through an empty adj matrix with PersonIdCodes as rows and columns
             for row in adj.iterrows():
-                person_id = row[0]
+                person_id = int(row[0])
                 # converting from PersonIdCode to PersonNumber for friends search
                 person_number = people.loc[person_id].PersonNumber
                 # searching co-sign friends w/ the function defined above
@@ -87,7 +87,7 @@ class Tables:
                     # checking if active
                     if friend[1].Person_num in active:
                         # converting from PersonNumber to PersonIdCode
-                        friend_id = people.loc[people.PersonNumber == friend[1].Person_num].index.tolist()[0]
+                        friend_id = int(people.loc[people.PersonNumber == friend[1].Person_num].index.tolist()[0])
                         # Updating matrix
                         adj.loc[person_id, str(friend_id)] = friend[1].times_cosigner
             return adj
