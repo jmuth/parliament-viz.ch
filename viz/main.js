@@ -89,7 +89,7 @@ var legend = d3.select("div#legend")
 var bGMargin = {top: 10, right: 10, bottom: 10, left: 30};
 
 // Warning: do not update itself if you resize the window
-var max_width = document.getElementById('int_timeline').clientWidth
+var max_width = document.getElementById('int_timeline').clientWidth;
 var barWidth = max_width - bGMargin.left - bGMargin.right,
     barHeight = 105 - bGMargin.top - bGMargin.bottom;
 
@@ -394,9 +394,24 @@ function ticked() {
     // Remove some councils if not wanted (defined in functions.js)
     remove_non_wanted_council();
 
+    // Check if the window has been resized and update the graph
+    window_resized();
+
     // Apply the gravity on the nodes (defined in clusters.js)
     node
         .each(gravity())
         .attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
 }
+
+// Checking if the window is being resized
+var rtime;
+var timeout = false;
+var delta = 200;
+$(window).resize(function() {
+    rtime = new Date();
+    if (timeout === false) {
+        timeout = true;
+        setTimeout(window_resized, delta);
+    }
+});
