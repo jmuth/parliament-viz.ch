@@ -3,6 +3,9 @@
 *.log
 *.out
 *.synctex.gz
+*.nav
+*.snm
+*.toc
 
 
 # Byte-compiled / optimized / DLL files
