@@ -1,7 +1,9 @@
 ![Logo](logo/logo_high_res.png)
 
 # parliament-viz.ch
-(ADA CS-401 EPFL)
+Suggestion of a visualization interface for Swiss parliament deputies, following a complete Data Visualization pipeline, from scraping until visualization.
+
+Final project of Applied Data Analysis course (ADA CS-401 EPFL 2016) taught by Michele Catasta.
 
 [Gael Lederrey](https://github.com/glederrey), [Jonas Racine](https://github.com/jonasracine) and [Joachim Muth](https://github.com/jmuth)
 
@@ -52,16 +54,16 @@ We provide here a short summary (when the name is not self-explaining) of the ma
   - `graph`: all computation of JSON for d3.js visualization
   - `logo `: a very mysterious folder
   - `nlp`: NLP tool used for previous speech theme extraction, not used in final delivery
-  - `node_modules`: Gael doesn't know
   - `poster`: latex files for poster presentation
   - `scraping`: scrap and analyse of data
     - `scraper.py`: scraper class to retrieve database table
     - `tables.py`: class to reproduce tables used in visualization
   - `viz`: website files
-  
+
+
 ## Helps and others
 
-### Parliamentary Terms
+#### Parliamentary Terms
 Complicated and precise terminology, specific to the political area.
 [Lexicon of Parliamentary Terms](https://www.parlament.ch/en/über-das-parlament/parlamentswörterbuch)
 
