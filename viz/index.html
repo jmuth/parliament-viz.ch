@@ -89,8 +89,8 @@
         <div id="myNavBar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="#about">About</a></li>
-                <li><a href="#visualization"><b>Visualization</b></a></li>
-                <li><a href="#vizu_info">Explanation</a></li>
+                <li><a href="#visualization">Visualization</a></li>
+                <li><a href="#vizu_info">How to</a></li>
                 <li><a href="#authors">Authors</a></li>
                 <li><a href="#acknowledgements">Acknowledgements</a></li>
 
@@ -102,7 +102,7 @@
 
 <div class="jumbotron" id="title">
     <h1 class="display-3">Swiss Parliament Visualization</h1>
-    <h3>Prototyping a new Visualization for the Swiss Parliament</h3>
+    <h3>Prototyping a Visualization of the Swiss Parliament data</h3>
     <img src="assets/img/logo_high_res.png" width="70%">
 </div>
 
@@ -113,21 +113,26 @@
             <h1>About this project</h1>
         </div>
         <p>
-            This project represent the final aim of the course <b><a target="blank" href="http://ada.epfl.ch/">Applied Data Analysis (ADA)</a></b>
+            This project represents the final point of the course <b><a target="blank" href="http://ada.epfl.ch/">Applied Data Analysis (ADA)</a></b>
             taught by Dr. Michele Catasta at EPFL during the Fall semester 2016. We put into practice the analysis of real-world data,
             following the whole pipeline from <b>scraping</b> to <b>interactive visualization</b>. By doing so we experienced the
             <b>real-world challenges</b> that arise in such a project.
         </p>
 
         <p>
-            Our goal is to <b>provide a simple yet powerful and playful visualization</b>. We want the user to explore this visualization,
-            to play with it in order to find some interesting information.
+             It is a common challenge in data visualization to present a big amount of data in such a simple and intuitive way that the user forgets the complexities involved. Our goal is thus to <b>provide a simple yet powerful and playful visualization</b>.
         </p>
 
         <p>
             Since the <b>Freedom of Information Act</b> entered into force (on 1 July 2006) a huge amount of data related
             to political activities is freely available to the public. However, it represents a large number of hardly
-            understandable documents. We suggest an interface giving a <b>light overview</b> of Swiss parliamentarians activities.
+            understandable documents. 
+        </p>
+        <p>
+            We chose to apply our knowledge to data from the Swiss Parliament and we suggest a new way of visualizing the activities of its deputies and increasing the visibility of this data to the public.
+        </p>
+        <p>
+            To this effect, we suggest an interface giving a <b>light overview</b> of Swiss parliamentary activities.
         </p>
         <blockquote class="blockquote-reverse" id="quote_intro">
             <font size="5">
@@ -431,74 +436,69 @@
         <div id="vizu_info"></div>
         <br>
         <div class="page-header">
-            <h1>Explanation</h1>
+            <h1>How to</h1>
         </div>
 
         <p>
-            A small explanation is given here about the different functionalities of this visualization. If you
-            <b>have trouble understanding it</b>, it may be useful to read these few lines.
+            This visualization <b>focuses on the councilors and their interactions</b> inside the parliament. The landing frame shows the councilors at their respective seats in the parliament, each circle representing a councilor.
         </p>
+        <h3>Moving the mouse over a circle</h3>
         <p>
-            This visualization is <b>focused on the councilors and their interactions</b> inside the parliament. The base
-            visualization shows where the councilors are sitting in the parliament. Each circle represent one of the councilor.
+            If you move your mouse over one of the circles, you will get information about the councilor it represents. You will also notice a change in the opacity of its surrounding points. This is used to display the strength of the relationships between this councilor and his/her colleagues.
+            The more opaque the circles, the stronger the relationship - and vice versa.
         </p>
-        <h2>Moving the mouse over a circle</h2>
-        <p>
-            If you move your mouse over one of the circle, you will get information about this councilor. You will also see
-            that some points become transparent. This is used to show the relations between one councilor and all of the others.
-            If the other circles are opaque, this means that the two councilors have a strong relationship. On the other hand,
-            a transparent circle means that the two councilors do not have a strong relationship. On the right panel, you can
-            choose between two type of relations:
+        <p>    
+            On the right panel, you can
+            choose between two type of relationships we considered:
         </p>
         <dl class="dl-horizontal">
             <dt>Co-signed motions</dt>
-            <dd>The cosigners are the councilors who signed the motion proposed by the selected councilor.</dd>
+            <dd>The cosigners are the councilors who signed at least one motion proposed by the selected councilor.</dd>
+
             <dt>Interventions</dt>
             <dd>The speakers are the councilors who spoke with the selected councilor in the same debate.</dd>
         </dl>
         <p>
-            The list of relations will also be shown sorted by the relationship between the selected councilor and all the
-            other councilors.
+            On the bottom right, a sorted list of those who have a relationship with the selected councilor is displayed and can be navigated to take a look at another councilor.
             <br>
-            You can also click on a councilor to select him/her. Then you can move your mouser over the other councilors to
-            get a few information on the right (under the options). If you want to deselect a councilor, you have to click on
-            him/her again.
+            Once you click on a councilor it fixes the opacity and information associated with him/her and moving your mouse over the other councilors will display some information about them in the lower left corner. To deselect a councilor, simply click on his/her circle again.
         </p>
 
-        <h2>Right panel</h2>
+        <h3>Right panel</h3>
 
         <p>
-            The right panel will provide you some information about the councilor. At the top, some basic information are given.
-            Then the timeline of their interventions is provided. On the third level, we show their interest. It's done by computing
-            the number of motions cosigned or as author on the different subjects. You can select if you want to see the numbers as
-            cosigner and author or only as author. If you move your mouse over the bars in the two histograms, you will get
-            more precise information.
+            The right panel is used to display some more in depth information about the councilor. Along with some basic information on the top right,
+            two bar graphs are presented. The top one is a timeline of the councilor's interventions and the lower one shows the distribution of their political interests. 
+            <br>
+            This graph was done by computing
+            the number of motions they cosigned or authored on the different subjects. 
+            It is possible to switch to a graph showing only the motions they wrote, and moving your mouse along the bars will display their exact value.
         </p>
 
-        <h2>Clusters</h2>
+        <h3>Clusters</h3>
 
         <p>
-            If you activate the clusters, the circles will move from their initial position to go into a cluster. This will also
-            activate a list of checkboxes allowing you to split into multiple clusters by different characteristics such as the party,
-            the age, etc.
+            If you activate the clusters option, the circles will move from their initial position and form a cluster. This will also
+            activate a list of checkboxes allowing you to split it into multiple clusters by different characteristics such as party,
+             age, gender, etc.
         </p>
 
-        <h2>Majority</h2>
+        <h3>Majority</h3>
 
         <p>
-            Once the clusters are activated, you can also activate the majority. You will be able to move the clusters on the right or
+            Once the clusters are activated, you can also activate the majority option. You will be able to move the clusters on the right or
             on the left of a line in the middle of the visualization. This will then tell you if the majority is on the right or on the
-            left of the line.
+            left of the line. Frank Underwood would love this!
         </p>
 
-        <h2>Colors</h2>
+        <h3>Colors</h3>
 
-        You can change the colors of the circles according to some characteristics of the councilors.
+        You can change the colors of the circles according to the characteristics of the councilors.
 
-        <h2>Councils</h2>
+        <h3>Councils</h3>
 
-        You can choose to remove the councils from the visualization. This can be particularly interessant when playing with the
-        majority.
+        You can choose to remove one or more council from the visualization. This can be particularly interesting when using the
+        majority option.
 
         <div id="authors"></div>
         <br>
@@ -511,17 +511,17 @@
                 <!-- hidded mail-->
                 <a href='m&#97;ilto&#58;j%6Fa&#99;him&#46;&#104;&#46;mu&#116;&#104;&#64;&#37;67m&#97;i&#37;6C&#46;&#99;&#111;%&#54;&#68;'>Joachim Muth</a>
             </dt>
-            <dd>Student in Computer Science</dd>
+            <dd>Master student in Computer Science</dd>
             <dt>
                 <!-- hidded mail-->
                 <a href='mailto&#58;jonas&#46;&#114;&#97;c&#105;&#110;e%&#52;&#48;&#101;p%66l&#46;&#99;h'>Jonas Racine</a>
             </dt>
-            <dd>Student in Mathematical Engineering</dd>
+            <dd>Master student in Mathematical Engineering</dd>
             <dt>
                 <!-- hidded mail-->
                 <a href='mailto&#58;%&#54;7ae&#108;&#46;&#108;e%6&#52;&#101;rr%6&#53;%79&#64;&#101;%7&#48;f%6C&#46;&#99;&#104;'>Gael Lederrey</a>
             </dt>
-            <dd>Student in Computational Science and Engineering</dd>
+            <dd>Master student in Computational Science and Engineering</dd>
 
         </dl>
 
@@ -532,9 +532,9 @@
         </div>
 
         <p>
-        We would like to express our special thanks of gratitude to <b>M. Alain Rebetez</b>, political journalist,
-        <b>M. Mathias Reynard</b>, PSS councilor at National Council, and <b>M. Philippe Nantermod</b>, PLR councilor
-        at National Council, for their expertise in the Swiss parliamentary system and their external point of view
+        We would like to express our special thanks to <b>M. Alain Rebetez</b>, political journalist,
+        <b>M. Mathias Reynard</b>, PSS councilor in the National Council, and <b>M. Philippe Nantermod</b>, PLR councilor
+        in the National Council, for their expertise in the Swiss parliamentary system and their external point of view
         about the project.
         </p>
         <p>

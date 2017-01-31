@@ -338,6 +338,7 @@ d3.json("data/active.json", function(error, graph) {
     // Create the SVG nodes for each councilor
     node = svg.append("g")
             .attr("class", "nodes")
+            .style('cursor', 'pointer')
             .selectAll("circle")
             .data(nodes)
             .enter().append("circle")

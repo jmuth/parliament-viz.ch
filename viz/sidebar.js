@@ -333,6 +333,7 @@ function showFriends(id) {
         .enter().append('g')
         .attr('personIdCode', id)
         .attr('class', 'grect')
+        .style('cursor', 'pointer')
         // mouse events on the g element
         .on('mouseover', function(d) { friendOver(d.friend);})
         .on('mouseleave', function(d) { friendOut(d.friend);})
